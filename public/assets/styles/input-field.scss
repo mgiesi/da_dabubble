@@ -2,9 +2,24 @@
 @use "./variables.scss" as *;
 
 .input-field-gray-width-500 {
-    @include inputFieldStyle();
+    @include inputFieldGrayStyle();
 }
 
 .input-field-gray-width-400 {
-    @include inputFieldStyle($width: $input-field-width-300-400);
+    @include inputFieldGrayStyle($width: $input-field-width-300-400);
+}
+
+.label-input-field-white {
+    position: relative;
+
+    svg {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+    }
+}
+
+.input-field-white {
+    @include inputFieldWhiteStyle();
 }
