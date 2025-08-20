@@ -1,5 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @use "./../public/assets/styles/fonts.scss" as *;
+@use "./../public/assets/styles/mixins.scss" as *;
+@use "./../public/assets/styles/variables.scss" as *;
+
+
 
 body {
   height: 100%;
