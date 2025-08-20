@@ -1,1 +1,5 @@
 <p>channel-form works!</p>
+<li *ngFor="let c of facade.channels()">
+    {{ c.name }} ({{ c.description }}) <button class="btn-blue" (click)="deleteChannel(c.id)">Delete</button>
+</li>
+<button class="btn-blue" (click)="createChannel()">+</button>
