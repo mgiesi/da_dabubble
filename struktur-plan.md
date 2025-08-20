@@ -2,48 +2,24 @@
 src/
 ├── app/
 │   ├── core/
+|   |   |── facades
+│   │   │   └── channels-facade.service.ts      # Facade for channel data-access
 │   │   ├── firebase/
 │   │   │   └── firebase.config.ts              # Firebase App, Auth, Firestore Provider
 │   │   ├── services/
 │   │   │   ├── auth.service.ts                 # Email/Password + Google Auth
 │   │   │   └── db.service.ts                   # Generic Firestore CRUD operations
 │   │   ├── repositories/
-│   │   │   ├── users.repo.ts                   # User-specific database operations
-│   │   │   ├── channels.repo.ts                # Channel-specific database operations
-│   │   │   └── messages.repo.ts                # Message-specific database operations
+│   │   │   ├── users.service.ts                # User-specific database operations (data-access-model)
+│   │   │   ├── channels.service.ts             # Channel-specific database operations (data-access-model)
+│   │   │   └── messages.service.ts             # Message-specific database operations (data-access-model)
 │   │   └── guards/
 │   │       └── auth.guard.ts                   # Route protection for authenticated users
 │   ├── shared/
-│   │   ├── ui/
-│   │   │   ├── button/
-│   │   │   │   ├── button.component.ts         # Reusable button with variants
-│   │   │   │   ├── button.component.html       # Button template
-│   │   │   │   └── button.component.scss       # Button styling
-│   │   │   ├── input/
-│   │   │   │   ├── input.component.ts          # Reusable input field
-│   │   │   │   ├── input.component.html        # Input template
-│   │   │   │   └── input.component.scss        # Input styling
-│   │   │   ├── avatar/
-│   │   │   │   ├── avatar.component.ts         # User avatar display
-│   │   │   │   ├── avatar.component.html       # Avatar template
-│   │   │   │   └── avatar.component.scss       # Avatar styling with sizes
-│   │   │   ├── icon/
-│   │   │   │   ├── icon.component.ts           # SVG icon wrapper
-│   │   │   │   ├── icon.component.html         # Icon template
-│   │   │   │   └── icon.component.scss         # Icon styling
-│   │   │   └── modal/
-│   │   │       ├── modal.component.ts          # Base modal component
-│   │   │       ├── modal.component.html        # Modal template
-│   │   │       └── modal.component.scss        # Modal styling
-│   │   ├── directives/
-│   │   │   ├── click-outside.directive.ts      # Close dropdowns on outside click
-│   │   │   └── auto-focus.directive.ts         # Auto-focus input fields
+│   │   ├── models/
+│   │   │   ├── channels.ts                     # Channel domain model: defines the data structure / TypeScript interface for channels
 │   │   ├── pipes/
 │   │   │   └── relative-time.pipe.ts           # "vor 2 Stunden" time formatting
-│   │   └── validators/
-│   │       ├── email.validator.ts              # Email format validation
-│   │       ├── password.validator.ts           # Password strength validation
-│   │       └── channel-name.validator.ts       # Channel name format validation
 │   ├── features/
 │   │   ├── auth/
 │   │   │   ├── login/
