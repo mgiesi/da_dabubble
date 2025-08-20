@@ -2,3 +2,19 @@
 @use "../../public/assets/styles/mixins.scss" as *;
 @use "../../public/assets/styles/variables.scss" as *;
 @use "../../public/assets/styles/btn-style.scss" as *;
+
+.app-container {
+    min-height: 100vh;
+    max-width: $max-content-width;
+    margin: 0 auto;
+}
+
+.app-header {
+    padding: 20px;
+
+    @include dFlexAllCenter($ai: center, $jc: start, $g: 20px);
+}
+
+.logo {
+    height: 60px;
+}
