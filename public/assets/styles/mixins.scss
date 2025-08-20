@@ -1,1 +1,48 @@
 @use "./variables.scss" as *;
+
+
+@mixin dFlexAllCenter($ai: center, $jc: center, $g: 0) {
+  display: flex;
+  align-items: $ai;
+  justify-content: $jc;
+  gap: $g;
+}
+
+@mixin fontSizeWeightColor($si: 20px, $we: 400, $co: $black) {
+  font-size: $si;
+  font-weight: $we;
+  color: $co;
+}
+
+@mixin buttonStyle($bg-color: $purple-1, $hover-bg-color: $purple-2, $text-color: $white, $border: none, $hover-text-color: $white, $gap: 0) {
+  background-color: $bg-color;
+  border: 1px solid $border;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 12px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $gap;
+  @include fontSizeWeightColor($si: 18px, $we: 700, $co: $text-color);
+  transition: $transition-0-3-ease-in-out;
+
+  &:hover {
+    background-color: $hover-bg-color;
+    color: $hover-text-color;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: $text-gray;
+    color: $white;
+
+
+    &:hover {
+      background-color: $text-gray;
+      color: $white;
+    }
+  }
+}

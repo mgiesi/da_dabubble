@@ -1,0 +1,19 @@
+@use "./mixins.scss" as *;
+@use "./variables.scss" as *;
+
+
+.btn-white {
+    @include buttonStyle($bg-color: $white, $hover-bg-color: $purple-3, $text-color: $purple-1, $border: $purple-1);
+}
+
+.btn-blue {
+    @include buttonStyle();
+}
+
+.btn-blue-with-img {
+    @include buttonStyle($bg-color: $purple-1,
+        $hover-bg-color: $purple-2,
+        $text-color: $white,
+        $border: unset,
+        $gap: 10px);
+}
