@@ -3,7 +3,7 @@
 
 
 .btn-white {
-    @include buttonStyle($bg-color: $white,
+    @include buttonStyle($btn-bg-color: $white,
         $hover-bg-color: $purple-3,
         $text-color: $purple-1,
         $border: $purple-1);
@@ -14,9 +14,13 @@
 }
 
 .btn-blue-with-img {
-    @include buttonStyle($bg-color: $purple-1,
+    @include buttonStyle($btn-bg-color: $purple-1,
         $hover-bg-color: $purple-2,
         $text-color: $white,
         $border: unset,
         $gap: 10px);
+}
+
+.btn-google {
+    @include btnGoogleStyle();
 }
