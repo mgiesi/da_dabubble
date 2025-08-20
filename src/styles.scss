@@ -6,7 +6,7 @@
 
 html {
   scrollbar-gutter: stable;
-  // background-color: $bg-color;
+  // background-color: $btn-bg-color;
   background-color: white;
 }
 
@@ -34,6 +34,11 @@ a {
 button {
   border: unset;
   cursor: pointer;
+}
+
+input {
+  caret-color: $purple-1;
+  text-shadow: 0 0 0 $purple-1;
 }
 
 

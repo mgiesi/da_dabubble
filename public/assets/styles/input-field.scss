@@ -1,6 +1,10 @@
 @use "./mixins.scss" as *;
 @use "./variables.scss" as *;
 
-.input-field {
+.input-field-gray-width-500 {
     @include inputFieldStyle();
+}
+
+.input-field-gray-width-400 {
+    @include inputFieldStyle($width: $input-field-width-300-400);
 }
