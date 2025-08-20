@@ -1,8 +1,8 @@
-@use "/public/assets/styles/mixins.scss" as *;
+
 
 //colors
 $white: white;
-$light-gray:#ECEEFE;
+$bg-color:#ECEEFE;
 $light-purple:#ADB0D9;
 $black:black;
 $text-gray:#686868;
@@ -13,5 +13,15 @@ $green: #92C83E;
 $rosa: #ED1E79;
 
 //font-sizes
+$font-size-16: 16px;// this is for font size 14px in figma
+$font-size-18: 18px;
+$font-size-20: 20px;
+$font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px);
+$font-size-16-24: clamp(16px, 14.4px + 0.5vw, 24px); // placeholder input-field
+$font-size-18-24: clamp(18px, 16.8px + 0.375vw, 24px);
+$font-size-24: 24px;
+$font-size-32: 32px;
+$font-size-22-36: clamp(22px, 19.2px + 0.875vw, 36px); // for Account created successfully! / Email sent / Register
+$font-size-32-46: clamp(32px, 29.2px + 0.875vw, 46px); //h1 complete log in
 
 
