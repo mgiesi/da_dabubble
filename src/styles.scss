@@ -2,11 +2,12 @@
 @use "../public/assets/styles/mixins.scss" as *;
 @use "../public/assets/styles/variables.scss" as *;
 @use "../public/assets/styles/btn-style.scss" as *;
-
+@use "../public/assets/styles/input-field.scss" as *;
 
 html {
   scrollbar-gutter: stable;
-  background-color: $bg-color;
+  // background-color: $bg-color;
+  background-color: white;
 }
 
 body {

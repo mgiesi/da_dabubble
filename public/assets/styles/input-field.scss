@@ -1,0 +1,6 @@
+@use "./mixins.scss" as *;
+@use "./variables.scss" as *;
+
+.input-field {
+    @include inputFieldStyle();
+}
