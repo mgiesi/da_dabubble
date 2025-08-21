@@ -1,0 +1,17 @@
+.main-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  height: 100vh;
+}
+
+.workspace-sidebar {
+  padding: 0;
+}
+
+.chat-main {
+  padding: 1rem;
+}
+
+.thread-sidebar {
+  padding: 1rem;
+}
