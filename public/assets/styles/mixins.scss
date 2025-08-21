@@ -77,7 +77,7 @@
   }
 }
 
-@mixin inputFieldGrayStyle($btn-bg-color: $bg-color, $border-color: $btn-bg-color, $placeholder-color: $text-gray, $padding: 13px 40px, $width: $input-field-width-300-500, $height: 60px) {
+@mixin inputFieldGrayStyle($btn-bg-color: $bg-color, $border-color: $btn-bg-color, $placeholder-color: $text-gray, $padding: 13px 40px, $width: $input-field-width-300-500) {
   background-color: $btn-bg-color;
   border: 1px solid $border-color;
   border-radius: 50px;
@@ -85,7 +85,7 @@
   font-size: $font-size-18;
   color: $black;
   width: $width;
-  height: $height;
+  height: clamp(50px, 48px + 0.625vw, 60px);
   transition: $transition-0-3-ease-in-out;
 
   &::placeholder {
@@ -115,7 +115,8 @@
   font-size: $font-size-18;
   color: $black;
   width: $input-field-width-300-500;
-  height: 60px;
+  height: clamp(50px, 48px + 0.625vw, 60px);
+  ;
 
   &::placeholder {
     color: $text-gray;
