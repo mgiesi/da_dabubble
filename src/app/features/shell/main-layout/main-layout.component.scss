@@ -1,7 +1,9 @@
 .main-layout {
   display: grid;
-  grid-template-columns: 280px 1fr 320px;
+  grid-template-columns: auto 1fr auto;
   height: 100vh;
+  gap: 40px;
+  padding: 0 20px;
 }
 
 .workspace-sidebar {
@@ -9,9 +11,9 @@
 }
 
 .chat-main {
-  padding: 1rem;
+  padding: 0;
 }
 
 .thread-sidebar {
-  padding: 1rem;
+  padding: 0;
 }
