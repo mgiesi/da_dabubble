@@ -55,8 +55,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 60px;
   @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-1);
-  // width: $input-field-width-300-500;
   width: 100%;
   height: 60px;
 
