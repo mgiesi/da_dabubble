@@ -1,7 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { UsersService } from '../repositories/users.service';
 import { Auth } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable, shareReplay } from 'rxjs';
+import { User } from '../../shared/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -17,17 +19,20 @@ export class UsersFacadeService {
 
   constructor() { }
 
-  /**
-   * Reactive list of users as an Angular **Signal**.
-   *
-   * Backed by Firestore in real time (sorted by `displayName` in `UsersService`).
-   * The signal updates automatically as the underlying data changes.
-   */
-  readonly users = toSignal(
-    this.data.users$(), {
-    initialValue: [] as any[]
-  }
+  /** A shared observable of all users from the Firestore. */
+  private readonly users$ = this.data.users$().pipe(
+    shareReplay({ bufferSize: 1, refCount: true})
   );
+  /** Converts the shared users$ observable into an Angular Signal. */
+  readonly users = toSignal<User[]>(this.users$, { initialValue: [] as any });
+ 
+  /**
+   * Returns the currently authenticated user as an observable of user.
+   * This stream updates automatically when authentication state changes.
+   */
+  currentUser(): Observable<User | null> {
+    return this.data.currentUser$();
+  }
 
   /**
    * Creates a new user document via the repository.

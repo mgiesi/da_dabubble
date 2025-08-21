@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, query, orderBy, collectionData, addDoc, serverTimestamp, doc, updateDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collection, query, orderBy, collectionData, addDoc, serverTimestamp, doc, updateDoc, where } from '@angular/fire/firestore';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { User } from '../../shared/models/user';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ import { User } from '../../shared/models/user';
  */
 export class UsersService {
   private fs = inject(Firestore);
+  private auth = inject(AuthService);
   
   constructor() { }
 
@@ -33,6 +35,30 @@ export class UsersService {
     const ref = collection(this.fs, 'users');
     const q = query(ref, orderBy('displayName', 'asc'));
     return collectionData(q, { idField: 'id' }) as Observable<User[]>;
+  }
+
+  /**
+   * Returns the current application user as an observable.
+   * First it gets the current user-object from the Firebase authentication. If it 
+   * exist, it queries the users collection in Firestore for a document whose uid field
+   * matches the Firebase user's UID.
+   * 
+   * @returns Observable<User | null> — the current user object from Firestore,
+   *          or `null` if not authenticated or no matching record is found.
+   */
+  currentUser$(): Observable<User | null> {
+    return this.auth.user$.pipe(
+      switchMap(firebaseUser => {
+        if (!firebaseUser) {
+          return of(null);
+        }
+        const ref = collection(this.fs, 'users');
+        const q = query(ref, where('uid', '==', firebaseUser.uid));
+        return collectionData(q, { idField: 'id' }).pipe(
+          map(users => users[0] as User ?? null)
+        );
+      })
+    );
   }
 
   /**

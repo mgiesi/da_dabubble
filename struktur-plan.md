@@ -80,6 +80,10 @@ src/
 │   │   │       ├── channel-members.component.html   # Members list template
 │   │   │       └── channel-members.component.scss   # Members list styling
 │   │   └── profile/
+│   │       └── profile-menu/
+│   │           ├── profile-menu.component.ts    # User profile menu located at the top/right of the header
+│   │           ├── profile-menu.component.html  # Profile menu form template
+│   │           └── profile-menu.component.scss  # Profile menu styling
 │   │       └── profile-settings/
 │   │           ├── profile-settings.component.ts    # User profile editor
 │   │           ├── profile-settings.component.html  # Profile form template

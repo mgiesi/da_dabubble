@@ -11,10 +11,10 @@ import { Timestamp } from "@angular/fire/firestore";
  */
 export interface User {
     /**
-     * Firestore document ID (optional).
+     * Firestore document ID.
      * Not part of the stored fields unless you copy it into the document.
      */
-    id?: string;
+    id: string;
 
     /**
      * Firebase Authentication UID identifying the user across services.
