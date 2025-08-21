@@ -1,0 +1,26 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+
+:host {
+    @include dFlexAllCenter();
+    overflow-y: auto;
+}
+
+.login-container {
+    background-color: $white;
+    max-width: 610px;
+    margin-inline: auto;
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+    text-align: center;
+    position: relative;
+    padding: 40px;
+    margin-bottom: 100px;
+    border-radius: 30px;
+    box-shadow: $box-shadow;
+
+    @media screen and (max-width: 700px) {
+        width: 100%;
+        border-radius: 0;
+    }
+}

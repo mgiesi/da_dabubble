@@ -59,19 +59,21 @@
   width: $input-field-width-300-500;
   height: 60px;
 
-  span {
+  p {
     transition: $transition-0-3-ease-in-out;
   }
 
-  svg {
+
+  img {
     margin-right: 10px;
   }
 
   &:hover {
     border: 1px solid $purple-1;
 
-    svg,
-    span {
+
+    img,
+    p {
       font-weight: 700;
     }
   }
