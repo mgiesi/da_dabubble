@@ -4,9 +4,13 @@
 @use "../../public/assets/styles/btn-style.scss" as *;
 
 .app-container {
-    min-height: 100dvh;
+    height: 100dvh;
     max-width: $max-content-width-1920;
     margin: 0 auto;
+}
+
+.app-content {
+    height: calc(100% - 150px);
 }
 
 .app-header {
