@@ -1,11 +1,34 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-message-input',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.scss'
 })
 export class MessageInputComponent {
+  messageText = '';
 
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.onSendMessage(event);
+    }
+  }
+
+  onSendMessage(event?: KeyboardEvent) {
+    if (event && event.shiftKey) {
+      return; // Shift+Enter für neue Zeile
+    }
+    
+    if (event) {
+      event.preventDefault();
+    }
+    
+    if (this.messageText.trim()) {
+      console.log('Sending message:', this.messageText);
+      // Hier später Message Service aufrufen
+      this.messageText = '';
+    }
+  }
 }

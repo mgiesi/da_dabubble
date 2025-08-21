@@ -12,38 +12,38 @@
     opacity: 1;
     @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start);
     padding: 0;
-    box-shadow: none;
-    
+    box-shadow: $box-shadow;
+
     .chat-header {
         padding: 32px 45px 20px 45px;
         border-bottom: 1px solid $light-purple;
         @include dFlexAllCenter($jc: space-between);
-        
+
         .chat-title {
             @include dFlexAllCenter($jc: start, $g: 15px);
-            
+
             svg {
                 path {
                     fill: $black;
                 }
             }
-            
+
             h2 {
                 margin: 0;
                 @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
             }
         }
-        
+
         .chat-members {
             @include dFlexAllCenter($jc: end, $g: 12px);
-            
+
             .member-count {
                 @include fontSizeWeightColor($si: $font-size-20, $we: 400, $co: $black);
             }
-            
+
             .member-avatars {
                 @include dFlexAllCenter($g: -8px);
-                
+
                 .member-avatar {
                     width: 40px;
                     height: 40px;
@@ -54,18 +54,18 @@
             }
         }
     }
-    
+
     .messages-container {
         flex: 1;
         overflow-y: auto;
         padding: 20px 45px;
         @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
-        
+
         .message-item {
             // Message styling wird später definiert
         }
     }
-    
+
     .message-input-container {
         padding: 20px 45px 32px 45px;
         border-top: 1px solid $light-purple;

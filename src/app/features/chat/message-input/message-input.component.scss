@@ -1,0 +1,63 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+
+.message-input-wrapper {
+    width: 100%;
+
+    .input-container {
+        @include dFlexAllCenter($ai: end, $g: 12px);
+        background: $white;
+        border: 1px solid $light-purple;
+        border-radius: 20px;
+        padding: 16px 20px;
+        transition: $transition-0-3-ease-in-out;
+
+        &:focus-within {
+            border-color: $purple-1;
+            box-shadow: 0 0 0 2px rgba($purple-1, 0.1);
+        }
+
+        textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            min-height: 24px;
+            max-height: 120px;
+            @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+            background: transparent;
+
+            &::placeholder {
+                color: $text-gray;
+            }
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .input-actions {
+            @include dFlexAllCenter();
+
+            .send-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 50%;
+                transition: $transition-0-3-ease-in-out;
+                @include dFlexAllCenter();
+                width: 46px;
+                height: 46px;
+
+                svg path {
+                    transition: $transition-0-3-ease-in-out;
+                }
+
+                &:hover svg path {
+                    fill: $purple-2;
+                }
+            }
+        }
+    }
+}
