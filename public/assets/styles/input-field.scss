@@ -24,6 +24,7 @@
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;
 
     input {
         @include inputFieldWhiteStyle();
@@ -43,6 +44,7 @@
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;
 
     input {
         @include inputFieldWhiteStyle();
@@ -56,9 +58,10 @@
     display: flex;
     align-items: center;
     position: relative;
+    width: 100%;
 
     input {
-        @include inputFieldGrayStyle($width: $input-field-width-300-400);
+        @include inputFieldGrayStyle($width: 100%);
         padding-right: 15px;
         padding-left: 70px;
     }
