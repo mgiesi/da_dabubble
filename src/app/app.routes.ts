@@ -25,7 +25,7 @@ export const routes: Routes = [
  {
    path: 'chat',
    loadComponent: () => import('./features/shell/main-layout/main-layout.component').then(c => c.MainLayoutComponent),
-   canActivate: [authGuard]
+   //canActivate: [authGuard]
  },
  
  { path: '**', redirectTo: '/login' }
