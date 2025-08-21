@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
+<<<<<<< HEAD
   {
     path: 'login',
     loadComponent: () =>
@@ -60,3 +61,13 @@ export const routes: Routes = [
 
   { path: '**', redirectTo: '/login' },
 ];
+=======
+ {
+   path: 'chat',
+   loadComponent: () => import('./features/shell/main-layout/main-layout.component').then(c => c.MainLayoutComponent),
+   //canActivate: [authGuard]
+ },
+ 
+ { path: '**', redirectTo: '/login' }
+];
+>>>>>>> 52ec8332ea5f8191f314374d499b4626d04db608
