@@ -1,12 +1,21 @@
+import { isPlatformBrowser } from '@angular/common';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
+import { provideAuth, getAuth, browserLocalPersistence, indexedDBLocalPersistence, initializeAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 const firebaseConfig = environment.firebase;
 
 export const firebaseProviders = [
   provideFirebaseApp(() => initializeApp(firebaseConfig)),
-  provideAuth(() => getAuth()),
+  provideAuth(() => {
+    const platformId = inject(PLATFORM_ID);
+    const app = getApp();
+    if (!isPlatformBrowser(platformId)) {
+      return getAuth(app);
+    }
+    return initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence]});
+  }),
   provideFirestore(() => getFirestore())
 ];

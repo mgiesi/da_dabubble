@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, redirectIfAuthedGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -10,6 +10,7 @@ export const routes: Routes = [
       import('./features/auth/login/login.component').then(
         (c) => c.LoginComponent
       ),
+      canMatch: [redirectIfAuthedGuard],
   },
   {
     path: 'register',
@@ -17,6 +18,7 @@ export const routes: Routes = [
       import('./features/auth/register/register.component').then(
         (c) => c.RegisterComponent
       ),
+      canMatch: [redirectIfAuthedGuard],
   },
   {
     path: 'avatar-selection',
@@ -39,7 +41,7 @@ export const routes: Routes = [
       import('./features/shell/main-layout/main-layout.component').then(
         (c) => c.MainLayoutComponent
       ),
-    // canActivate: [authGuard],
+      canActivate: [authGuard],
   },
 
   {

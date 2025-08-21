@@ -4,6 +4,7 @@ src/
 │   ├── core/
 |   |   |── facades
 │   │   │   └── channels-facade.service.ts      # Facade for channel data-access
+│   │   │   └── users-facade.service.ts         # Facade for user data-access
 │   │   ├── firebase/
 │   │   │   └── firebase.config.ts              # Firebase App, Auth, Firestore Provider
 │   │   ├── services/
@@ -17,7 +18,8 @@ src/
 │   │       └── auth.guard.ts                   # Route protection for authenticated users
 │   ├── shared/
 │   │   ├── models/
-│   │   │   ├── channels.ts                     # Channel domain model: defines the data structure / TypeScript interface for channels
+│   │   │   ├── channel.ts                      # Channel domain model: defines the data structure / TypeScript interface for channels
+│   │   │   ├── userchannels.ts                 # User domain model: defines the data structure / TypeScript interface for users
 │   │   ├── pipes/
 │   │   │   └── relative-time.pipe.ts           # "vor 2 Stunden" time formatting
 │   ├── features/
