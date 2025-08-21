@@ -1,5 +1,6 @@
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 .channel-form-container {
   width: 872px;
@@ -74,7 +75,7 @@
   .label-input-field-white-img-left-border,
   .label-input-field-white-without-img-border {
     width: 100%;
-    
+
     input {
       width: 100%;
     }
