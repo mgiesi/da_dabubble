@@ -6,8 +6,6 @@
 
 html {
   scrollbar-gutter: stable;
-  // background-color: $btn-bg-color;
-  // background-color: white;
 }
 
 body {
@@ -45,15 +43,15 @@ input {
 
 ::-webkit-scrollbar {
   width: 4px;
-  scrollbar-color: $purple-1;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: $purple-1;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: $purple-1;
+  background-color: transparent;
 }
 
 .btn-icon {

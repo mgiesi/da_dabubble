@@ -22,6 +22,11 @@
          border-radius: 30px;
          box-shadow: $box-shadow;
 
+         @media screen and (max-width: 700px) {
+             width: 100%;
+
+         }
+
          a {
              color: $green;
 
@@ -32,15 +37,33 @@
 
 
          h1 {
-             @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+             padding-top: clamp(0px, 27.6316px + -3.9474vw, 15px);
+             @include fontSizeWeightColor($font-size-26-46, $we: 700, $co: $purple-1);
+         }
+
+         h2 {
+             @include fontSizeWeightColor($si: $font-size-24-32, $we: 600, $co: $purple-1);
+         }
+
+         h3 {
+             @include fontSizeWeightColor($si: $font-size-20-24, $we: 500, $co: $purple-1);
          }
 
          p {
-             @include fontSizeWeightColor($si: $font-size-20, $we: 400, $co: $black);
+             @include fontSizeWeightColor($font-size-17-20, $we: 400, $co: $black);
+         }
+
+         li {
+             @include fontSizeWeightColor($font-size-17-20, $we: 400, $co: $black);
          }
 
          span {
-             @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $purple-1);
+             @include fontSizeWeightColor($font-size-26-32, $we: 700, $co: $purple-1);
+         }
+
+         ul,
+         ol {
+             list-style: none;
          }
      }
 
