@@ -7,16 +7,16 @@
     <h1>Anmeldung</h1>
     <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
 
-    <form>
+    <form #f="ngForm">
         <label class="label-input-field-gray-with-img " for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
 
-            <input id="email" [(ngModel)]="email" type="text" placeholder="beispielname@email.com">
+            <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com" [disabled]="inProgress">
         </label>
 
         <label class="label-input-field-gray-with-img" for="password">
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
-            <input id="password" [(ngModel)]="pwd" type="password" placeholder="Passwort">
+            <input id="password" [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="inProgress">
         </label>
 
         <p>Passwort vergessen?</p>
@@ -30,14 +30,14 @@
 
         </div>
 
-        <button class="btn-google">
+        <button class="btn-google" [disabled]="inProgress">
             <img src="icons/google.svg" alt="">
             <p>Anmelden mit Google</p>
         </button>
 
         <div class="login-btns">
-            <button class="btn-blue">Anmelden</button>
-            <button class="btn-white">Gäste-Login</button>
+            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">{{ inProgress ? 'Anmelden...' : 'Anmelden' }}</button>
+            <button class="btn-white" (click)="signInAsGuest()" [disabled]="inProgress">Gäste-Login</button>
         </div>
     </form>
 
