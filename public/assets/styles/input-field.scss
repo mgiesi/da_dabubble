@@ -1,11 +1,6 @@
 @use "./mixins.scss" as *;
 @use "./variables.scss" as *;
 
-mat-label {
-    display: none;
-}
-
-
 .label-input-field-white-img-right {
     display: flex;
     align-items: center;
