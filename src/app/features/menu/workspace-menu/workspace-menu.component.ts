@@ -1,26 +1,40 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { NgFor } from '@angular/common';
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
+import { ChannelFormComponent } from '../../channels/channel-form/channel-form.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workspace-menu',
-  imports: [NgFor],
+  imports: [NgFor, ChannelFormComponent],
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
 })
-export class WorkspaceMenuComponent {
-  // TODO: Inject facades when available
-  // private channelsFacade = inject(ChannelsFacadeService);
-  // private usersFacade = inject(UsersFacadeService);
-  // private workspaceFacade = inject(WorkspaceFacadeService);
+export class WorkspaceMenuComponent implements OnInit, OnDestroy {
+  private channelsFacade = inject(ChannelsFacadeService);
+  private subscription = new Subscription();
   
   workspaceName = 'Devspace';
   channelsClosed = false;
   dmClosed = false;
+  showChannelForm = false;
   
-  // Mock data - wird später durch Facade Signals ersetzt
   channels: any[] = [];
-  
   directMessages: any[] = [];
+
+  ngOnInit() {
+    // Observable verwenden statt Signal
+    this.subscription.add(
+      this.channelsFacade['data'].channels$().subscribe(channels => {
+        this.channels = channels;
+        console.log('Channels updated:', channels);
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   toggleChannels() {
     this.channelsClosed = !this.channelsClosed;
@@ -31,22 +45,22 @@ export class WorkspaceMenuComponent {
   }
 
   onAddChannel() {
-    // TODO: Emit event or call facade.createChannel()
-    console.log('Add channel clicked');
+    this.showChannelForm = true;
   }
 
   onChannelClick(channelId: string) {
-    // TODO: Emit event for parent to handle navigation
     console.log('Channel clicked:', channelId);
   }
 
   onDirectMessageClick(userId: string) {
-    // TODO: Emit event for parent to handle DM navigation
     console.log('DM clicked:', userId);
   }
 
   onEditWorkspace() {
-    // TODO: Emit event for workspace edit
     console.log('Edit workspace clicked');
+  }
+
+  closeChannelForm() {
+    this.showChannelForm = false;
   }
 }

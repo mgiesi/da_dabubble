@@ -1,5 +1,57 @@
-<p>channel-form works!</p>
-<li *ngFor="let c of facade.channels()">
-    {{ c.name }} ({{ c.description }}) <button class="btn-blue" (click)="deleteChannel(c.id)">Delete</button>
-</li>
-<button class="btn-blue" (click)="createChannel()">+</button>
+<div class="channel-form-container">
+  <div class="form-header">
+    <h2>Channel erstellen</h2>
+  </div>
+
+  <div class="form-content">
+    <div class="input-group">
+      <label for="channelName">Channel-Name</label>
+      <div class="label-input-field-gray-without-img">
+        <input 
+          id="channelName"
+          type="text" 
+          [(ngModel)]="channelName" 
+          placeholder="z.B. Entwicklerteam"
+          maxlength="50">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="channelDescription">Beschreibung (optional)</label>
+      <div class="label-input-field-gray-without-img">
+        <input 
+          id="channelDescription"
+          type="text" 
+          [(ngModel)]="channelDescription" 
+          placeholder="Worum geht es in diesem Channel?"
+          maxlength="200">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-white" type="button" (click)="onCancel()">Abbrechen</button>
+      <button 
+        class="btn-blue" 
+        type="button" 
+        (click)="createChannel()"
+        [disabled]="!channelName.trim()">
+        Channel erstellen
+      </button>
+    </div>
+  </div>
+
+  @if (channels.length > 0) {
+    <div class="existing-channels">
+      <h3>Bestehende Channels</h3>
+      <div class="channels-list">
+        <div class="channel-item" *ngFor="let c of channels">
+          <div class="channel-info">
+            <span class="channel-name"># {{ c.name }}</span>
+            <span class="channel-description">@if (c.description) { {{ c.description }} }</span>
+          </div>
+          <button class="btn-white" (click)="deleteChannel(c.id)">Löschen</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

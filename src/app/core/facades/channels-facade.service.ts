@@ -31,8 +31,8 @@ export class ChannelsFacadeService {
    */
   readonly channels = toSignal(
     this.data.channels$(), {
-      initialValue: [] as any[] 
-    }
+    initialValue: [] as any[]
+  }
   );
 
   /**
@@ -46,11 +46,11 @@ export class ChannelsFacadeService {
    */
   async createChannel(name: string, description: string = '') {
     const uid = this.auth.currentUser?.uid;
-    if (!uid) {
-      return;
-    }
-
-    await this.data.createChannel(name, uid, description);
+    // if (!uid) {
+    //   return;
+    // }
+    const userId = uid || 'dev-user-123';
+    await this.data.createChannel(name, userId, description);
   }
 
   /**

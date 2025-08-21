@@ -1,0 +1,88 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+
+.channel-form-container {
+  width: 872px;
+  height: 539px;
+  background: $white;
+  border-radius: 30px;
+  padding: 40px;
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+  h2 {
+    @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+    margin: 0;
+  }
+}
+
+.form-content {
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
+  flex: 1;
+}
+
+.input-group {
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 8px);
+
+  label {
+    @include fontSizeWeightColor($si: $font-size-18, $we: 600, $co: $black);
+    margin-left: 16px;
+  }
+}
+
+.form-actions {
+  @include dFlexAllCenter($jc: space-between, $g: 20px);
+  margin-top: auto;
+
+  button {
+    flex: 1;
+    max-width: 200px;
+  }
+}
+
+.existing-channels {
+  border-top: 1px solid $bg-color;
+  padding-top: 20px;
+
+  h3 {
+    @include fontSizeWeightColor($si: $font-size-20, $we: 600, $co: $black);
+    margin: 0 0 12px 0;
+  }
+}
+
+.channels-list {
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 8px);
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.channel-item {
+  @include dFlexAllCenter($jc: space-between, $ai: center);
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: $bg-color;
+
+  &:hover {
+    background: $light-purple;
+  }
+}
+
+.channel-info {
+  @include dFlexAllCenter($fld: column, $ai: start, $jc: start, $g: 4px);
+  flex: 1;
+
+  .channel-name {
+    @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $black);
+  }
+
+  .channel-description {
+    @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+  }
+}
