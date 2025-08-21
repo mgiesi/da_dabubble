@@ -1,26 +1,33 @@
-<!-- <app-channel-form></app-channel-form>
-<input [(ngModel)]="email" type="text" class="input-field-gray-width-500">
-<input [(ngModel)]="pwd" type="password" class="input-field-gray-width-500">
-<button class="btn-blue" (click)="login()">Login</button> -->
+<div class="create-account-box">
+    <p>Neu bei DABubble?</p>
+    <a href="">Konto erstellen</a>
+</div>
+
 <div class="login-container">
     <h1>Anmeldung</h1>
     <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
 
     <form>
         <label class="label-input-field-gray-with-img " for="email">
-            <input [(ngModel)]="email" type="text">
+            <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
+
+            <input id="email" [(ngModel)]="email" type="text" placeholder="beispielname@email.com">
         </label>
 
         <label class="label-input-field-gray-with-img" for="password">
-            <input [(ngModel)]="pwd" type="password">
+            <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
+            <input id="password" [(ngModel)]="pwd" type="password" placeholder="Passwort">
         </label>
 
         <p>Passwort vergessen?</p>
 
         <div class=" vector-text-box">
-            <div class="left-vector"></div>
-            <p>ODER</p>
-            <div class="right-vector"></div>
+            <img src="icons/line.svg" alt="">
+            <div class="p-box">
+                <p>ODER</p>
+            </div>
+
+
         </div>
 
         <button class="btn-google">
@@ -33,4 +40,10 @@
             <button class="btn-white">Gäste-Login</button>
         </div>
     </form>
+
+
+</div>
+<div class="links-to-legal-box">
+    <a href="">Nutzungsbedingungen</a>
+    <a href="">Datenschutzbestimmungen</a>
 </div>

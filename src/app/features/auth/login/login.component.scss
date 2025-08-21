@@ -3,25 +3,69 @@
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 :host {
-    @include dFlexAllCenter();
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
     overflow-y: auto;
+    position: absolute;
+    top: 0;
     height: 100%;
+    width: 100%;
+    z-index: 2;
+    max-width: $max-content-width-1920;
+}
+
+.create-account-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
 
 .login-container {
     background-color: $white;
     max-width: 610px;
-    // margin-inline: auto;
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
     text-align: center;
     position: relative;
-    padding: 40px;
-    // margin-bottom: 100px;
+    padding: 60px;
     border-radius: 30px;
     box-shadow: $box-shadow;
+    overflow-y: auto;
 
     @media screen and (max-width: 700px) {
         width: 100%;
         border-radius: 0;
+    }
+}
+
+form {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
+    width: 100%;
+}
+
+.vector-text-box {
+    position: relative;
+    height: 35px;
+    @include dFlexAllCenter();
+
+    .p-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: $white;
+        width: fit-content;
+        padding-inline: 12px;
+    }
+}
+
+.login-btns {
+    @include dFlexAllCenter($g: 30px);
+}
+
+.links-to-legal-box {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: 20px);
+    margin-top: 30px;
+
+    a {
+        @include fontSizeWeightColor($si: 14px, $we: 400, $co: $text-gray);
     }
 }
