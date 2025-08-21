@@ -1,8 +1,9 @@
 @use "./variables.scss" as *;
 
 
-@mixin dFlexAllCenter($ai: center, $jc: center, $g: 0) {
+@mixin dFlexAllCenter($ai: center, $jc: center, $fld: unset, $g: 0) {
   display: flex;
+  flex-direction: $fld;
   align-items: $ai;
   justify-content: $jc;
   gap: $g;
