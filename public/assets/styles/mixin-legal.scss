@@ -1,10 +1,9 @@
  @use "./mixins.scss" as *;
  @use "./variables.scss" as *;
+ @use "./btn-style.scss" as *;
+
 
  @mixin styleLegal() {
-
-
-
      :host {
          @include dFlexAllCenter();
          overflow-y: auto;
@@ -67,28 +66,5 @@
          }
      }
 
-     .button-arrow-back {
-         background-color: transparent;
-         position: absolute;
-         top: clamp(10px, 3px + 2.1875vw, 45px);
-         left: clamp(10px, 3px + 2.1875vw, 45px);
-         width: 40px;
-         aspect-ratio: 1 / 1;
-         border-radius: 100%;
-         @include dFlexAllCenter();
 
-         svg {
-             fill: $black;
-             width: 24px;
-             aspect-ratio: 1 / 1;
-
-             &:hover {
-                 fill: $purple-1;
-             }
-         }
-
-         &:hover {
-             background-color: $bg-color;
-         }
-     }
  }

@@ -24,3 +24,30 @@
 .btn-google {
     @include btnGoogleStyle();
 }
+
+.btn-arrow-back {
+    @include btn-back-close-style($top: clamp(10px, 3px + 2.1875vw, 45px),
+        $left: clamp(10px, 3px + 2.1875vw, 45px),
+        $width-container: 40px,
+        $width-svg: 24px);
+}
+
+.btn-close {
+    @include btn-back-close-style();
+}
+
+.btn-add-user {
+    @include btn-add-style();
+}
+
+.btn-add-plus {
+    @include btn-back-close-style($width-container: 30px, $width-svg: 14px);
+}
+
+.btn-edit {
+    @include btn-edit();
+}
+
+.btn-reaction {
+    @include btn-reaction-style();
+}
