@@ -9,6 +9,8 @@ $purple-2: #797EF3;
 $purple-3: #535AF1;
 $green: #92C83E;
 $rosa: #ED1E79;
+$bg-animation-logo: linear-gradient(#797EF3, #313BE5);
+
 
 //font-sizes
 $font-size-16: 16px; // this is for font size 14px in figma
@@ -16,8 +18,7 @@ $font-size-18: 18px;
 $font-size-17-20: clamp(17px, 16.4px + 0.1875vw, 20px); // for p and li privacy policy imprint
 $font-size-20: 20px;
 $font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px);
-$font-size-16-24: clamp(16px, 14.4px + 0.5vw, 24px);
-// placeholder input-field
+$font-size-16-24: clamp(16px, 14.4px + 0.5vw, 24px); // placeholder input-field
 $font-size-18-24: clamp(18px, 16.8px + 0.375vw, 24px);
 $font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px); // for h3 in imprint and privacy policy
 $font-size-24: 24px;
