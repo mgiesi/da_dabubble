@@ -17,9 +17,44 @@
 }
 
 .form-header {
+  @include dFlexAllCenter($jc: space-between, $ai: center);
+
   h2 {
     @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
     margin: 0;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: $transition-0-3-ease-in-out;
+    width: 40px;
+    height: 40px;
+
+    svg path {
+      fill: $black;
+      transition: $transition-0-3-ease-in-out;
+    }
+
+    &:hover svg path {
+      fill: $purple-1;
+    }
+
+    &:hover {
+      background: $bg-color;
+      border-radius: 50%;
+    }
+  }
+}
+
+.form-info {
+  p {
+    @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+    margin: 0;
+    line-height: 1.4;
   }
 }
 
@@ -35,54 +70,26 @@
     @include fontSizeWeightColor($si: $font-size-18, $we: 600, $co: $black);
     margin-left: 16px;
   }
+
+  .label-input-field-white-img-left-border,
+  .label-input-field-white-without-img-border {
+    width: 100%;
+    
+    input {
+      width: 100%;
+    }
+  }
+
+  svg path {
+    fill: $text-gray;
+  }
 }
 
 .form-actions {
-  @include dFlexAllCenter($jc: space-between, $g: 20px);
+  @include dFlexAllCenter($jc: end);
   margin-top: auto;
 
   button {
-    flex: 1;
-    max-width: 200px;
-  }
-}
-
-.existing-channels {
-  border-top: 1px solid $bg-color;
-  padding-top: 20px;
-
-  h3 {
-    @include fontSizeWeightColor($si: $font-size-20, $we: 600, $co: $black);
-    margin: 0 0 12px 0;
-  }
-}
-
-.channels-list {
-  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 8px);
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.channel-item {
-  @include dFlexAllCenter($jc: space-between, $ai: center);
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: $bg-color;
-
-  &:hover {
-    background: $light-purple;
-  }
-}
-
-.channel-info {
-  @include dFlexAllCenter($fld: column, $ai: start, $jc: start, $g: 4px);
-  flex: 1;
-
-  .channel-name {
-    @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $black);
-  }
-
-  .channel-description {
-    @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+    min-width: 150px;
   }
 }

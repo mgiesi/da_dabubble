@@ -1,12 +1,12 @@
 import { Component, inject, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
-import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-channel-form',
-  imports: [NgFor, FormsModule],
+  imports: [FormsModule, MatCardModule],
   templateUrl: './channel-form.component.html',
   styleUrl: './channel-form.component.scss',
 })
@@ -15,14 +15,14 @@ export class ChannelFormComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
   private subscription = new Subscription();
 
-  channelName = '';
-  channelDescription = '';
-  channels: any[] = [];
+  name = '';
+  description = '';
+  allChannels: any[] = [];
 
   ngOnInit() {
     this.subscription.add(
       this.facade['data'].channels$().subscribe(channels => {
-        this.channels = channels;
+        this.allChannels = channels;
       })
     );
   }
@@ -32,10 +32,10 @@ export class ChannelFormComponent implements OnInit, OnDestroy {
   }
 
   async createChannel() {
-    if (this.channelName.trim()) {
-      await this.facade.createChannel(this.channelName.trim(), this.channelDescription.trim());
-      this.channelName = '';
-      this.channelDescription = '';
+    if (this.name.trim()) {
+      await this.facade.createChannel(this.name.trim(), this.description.trim());
+      this.name = '';
+      this.description = '';
       this.close.emit();
     }
   }

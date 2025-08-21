@@ -1,16 +1,38 @@
 <div class="channel-form-container">
   <div class="form-header">
     <h2>Channel erstellen</h2>
+    <button class="close-btn" type="button" (click)="onCancel()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="mask0_813_12181" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+          <rect width="24" height="24" fill="#D9D9D9"/>
+        </mask>
+        <g mask="url(#mask0_813_12181)">
+          <path d="M11.9998 13.4L7.0998 18.3C6.91647 18.4834 6.68314 18.575 6.3998 18.575C6.11647 18.575 5.88314 18.4834 5.6998 18.3C5.51647 18.1167 5.4248 17.8834 5.4248 17.6C5.4248 17.3167 5.51647 17.0834 5.6998 16.9L10.5998 12L5.6998 7.10005C5.51647 6.91672 5.4248 6.68338 5.4248 6.40005C5.4248 6.11672 5.51647 5.88338 5.6998 5.70005C5.88314 5.51672 6.11647 5.42505 6.3998 5.42505C6.68314 5.42505 6.91647 5.51672 7.0998 5.70005L11.9998 10.6L16.8998 5.70005C17.0831 5.51672 17.3165 5.42505 17.5998 5.42505C17.8831 5.42505 18.1165 5.51672 18.2998 5.70005C18.4831 5.88338 18.5748 6.11672 18.5748 6.40005C18.5748 6.68338 18.4831 6.91672 18.2998 7.10005L13.3998 12L18.2998 16.9C18.4831 17.0834 18.5748 17.3167 18.5748 17.6C18.5748 17.8834 18.4831 18.1167 18.2998 18.3C18.1165 18.4834 17.8831 18.575 17.5998 18.575C17.3165 18.575 17.0831 18.4834 16.8998 18.3L11.9998 13.4Z" fill="#1C1B1F"/>
+        </g>
+      </svg>
+    </button>
+  </div>
+
+  <div class="form-info">
+    <p>Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein #marketing zum Beispiel.</p>
   </div>
 
   <div class="form-content">
     <div class="input-group">
       <label for="channelName">Channel-Name</label>
-      <div class="label-input-field-gray-without-img">
+      <div class="label-input-field-white-img-left-border">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <mask id="mask0_813_12093" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+            <rect width="24" height="24" fill="#D9D9D9"/>
+          </mask>
+          <g mask="url(#mask0_813_12093)">
+            <path d="M7.24995 20C6.93328 20 6.67495 19.875 6.47495 19.625C6.27495 19.375 6.21662 19.1 6.29995 18.8L6.99995 16H4.77495C4.44162 16 4.17495 15.871 3.97495 15.613C3.77495 15.3543 3.71661 15.0667 3.79995 14.75C3.84995 14.5167 3.96662 14.3333 4.14995 14.2C4.33328 14.0667 4.54162 14 4.77495 14H7.49995L8.49995 10H5.77495C5.44161 10 5.17495 9.871 4.97495 9.613C4.77495 9.35433 4.71662 9.06667 4.79995 8.75C4.84995 8.51667 4.96662 8.33333 5.14995 8.2C5.33328 8.06667 5.54162 8 5.77495 8H8.99995L9.82495 4.725C9.87495 4.50833 9.98328 4.33333 10.1499 4.2C10.3166 4.06667 10.5166 4 10.7499 4C11.0666 4 11.3249 4.125 11.5249 4.375C11.7249 4.625 11.7833 4.9 11.6999 5.2L10.9999 8H14.9999L15.8249 4.725C15.8749 4.50833 15.9833 4.33333 16.1499 4.2C16.3166 4.06667 16.5166 4 16.7499 4C17.0666 4 17.3249 4.125 17.5249 4.375C17.7249 4.625 17.7833 4.9 17.6999 5.2L16.9999 8H19.2249C19.5583 8 19.8249 8.129 20.0249 8.387C20.2249 8.64567 20.2833 8.93333 20.1999 9.25C20.15 9.48333 20.0333 9.66667 19.8499 9.8C19.6666 9.93333 19.4583 10 19.2249 10H16.4999L15.4999 14H18.2249C18.5583 14 18.8249 14.129 19.0249 14.387C19.2249 14.6457 19.2833 14.9333 19.1999 15.25C19.1499 15.4833 19.0333 15.6667 18.8499 15.8C18.6666 15.9333 18.4583 16 18.2249 16H14.9999L14.1749 19.275C14.1249 19.4917 14.0166 19.6667 13.8499 19.8C13.6833 19.9333 13.4833 20 13.2499 20C12.9333 20 12.6749 19.875 12.4749 19.625C12.2749 19.375 12.2166 19.1 12.2999 18.8L12.9999 16H8.99995L8.17495 19.275C8.12495 19.4917 8.01661 19.6667 7.84995 19.8C7.68328 19.9333 7.48328 20 7.24995 20ZM9.49995 14H13.4999L14.4999 10H10.4999L9.49995 14Z" fill="black"/>
+          </g>
+        </svg>
         <input 
           id="channelName"
           type="text" 
-          [(ngModel)]="channelName" 
+          [(ngModel)]="name" 
           placeholder="z.B. Entwicklerteam"
           maxlength="50">
       </div>
@@ -18,40 +40,24 @@
 
     <div class="input-group">
       <label for="channelDescription">Beschreibung (optional)</label>
-      <div class="label-input-field-gray-without-img">
+      <div class="label-input-field-white-without-img-border">
         <input 
           id="channelDescription"
           type="text" 
-          [(ngModel)]="channelDescription" 
-          placeholder="Worum geht es in diesem Channel?"
+          [(ngModel)]="description" 
+          placeholder="Dein Text hier"
           maxlength="200">
       </div>
     </div>
 
     <div class="form-actions">
-      <button class="btn-white" type="button" (click)="onCancel()">Abbrechen</button>
       <button 
         class="btn-blue" 
         type="button" 
         (click)="createChannel()"
-        [disabled]="!channelName.trim()">
-        Channel erstellen
+        [disabled]="!name.trim()">
+        Erstellen
       </button>
     </div>
   </div>
-
-  @if (channels.length > 0) {
-    <div class="existing-channels">
-      <h3>Bestehende Channels</h3>
-      <div class="channels-list">
-        <div class="channel-item" *ngFor="let c of channels">
-          <div class="channel-info">
-            <span class="channel-name"># {{ c.name }}</span>
-            <span class="channel-description">@if (c.description) { {{ c.description }} }</span>
-          </div>
-          <button class="btn-white" (click)="deleteChannel(c.id)">Löschen</button>
-        </div>
-      </div>
-    </div>
-  }
 </div>
