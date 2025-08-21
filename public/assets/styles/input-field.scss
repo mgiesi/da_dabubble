@@ -108,7 +108,8 @@
         &:-webkit-autofill:hover,
         &:-webkit-autofill:focus,
         &:-webkit-autofill:active {
-            background-color: $white !important;
+            border: 1px solid $purple-2;
+            // background-color: $white !important;
             -webkit-box-shadow: 0 0 0 30px $white inset !important;
         }
     }
@@ -139,7 +140,8 @@
         &:-webkit-autofill:hover,
         &:-webkit-autofill:focus,
         &:-webkit-autofill:active {
-            background-color: $white !important;
+            border: 1px solid $purple-2;
+            // background-color: $purple-2 ;
             -webkit-box-shadow: 0 0 0 30px $white inset !important;
         }
     }

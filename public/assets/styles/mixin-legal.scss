@@ -1,0 +1,71 @@
+ @use "./mixins.scss" as *;
+ @use "./variables.scss" as *;
+
+ @mixin styleLegal() {
+
+
+
+     :host {
+         @include dFlexAllCenter();
+         overflow-y: auto;
+     }
+
+     .content {
+         background-color: $white;
+         max-width: 700px;
+         margin-inline: auto;
+         @include dFlexAllCenter($fld: column, $ai: center);
+         text-align: center;
+         position: relative;
+         padding: 40px;
+         margin-bottom: 100px;
+         border-radius: 30px;
+         box-shadow: $box-shadow;
+
+         a {
+             color: $green;
+
+             &:hover {
+                 text-decoration: underline;
+             }
+         }
+
+
+         h1 {
+             @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+         }
+
+         p {
+             @include fontSizeWeightColor($si: $font-size-20, $we: 400, $co: $black);
+         }
+
+         span {
+             @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $purple-1);
+         }
+     }
+
+     .button-arrow-back {
+         background-color: transparent;
+         position: absolute;
+         top: clamp(10px, 3px + 2.1875vw, 45px);
+         left: clamp(10px, 3px + 2.1875vw, 45px);
+         width: 40px;
+         aspect-ratio: 1 / 1;
+         border-radius: 100%;
+         @include dFlexAllCenter();
+
+         svg {
+             fill: $black;
+             width: 24px;
+             aspect-ratio: 1 / 1;
+
+             &:hover {
+                 fill: $purple-1;
+             }
+         }
+
+         &:hover {
+             background-color: $bg-color;
+         }
+     }
+ }
