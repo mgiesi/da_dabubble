@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // Initialisiere die Google-Anmeldung
-    // this.initializeGoogleLogin();
+    this.initializeGoogleLogin();
   }
 
   /**
@@ -46,7 +46,8 @@ export class LoginComponent implements OnInit {
         google.accounts.id
       ) {
         google.accounts.id.initialize({
-          client_id: 'DEINE_ECHTE_CLIENT_ID.apps.googleusercontent.com', // Hier muss deine echte ID stehen!
+          client_id:
+            '962703875124-ap0prgharathae40ggg7533t9t8nhs94.apps.googleusercontent.com',
           callback: this.handleCredentialResponse.bind(this),
           ux_mode: 'popup',
         });
@@ -60,25 +61,29 @@ export class LoginComponent implements OnInit {
             text: 'signin_with',
             shape: 'pill',
             logo_alignment: 'left',
+            width: '100%',
+            height: 60,
           }
         );
+        // Styling nachträglich per JS setzen, da Google Inline-Styles überschreibt
+        setTimeout(() => {
+          const googleBtn = document.querySelector('#g_id_signin > div');
+          if (googleBtn) {
+            googleBtn.setAttribute(
+              'style',
+              `
+              width: 100% !important;
+              height: 60px !important;
+            `
+            );
+          }
+        }, 100);
       } else {
         console.error(
           'Google Identity Service Skript nicht geladen oder verfügbar!'
         );
       }
     }, 0);
-  }
-
-  async signInWithGoogle() {
-    const googleBtnContainer = document.getElementById('g_id_signin');
-    if (googleBtnContainer && googleBtnContainer.firstChild) {
-      (googleBtnContainer.firstChild as HTMLElement).click();
-    } else {
-      console.error(
-        'Google-Button-Container oder dessen Inhalt nicht gefunden!'
-      );
-    }
   }
 
   // async signInWithGoogle() {
