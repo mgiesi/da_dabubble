@@ -3,17 +3,16 @@
     <app-workspace-menu (channelSelected)="onChannelSelected($event)"></app-workspace-menu>
   </aside>
 
-<main class="chat-main">
-  <app-chat-area 
-    *ngIf="selectedChannelId" 
-    [channelId]="selectedChannelId">
-  </app-chat-area>
-  <div *ngIf="!selectedChannelId" class="no-channel-selected">
-    Wähle einen Channel aus
-  </div>
-</main>
+  <main class="chat-main">
+    <app-chat-area *ngIf="selectedChannelId" [channelId]="selectedChannelId" (threadOpened)="onThreadOpened($event)">
+    </app-chat-area>
+    <div *ngIf="!selectedChannelId" class="no-channel-selected">
+      Wähle einen Channel aus
+    </div>
+  </main>
 
   <aside class="thread-sidebar">
-    <app-thread-panel></app-thread-panel>
+    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread">
+    </app-thread-panel>
   </aside>
 </div>

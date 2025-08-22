@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit, OnChanges } from '@angular/core';
+import { Component, Output, Input, inject, OnInit, OnChanges, EventEmitter } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor } from '@angular/common';
 import { MessageInputComponent } from '../message-input/message-input.component';
@@ -6,7 +6,8 @@ import { ChannelsFacadeService } from '../../../core/facades/channels-facade.ser
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { User } from '../../../shared/models/user';
 import { Channel } from '../../../shared/models/channel';
-
+import { MockDataService } from '../../../core/services/mock-data.service';
+import { MessageItemComponent } from '../message-item/message-item.component';
 /**
  * Main chat area component that displays channel information, messages, and input field.
  * Shows the selected channel's header with member avatars, message area, and message input.
@@ -16,15 +17,19 @@ import { Channel } from '../../../shared/models/channel';
  */
 @Component({
   selector: 'app-chat-area',
-  imports: [MatCardModule, NgFor, MessageInputComponent],
+  imports: [MatCardModule, NgFor, MessageInputComponent, MessageItemComponent],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss'
 })
 export class ChatAreaComponent implements OnInit, OnChanges {
   @Input() channelId: string | null = null;
+  @Output() threadOpened = new EventEmitter<any>();
 
   private channelsFacade = inject(ChannelsFacadeService);
   private usersFacade = inject(UsersFacadeService);
+  private mockData = inject(MockDataService);
+
+
 
   /** The currently selected channel object */
   currentChannel: Channel | null = null;
@@ -39,15 +44,9 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   showMembersList = false;
 
   /** Mock message data for testing purposes - will be replaced with real messages */
-  mockMessages = [
-    {
-      id: '1',
-      user: 'Noah Braun',
-      time: '14:25',
-      content: 'Welche Version ist aktuell von Angular?',
-      avatar: '/assets/avatars/noah.jpg'
-    }
-  ];
+  get mockMessages() {
+    return this.mockData.getMockMessages().filter(m => m.channelId === this.channelId);
+  }
 
   /**
    * Initializes the component and loads channel data if channelId is provided.
@@ -113,4 +112,17 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   get currentChatName(): string {
     return this.currentChannel?.name || 'Entwicklerteam';
   }
+
+  onReplyToMessage(message: any) {
+    console.log('Reply to:', message);
+    this.threadOpened.emit(message);
+  }
+
+
+
+
+
+
+
+
 }

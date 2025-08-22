@@ -12,9 +12,15 @@ import { NgIf } from '@angular/common';
 })
 export class MainLayoutComponent {
   selectedChannelId: string | null = null;
+  selectedThread: any = null;
+
 
   onChannelSelected(channelId: string) {
     console.log('Main layout received channel:', channelId);
     this.selectedChannelId = channelId;
+  }
+
+  onThreadOpened(message: any) {
+    this.selectedThread = message;
   }
 }

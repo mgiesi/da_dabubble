@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Input } from '@angular/core';
 
 @Component({
   selector: 'app-message-input',
@@ -9,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class MessageInputComponent {
   messageText = '';
+  @Input() placeholder: string = 'Nachricht schreiben...';
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {

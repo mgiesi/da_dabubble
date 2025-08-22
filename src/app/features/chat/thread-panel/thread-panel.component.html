@@ -1,1 +1,32 @@
-<p>thread-panel works!</p>
+<!-- thread-panel.component.html -->
+<div class="thread-panel">
+  <div class="thread-header">
+    <div class="thread-title">
+      <h3>Thread</h3>
+      <span class="channel-name"># Entwicklerteam</span>
+    </div>
+    <button class="close-btn">×</button>
+  </div>
+
+  <div class="thread-content">
+    <!-- Original Message -->
+    <div class="original-message">
+      <app-message-item [message]="message" [isThreadView]="true"></app-message-item>
+    </div>
+
+    <!-- Thread Messages -->
+    <div class="thread-messages">
+      <div class="thread-count">2 Antworten</div>
+      <app-message-item 
+        *ngFor="let threadMsg of threadMessages" 
+        [message]="threadMsg"
+        [isThreadView]="true">
+      </app-message-item>
+    </div>
+  </div>
+
+  <!-- Thread Input -->
+  <div class="thread-input">
+    <app-message-input [placeholder]="'Antworten...'"></app-message-input>
+  </div>
+</div>

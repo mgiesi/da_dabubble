@@ -1,0 +1,75 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+
+.message-wrapper {
+    @include dFlexAllCenter($ai: flex-start, $jc: flex-start, $g: 15px);
+    margin-bottom: 20px;
+
+    &.own-message {
+        @include dFlexAllCenter($ai: flex-start, $jc: flex-end, $g: 15px);
+        flex-direction: row-reverse; // Avatar rechts
+    }
+}
+
+.message-bubble {
+    max-width: 352px;
+    background-color: $bg-color;
+    border-radius: 30px 30px 30px 0;
+    padding: 15px;
+
+    .own-message & {
+        max-width: 698px;
+        background-color: $purple-2;
+        border-radius: 30px 0 30px 30px;
+    }
+}
+
+.message-header {
+    @include dFlexAllCenter($jc: space-between);
+    margin-bottom: 8px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0; // Avatar bleibt fix
+}
+
+.message-info {
+    @include dFlexAllCenter($fld: column, $ai: flex-start);
+}
+
+.username {
+    @include fontSizeWeightColor($si: 18px, $we: 700, $co: $black);
+}
+
+.timestamp {
+    @include fontSizeWeightColor($si: 14px, $we: 400, $co: $text-gray);
+}
+
+.message-content {
+    margin: 10px 0;
+    @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
+}
+
+.message-content-wrapper {
+    @include dFlexAllCenter($fld: column, $ai: flex-start);
+}
+
+.message-actions {
+    margin-top: 8px;
+    margin-left: 15px; // Gleicher Abstand wie Bubble-Padding
+}
+
+.reply-btn {
+    background: transparent;
+    border: none;
+    @include fontSizeWeightColor($si: 14px, $we: 400, $co: $purple-1);
+    cursor: pointer;
+    padding: 4px 0;
+
+    &:hover {
+        @include fontSizeWeightColor($si: 14px, $we: 700, $co: $purple-1);
+    }
+}

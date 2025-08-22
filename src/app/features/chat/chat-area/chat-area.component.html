@@ -34,10 +34,9 @@
 
   <!-- Message Area -->
   <div class="messages-container">
-    <!-- Messages werden hier angezeigt -->
-    <div class="message-item" *ngFor="let message of mockMessages">
-      <!-- Message content -->
-    </div>
+    <app-message-item *ngFor="let message of mockMessages" [message]="message"
+      (replyClicked)="onReplyToMessage($event)">
+    </app-message-item>
   </div>
 
   <!-- Message Input -->
