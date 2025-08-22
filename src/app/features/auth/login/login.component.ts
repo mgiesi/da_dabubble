@@ -4,10 +4,11 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
+import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LegalBtnsComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
