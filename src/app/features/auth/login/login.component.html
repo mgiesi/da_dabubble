@@ -8,9 +8,8 @@
     <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
 
     <form #f="ngForm">
-        <label class="label-input-field-gray-with-img " for="email">
+        <label class="label-input-field-gray-with-img" for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
-
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                 [disabled]="inProgress">
         </label>
@@ -23,25 +22,31 @@
 
         <button class="btn-forgot-password">Passwort vergessen?</button>
 
-        <div class=" vector-text-box">
+        <div class="vector-text-box">
             <img src="icons/line.svg" alt="">
             <div class="p-box">
                 <p>ODER</p>
             </div>
         </div>
 
-        <button class="btn-google" [disabled]="inProgress">
-            <img src="icons/google.svg" alt="">
+        <button class="btn-google" (click)="signInWithGoogle()">
+            <img src="icons/google.svg" alt="Google Icon">
             <p>Anmelden mit Google</p>
         </button>
 
+        <div id="g_id_onload" data-client_id="962703875124-ap0prgharathae40ggg7533t9t8nhs94.apps.googleusercontent.com"
+            data-callback="handleCredentialResponse" data-auto_prompt="false">
+        </div>
+
+        <div id="g_id_signin"></div>
+
         <div class="login-btns">
-            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">{{ inProgress ? 'Anmelden...' :
-                'Anmelden' }}</button>
+            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">
+                {{ inProgress ? 'Anmelden...' : 'Anmelden' }}
+            </button>
             <button class="btn-white" (click)="signInAsGuest()" [disabled]="inProgress">Gäste-Login</button>
         </div>
     </form>
-
-
 </div>
+
 <app-legal-btns></app-legal-btns>

@@ -1,9 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, User, authState } from '@angular/fire/auth';
-import { distinctUntilChanged, firstValueFrom, map, Observable, shareReplay, take } from 'rxjs';
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithCredential,
+  User,
+  authState,
+} from '@angular/fire/auth';
+import {
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  Observable,
+  shareReplay,
+  take,
+} from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /**
  * Authentication service wrapping Firebase Auth for Angular.
@@ -21,15 +38,13 @@ import { distinctUntilChanged, firstValueFrom, map, Observable, shareReplay, tak
  * subscription is cleaned up when not used.
  */
 export class AuthService {
-
   /** Observable of the current Firebase `User` or `null`. */
   readonly user$: Observable<User | null>;
 
   /** Observable of whether a user is currently authenticated. */
   readonly isAuthenticated$: Observable<boolean>;
 
-  /** 
-   * One-shot observable that emits the initial authentication status (`true`/`false`)
+  /** * One-shot observable that emits the initial authentication status (`true`/`false`)
    * and then completes. Useful for route guards or startup checks.
    */
   readonly isAuthenticatedOnce$: Observable<boolean>;
@@ -82,19 +97,26 @@ export class AuthService {
    * @throws Firebase auth errors (e.g., `auth/email-already-in-use`).
    */
   async signUp(email: string, password: string): Promise<User> {
-    const result = await createUserWithEmailAndPassword(this.auth, email, password);
+    const result = await createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password
+    );
     return result.user;
   }
 
   /**
-   * Signs in with a Google popup flow.
+   * Signs in with a Google ID token from the Google Identity Service API.
+   * * This method creates a Firebase credential from the Google token and signs
+   * the user in.
    *
+   * @param idToken The ID token received from the Google Identity Service.
    * @returns Promise that resolves with the authenticated `User`.
-   * @throws Firebase auth errors or popup blocker issues.
+   * @throws Firebase auth errors.
    */
-  async signInWithGoogle(): Promise<User> {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(this.auth, provider);
+  async signInWithGoogleToken(idToken: string): Promise<User> {
+    const credential = GoogleAuthProvider.credential(idToken);
+    const result = await signInWithCredential(this.auth, credential);
     return result.user;
   }
 
