@@ -9,7 +9,7 @@ import { Output } from '@angular/core';
   selector: 'app-message-item',
   imports: [NgClass, NgIf],
   template: `
-   <div class="message-wrapper" [ngClass]="{'own-message': message.isOwnMessage}">
+<div class="message-wrapper" [ngClass]="{'own-message': message.isOwnMessage}">
   <img [src]="message.avatar" [alt]="message.user" class="avatar">
   <div class="message-content-wrapper">
     <div class="message-bubble">
@@ -19,7 +19,7 @@ import { Output } from '@angular/core';
       </div>
       <p class="message-content">{{message.content}}</p>
     </div>
-    <div class="message-actions" *ngIf="!message.isOwnMessage">
+    <div class="message-actions" *ngIf="!message.isOwnMessage && !isThreadView">
       <button class="reply-btn" (click)="onReplyClick()">Antworten</button>
     </div>
   </div>

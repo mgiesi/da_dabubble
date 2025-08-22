@@ -12,11 +12,11 @@
     left: 0;
     opacity: 1;
     @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start);
-    padding: 0;
+    padding: 20px;
     box-shadow: $box-shadow;
 
     .chat-header {
-        padding: 32px 45px 20px 45px;
+        padding: 10px;
         border-bottom: 1px solid $light-purple;
         @include dFlexAllCenter($jc: space-between);
 
@@ -72,8 +72,5 @@
         @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
     }
 
-    .message-input-container {
-        padding: 20px 45px 32px 45px;
-        border-top: 1px solid $light-purple;
-    }
+
 }

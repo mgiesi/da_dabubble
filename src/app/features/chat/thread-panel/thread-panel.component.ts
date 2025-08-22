@@ -5,8 +5,6 @@ import { NgFor } from '@angular/common';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { MessageInputComponent } from '../message-input/message-input.component';
 
-
-
 @Component({
   selector: 'app-thread-panel',
   imports: [NgFor, MessageItemComponent, MessageInputComponent],
@@ -15,6 +13,7 @@ import { MessageInputComponent } from '../message-input/message-input.component'
 })
 export class ThreadPanelComponent {
   @Input() message: any = null;
+  @Input() currentChannelName: string = '';
   private mockData = inject(MockDataService);
 
   get threadMessages() {

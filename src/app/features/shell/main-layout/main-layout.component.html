@@ -12,7 +12,7 @@
   </main>
 
   <aside class="thread-sidebar">
-    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread">
+    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName">
     </app-thread-panel>
   </aside>
 </div>
