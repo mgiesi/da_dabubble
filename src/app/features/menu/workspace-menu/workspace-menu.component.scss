@@ -221,3 +221,31 @@
         }
     }
 }
+
+.add-channel-container {
+    @include dFlexAllCenter($jc: start, $g: 12px);
+    padding: 12px 16px;
+    cursor: pointer;
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+    border-radius: 25px;
+    margin-bottom: 8px;
+
+    svg {
+
+        path {
+            fill: black;
+        }
+    }
+
+    &.active svg path {
+        fill: $purple-1;
+    }
+
+    &:hover {
+        color: $purple-1;
+
+        svg path {
+            fill: $purple-1;
+        }
+    }
+}
