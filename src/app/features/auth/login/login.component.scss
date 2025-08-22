@@ -15,8 +15,15 @@
 
 .create-account-box {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 60px;
+    right: 50px;
+    @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center, $g: 10px);
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+
+    button {
+        @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+
+    }
 }
 
 .login-container {
