@@ -29,6 +29,13 @@
     @include btnGoogleStyle();
 }
 
+.btn-transparent {
+    @include buttonStyle($btn-bg-color: unset,
+        $hover-bg-color: $bg-color,
+        $text-color: $black,
+        $hover-text-color: $purple-3);
+}
+
 .btn-arrow-back {
     @include btn-back-close-style($top: clamp(10px, 3px + 2.1875vw, 45px),
         $left: 40px,

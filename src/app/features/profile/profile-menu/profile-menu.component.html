@@ -1,6 +1,6 @@
 
 <ng-container *ngIf="user() as user">
-    <div (click)="signOut()" class="profile-menu-container">
+    <button (click)="openProfileMenu()" class="profile-menu-container">
         <h1>{{ user.displayName }}</h1>
         <img src="/img/avatar/sofia-müller.png">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -12,5 +12,5 @@
             </g>
         </svg>
 
-    </div>
+    </button>
 </ng-container>

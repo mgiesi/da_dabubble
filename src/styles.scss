@@ -59,3 +59,8 @@ input {
   height: 24px;
   // Hier könntest du auch andere Stile für dein Icon definieren
 }
+
+// For Mat-Dialog
+.no-top-right-radius-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-top-right-radius: 0 !important;
+}

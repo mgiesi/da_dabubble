@@ -10,6 +10,7 @@
     right: 34px;
     z-index: 1000;
     cursor: pointer;
+    background-color: unset;
 
     &:hover h1 {
         color: $purple-1;

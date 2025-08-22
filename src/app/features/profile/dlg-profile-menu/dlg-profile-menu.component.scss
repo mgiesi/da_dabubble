@@ -1,0 +1,18 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+
+.dlg-profile-menu-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 15px);
+    background-color: white;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    padding: 30px;
+}
+
+.menu-item {
+    @include fontSizeWeightColor($si: $font-size-24, $we: 600, $co: $black);
+    width: 222px;
+    height: 53px;
+}
