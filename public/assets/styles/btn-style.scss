@@ -63,3 +63,7 @@
 .btn-person-add {
     @include btn-chat-header-style($width-container: 40px, $width-svg: 24px);
 }
+
+.btn-add-circle {
+    @include btn-chat-header-style($width-container: 40px, $width-svg: 24px);
+}

@@ -291,3 +291,31 @@
     }
   }
 }
+
+@mixin btn-add-circle-style($top: 0px, $left: 0px, $width-container: 40px, $width-svg: 24px) {
+  background-color: transparent;
+  position: absolute;
+  top: $top;
+  left: $left;
+  width: $width-container;
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  @include dFlexAllCenter();
+  transition: $transition-0-3-ease-in-out;
+
+  svg {
+    fill: $black;
+    width: $width-svg;
+    aspect-ratio: 1 / 1;
+    transition: $transition-0-3-ease-in-out;
+
+    &:hover {
+      fill: $purple-1;
+      scale: 1.05;
+    }
+  }
+
+  &:hover {
+    background-color: $bg-color;
+  }
+}
