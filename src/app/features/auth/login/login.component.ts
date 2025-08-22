@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
+import { firstValueFrom, filter } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -35,6 +36,14 @@ export class LoginComponent {
       }
 
       await this.auth.signIn(inputEmail, inputPwd);
+
+      // ✅ Warte bis Auth-State wirklich updated ist bevor Navigation
+      await firstValueFrom(
+        this.auth.isAuthenticated$.pipe(
+          filter(authenticated => authenticated === true)
+        )
+      );
+
       await this.router.navigate(['/chat']);
     } catch (e) {
       console.error("Sign-in failed ", e);

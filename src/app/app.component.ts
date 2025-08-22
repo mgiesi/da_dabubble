@@ -1,14 +1,21 @@
-import { Component } from '@angular/core';
+// Alternative ohne toSignal
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
-
+import { CommonModule } from '@angular/common';
+import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule, ProfileMenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'DABubble';
+  
+  private auth = inject(AuthService);
+  
+  // Alternative mit async pipe
+  isAuthenticated$ = this.auth.isAuthenticated$;
 }
