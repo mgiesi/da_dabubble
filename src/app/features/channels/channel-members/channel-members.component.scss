@@ -1,0 +1,40 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+
+.channel-members {
+    padding: 20px;
+    background: $white;
+    border-radius: 20px;
+    
+    h3 {
+        @include fontSizeWeightColor($si: $font-size-20, $we: 600, $co: $black);
+        margin: 0 0 16px 0;
+    }
+    
+    .members-list {
+        @include dFlexAllCenter($fld: column, $ai: stretch, $g: 12px);
+        
+        .member-item {
+            @include dFlexAllCenter($jc: start, $g: 12px);
+            padding: 12px;
+            border-radius: 12px;
+            transition: $transition-0-3-ease-in-out;
+            
+            &:hover {
+                background: $bg-color;
+            }
+            
+            .member-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid $white;
+            }
+            
+            .member-name {
+                @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+            }
+        }
+    }
+}

@@ -1,1 +1,9 @@
-<p>channel-members works!</p>
+<div class="channel-members">
+  <h3>Channel Mitglieder</h3>
+  <div class="members-list">
+    <div *ngFor="let user of channelMembers" class="member-item">
+      <img [src]="user.imgUrl" [alt]="user.displayName" class="member-avatar">
+      <span class="member-name">{{ user.displayName }}</span>
+    </div>
+  </div>
+</div>
