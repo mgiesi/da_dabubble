@@ -13,17 +13,20 @@
          background-color: $white;
          max-width: 700px;
          margin-inline: auto;
-         @include dFlexAllCenter($fld: column, $ai: center);
-         text-align: center;
+         @include dFlexAllCenter($fld: column, $ai: flex-start);
          position: relative;
          padding: 40px;
          margin-bottom: 100px;
          border-radius: 30px;
          box-shadow: $box-shadow;
+         text-align: justify;
+
 
          @media screen and (max-width: 700px) {
              width: 100%;
              border-radius: 0;
+             margin-bottom: 0;
+
          }
 
          a {
@@ -36,7 +39,9 @@
 
 
          h1 {
-             padding-top: clamp(0px, 27.6316px + -3.9474vw, 15px);
+             margin-top: 60px;
+             //  padding-top: clamp(0px, 27.6316px + -3.9474vw, 15px);
+
              @include fontSizeWeightColor($font-size-26-46, $we: 700, $co: $purple-1);
          }
 
