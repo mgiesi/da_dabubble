@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { ChannelsService } from '../repositories/channels.service';
 import { Auth } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
-
+import { MockDataService } from '../services/mock-data.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -108,7 +108,7 @@ export class ChannelsFacadeService {
 
 
 
-
+private mockData = inject(MockDataService);
 
 
 
