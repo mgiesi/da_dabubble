@@ -62,10 +62,12 @@ form {
 }
 
 .links-to-legal-box {
-    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: 20px);
-    margin-top: 30px;
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 20px);
+    margin-top: 15px;
 
-    a {
-        @include fontSizeWeightColor($si: 14px, $we: 400, $co: $text-gray);
+    div {
+        width: 137px;
+        height: 45px;
+        @include dFlexAllCenter($ai: center, $jc: center);
     }
 }
