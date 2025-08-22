@@ -1,0 +1,15 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/btn-style.scss" as *;
+
+
+.links-to-legal-box {
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 20px);
+    margin-top: 15px;
+
+    div {
+        width: 137px;
+        height: 45px;
+        @include dFlexAllCenter($ai: center, $jc: center);
+    }
+}

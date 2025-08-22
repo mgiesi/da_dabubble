@@ -30,9 +30,18 @@
     box-shadow: $box-shadow;
     overflow-y: auto;
 
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: $breakpoint-700) {
         width: 100%;
         border-radius: 0;
+    }
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+    }
+
+    p {
+        @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
+
     }
 }
 
@@ -61,13 +70,16 @@ form {
     @include dFlexAllCenter($g: 30px);
 }
 
-.links-to-legal-box {
-    @include dFlexAllCenter($ai: center, $jc: center, $g: 20px);
-    margin-top: 15px;
+.btn-forgot-password {
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $purple-2);
+    padding: 5px 15px;
+    background-color: transparent;
+    border-radius: 50px;
 
-    div {
-        width: 137px;
-        height: 45px;
-        @include dFlexAllCenter($ai: center, $jc: center);
+    &:hover {
+        @include fontSizeWeightColor($si: $font-size-18, $we: 700, $co: $purple-2);
+        background-color: $bg-color;
+
+
     }
 }
