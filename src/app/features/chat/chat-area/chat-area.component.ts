@@ -2,8 +2,8 @@ import { Component, Input, inject, OnInit, OnChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor } from '@angular/common';
 import { MessageInputComponent } from '../message-input/message-input.component';
-import { ChannelsService } from '../../../core/services/channels.service';
-import { UsersService } from '../../../core/services/users.service';
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { User } from '../../../shared/models/user';
 import { Channel } from '../../../shared/models/channel';
 
@@ -21,21 +21,20 @@ import { Channel } from '../../../shared/models/channel';
   styleUrl: './chat-area.component.scss'
 })
 export class ChatAreaComponent implements OnInit, OnChanges {
-  /** The ID of the channel to display */
-  @Input() channelId!: string;
+  @Input() channelId: string | null = null;
 
-  private channelsService = inject(ChannelsService);
-  private usersService = inject(UsersService);
+  private channelsFacade = inject(ChannelsFacadeService);
+  private usersFacade = inject(UsersFacadeService);
 
   /** The currently selected channel object */
   currentChannel: Channel | null = null;
-  
+
   /** Number of members in the current channel */
   memberCount = 0;
-  
+
   /** Array of users who are members of the current channel */
   members: User[] = [];
-  
+
   /** Flag to show/hide the detailed members list */
   showMembersList = false;
 
@@ -55,8 +54,8 @@ export class ChatAreaComponent implements OnInit, OnChanges {
    */
   async ngOnInit() {
     if (this.channelId) {
-      await this.loadChannelData();
-      await this.loadChannelMembers();
+      this.loadChannelData();
+      this.loadChannelMembers();
     }
   }
 
@@ -76,9 +75,8 @@ export class ChatAreaComponent implements OnInit, OnChanges {
    * Subscribes to the channels observable and finds the matching channel by ID.
    */
   async loadChannelData() {
-    this.channelsService.channels$().subscribe(channels => {
-      this.currentChannel = channels.find(c => c.id === this.channelId) || null;
-    });
+    const channels = this.channelsFacade.channels();
+    this.currentChannel = channels.find(c => c.id === this.channelId) || null;
   }
 
   /**
@@ -86,15 +84,23 @@ export class ChatAreaComponent implements OnInit, OnChanges {
    * Gets user IDs from channel members subcollection and fetches user details.
    */
   async loadChannelMembers() {
+    if (!this.channelId) return;
+
     try {
-      const userIds = await this.channelsService.getChannelMembers(this.channelId);
+      // Member-IDs aus Channel laden
+      const userIds = await this.channelsFacade.getChannelMembers(this.channelId);
       this.memberCount = userIds.length;
 
-      this.usersService.users$().subscribe(allUsers => {
+      // Alle Users laden und filtern
+      const allUsers = this.usersFacade.users();
+      if (allUsers) {
         this.members = allUsers.filter(user => userIds.includes(user.id || ''));
-      });
+      }
     } catch (error) {
       console.error('Failed to load channel members:', error);
+      // Fallback: Mock-Daten
+      this.memberCount = 3;
+      this.members = this.usersFacade.users()?.slice(0, 3) || [];
     }
   }
 

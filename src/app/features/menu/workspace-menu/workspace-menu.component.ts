@@ -2,7 +2,6 @@ import { Component, inject, OnInit, Output, OnDestroy, EventEmitter } from '@ang
 import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { ChannelFormComponent } from '../../channels/channel-form/channel-form.component';
-import { Subscription } from 'rxjs';
 
 /**
  * Workspace menu component that displays channels and direct messages in a sidebar.
@@ -18,48 +17,35 @@ import { Subscription } from 'rxjs';
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
 })
-export class WorkspaceMenuComponent implements OnInit, OnDestroy {
-  /** Event emitter that fires when a channel is selected */
+export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
 
   private channelsFacade = inject(ChannelsFacadeService);
-  private subscription = new Subscription();
 
   /** Name of the current workspace */
   workspaceName = 'Devspace';
-  
+
   /** Flag to control if channels section is collapsed */
   channelsClosed = false;
-  
+
   /** Flag to control if direct messages section is collapsed */
   dmClosed = false;
-  
+
   /** Flag to control if channel creation form is visible */
   showChannelForm = false;
 
-  /** Array of available channels */
-  channels: any[] = [];
-  
   /** Array of direct message conversations */
   directMessages: any[] = [];
+
+  get channels() {
+    return this.channelsFacade.channels();
+  }
 
   /**
    * Initializes the component and subscribes to channels data.
    */
   ngOnInit() {
-    this.subscription.add(
-      this.channelsFacade['data'].channels$().subscribe(channels => {
-        this.channels = channels;
-        console.log('Channels updated:', channels);
-      })
-    );
-  }
-
-  /**
-   * Cleans up subscriptions when component is destroyed.
-   */
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    console.log('Channels loaded via signal:', this.channels);
   }
 
   /**

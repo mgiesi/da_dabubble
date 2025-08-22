@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, orderBy, query, serverTimestamp, updateDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from '../../shared/models/channel';
+import { where, getDocs } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -84,4 +85,45 @@ export class ChannelsService {
     const ref = doc(this.fs, `channels/${channelId}`);
     await deleteDoc(ref);
   }
+
+
+
+  /**
+   * Gets all member user IDs for a specific channel.
+   * Queries the channel's members subcollection.
+   * 
+   * @param channelId - The ID of the channel
+   * @returns Promise that resolves to array of user IDs
+   */
+  async getChannelMembers(channelId: string): Promise<string[]> {
+    const membersRef = collection(this.fs, `channels/${channelId}/members`);
+    const docs = await getDocs(membersRef);
+    return docs.docs.map(doc => doc.data()['userId']);
+  }
+
+  /**
+   * Adds a user as member to a channel.
+   * 
+   * @param channelId - The channel ID
+   * @param userId - The user ID to add
+   * @returns Promise that resolves when member is added
+   */
+  async addMemberToChannel(channelId: string, userId: string) {
+    const memberRef = collection(this.fs, `channels/${channelId}/members`);
+    await addDoc(memberRef, {
+      userId,
+      channelId,
+      joinedAt: serverTimestamp()
+    });
+  }
+
+
+
+
+
+
+
+
 }
+
+

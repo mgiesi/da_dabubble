@@ -84,4 +84,37 @@ export class ChannelsFacadeService {
   async deleteChannel(channelId: string) {
     await this.data.deleteChannel(channelId);
   }
+
+  /**
+   * Gets member user IDs for a specific channel.
+   * 
+   * @param channelId - The channel ID to get members for
+   * @returns Promise with array of user IDs
+   */
+  async getChannelMembers(channelId: string): Promise<string[]> {
+    return await this.data.getChannelMembers(channelId);
+  }
+
+  /**
+   * Adds a user to a channel as member.
+   * 
+   * @param channelId - The channel ID
+   * @param userId - The user ID to add
+   * @returns Promise that resolves when member is added
+   */
+  async addMemberToChannel(channelId: string, userId: string) {
+    await this.data.addMemberToChannel(channelId, userId);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 }
