@@ -13,7 +13,7 @@ import { User } from '../../../shared/models/user';
  */
 @Component({
   selector: 'app-channel-members',
-  imports: [NgFor, AsyncPipe],
+  imports: [NgFor],
   templateUrl: './channel-members.component.html',
   styleUrl: './channel-members.component.scss'
 })
