@@ -55,3 +55,11 @@
 .btn-reaction {
     @include btn-reaction-style();
 }
+
+.btn-arrow-down {
+    @include btn-chat-header-style($width-container: 40px, $width-svg: 30px);
+}
+
+.btn-person-add {
+    @include btn-chat-header-style($width-container: 40px, $width-svg: 24px);
+}

@@ -261,3 +261,33 @@
     }
   }
 }
+
+@mixin btn-chat-header-style($width-container: 40px, $width-svg: 24px) {
+  background-color: transparent;
+  position: relative;
+  width: $width-container;
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  @include dFlexAllCenter();
+  transition: $transition-0-3-ease-in-out;
+
+  svg {
+    fill: $black;
+    width: $width-svg;
+    aspect-ratio: 1 / 1;
+    transition: $transition-0-3-ease-in-out;
+
+    path {
+      fill: $black;
+      transition: $transition-0-3-ease-in-out;
+    }
+  }
+
+  &:hover {
+    background-color: $bg-color;
+    
+    svg path {
+      fill: $purple-1;
+    }
+  }
+}
