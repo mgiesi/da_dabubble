@@ -9,6 +9,10 @@
         $border: $purple-1);
 }
 
+.btn-white-without-border {
+    @include buttonStyleWithoutBorder();
+}
+
 .btn-blue {
     @include buttonStyle();
 }
@@ -27,7 +31,7 @@
 
 .btn-arrow-back {
     @include btn-back-close-style($top: clamp(10px, 3px + 2.1875vw, 45px),
-        $left: clamp(10px, 3px + 2.1875vw, 45px),
+        $left: 40px,
         $width-container: 40px,
         $width-svg: 24px);
 }

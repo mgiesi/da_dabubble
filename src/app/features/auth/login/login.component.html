@@ -1,6 +1,6 @@
 <div class="create-account-box">
     <p>Neu bei DABubble?</p>
-    <a href="">Konto erstellen</a>
+    <button routerLink="/register">Konto erstellen</button>
 </div>
 
 <div class="login-container">
@@ -11,12 +11,14 @@
         <label class="label-input-field-gray-with-img " for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
 
-            <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com" [disabled]="inProgress">
+            <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
+                [disabled]="inProgress">
         </label>
 
         <label class="label-input-field-gray-with-img" for="password">
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
-            <input id="password" [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="inProgress">
+            <input id="password" [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort"
+                [disabled]="inProgress">
         </label>
 
         <p>Passwort vergessen?</p>
@@ -26,8 +28,6 @@
             <div class="p-box">
                 <p>ODER</p>
             </div>
-
-
         </div>
 
         <button class="btn-google" [disabled]="inProgress">
@@ -36,7 +36,8 @@
         </button>
 
         <div class="login-btns">
-            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">{{ inProgress ? 'Anmelden...' : 'Anmelden' }}</button>
+            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">{{ inProgress ? 'Anmelden...' :
+                'Anmelden' }}</button>
             <button class="btn-white" (click)="signInAsGuest()" [disabled]="inProgress">Gäste-Login</button>
         </div>
     </form>
@@ -44,6 +45,6 @@
 
 </div>
 <div class="links-to-legal-box">
-    <a href="">Nutzungsbedingungen</a>
-    <a href="">Datenschutzbestimmungen</a>
+    <div> <button class="btn-white-without-border" routerLink="/impressum">Impressum</button></div>
+    <div> <button class="btn-white-without-border" routerLink="/datenschutz">Datenschutz</button></div>
 </div>

@@ -47,6 +47,28 @@
   }
 }
 
+@mixin buttonStyleWithoutBorder() {
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-2);
+  transition: $transition-0-3-ease-in-out;
+
+  &:hover {
+    overflow: hidden;
+    @include fontSizeWeightColor($si: 18px, $we: 700, $co: $purple-2);
+    border: 1px solid $purple-2;
+  }
+}
+
 @mixin btnGoogleStyle() {
   background-color: $bg-color;
   border: 1px solid $bg-color;

@@ -1,15 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   auth = inject(AuthService);
@@ -22,7 +22,7 @@ export class LoginComponent {
   errMsg: string = '';
 
   async signInAsGuest() {
-    this.signIn("guest@guest.com", "secretguest");
+    this.signIn('guest@guest.com', 'secretguest');
   }
 
   async signIn(inputEmail: string = this.email, inputPwd: string = this.pwd) {
@@ -31,7 +31,7 @@ export class LoginComponent {
 
     try {
       if (!inputEmail || !inputPwd) {
-        this.errMsg = "Bitte E-Mail und Passwort eingeben."
+        this.errMsg = 'Bitte E-Mail und Passwort eingeben.';
         return;
       }
 
@@ -40,13 +40,13 @@ export class LoginComponent {
       // ✅ Warte bis Auth-State wirklich updated ist bevor Navigation
       await firstValueFrom(
         this.auth.isAuthenticated$.pipe(
-          filter(authenticated => authenticated === true)
+          filter((authenticated) => authenticated === true)
         )
       );
 
       await this.router.navigate(['/chat']);
     } catch (e) {
-      console.error("Sign-in failed ", e);
+      console.error('Sign-in failed ', e);
       this.errMsg = this.mapAuthError(e);
     } finally {
       this.inProgress = false;
