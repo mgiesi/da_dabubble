@@ -1,6 +1,7 @@
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/profile.scss" as *;
 
 .dlg-profile-details-container {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 38px);
@@ -62,16 +63,22 @@ h2 {
 }
 
 .state-icon {
-    background-color: $green;
     border-radius: 100%;
     width: 16px;
     height: 16px;
 }
 
 .state-text {
-    color: $green;
     margin-left: 15px;
     @include fontSizeWeightColor($si: 20px, $we: 400, $co: $green);
+}
+
+.state-text-online {
+    color: $green;
+}
+
+.state-text-offline {
+    color: $text-gray;
 }
 
 .profile-email {

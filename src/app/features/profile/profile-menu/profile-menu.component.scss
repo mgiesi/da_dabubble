@@ -1,6 +1,7 @@
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/profile.scss" as *;
 
 .profile-menu-container {
     height: 70px;
@@ -25,12 +26,6 @@ h1 {
     @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $black);
     margin: 0;
     transition: $transition-0-3-ease-in-out;
-}
-
-img {
-    border-radius: 100%;
-    height: 100%;
-    width: auto;
 }
 
 svg {

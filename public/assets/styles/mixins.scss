@@ -319,3 +319,11 @@
     background-color: $bg-color;
   }
 }
+
+@mixin profile-state($border-color: $white, $bg-color: $green) {
+  border-radius: 100%;
+  border: solid 2px $border-color;
+  background-color: $bg-color;
+  width: 16px;
+  height: 16px;
+}

@@ -1,0 +1,40 @@
+@use "./mixins.scss" as *;
+@use "./variables.scss" as *;
+
+.profile-state-online {
+    @include profile-state($border-color: $bg-color, $bg-color: $green);
+}
+
+.profile-state-offline {
+    @include profile-state($border-color: $bg-color, $bg-color: $text-gray);
+}
+
+.profile-state-online-white-bg {
+    @include profile-state($border-color: $white, $bg-color: $green);
+}
+
+.profile-state-offline-white-bg {
+    @include profile-state($border-color: $white, $bg-color: $text-gray);
+}
+
+.profile-avatar {
+  
+    position: relative;
+    width: 70px;
+    height: 70px;
+    
+    img {
+        border-radius: 100%;
+        width: 100%;
+        height: auto;
+    }
+
+    .profile-state-online,
+    .profile-state-online-white-bg,
+    .profile-state-offline,
+    .profile-state-offline-white-bg {
+        position: absolute;
+        right: 0;
+        bottom: 0;      
+    }
+}
