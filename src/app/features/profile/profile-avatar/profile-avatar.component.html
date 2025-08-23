@@ -1,0 +1,6 @@
+<ng-container *ngIf="user() as user">
+    <div class="profile-avatar">
+        <img src="/img/avatar/sofia-müller.png">
+        <div [ngClass]="user.status === 'online' ? 'profile-state-online' : 'profile-state-offline'"></div>
+    </div>
+</ng-container>

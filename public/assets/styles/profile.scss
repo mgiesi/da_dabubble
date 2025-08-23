@@ -17,8 +17,7 @@
     @include profile-state($border-color: $white, $bg-color: $text-gray);
 }
 
-.profile-avatar {
-  
+.profile-avatar {  
     position: relative;
     width: 70px;
     height: 70px;
