@@ -1,0 +1,98 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+
+.dlg-profile-details-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 38px);
+    background-color: white;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    padding: 45px 40px;
+    width: clamp(300px, 260px + 12.5vw, 500px);
+}
+
+h1 {
+    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
+}
+
+h2 {
+    @include fontSizeWeightColor($si: 24px, $we: 700, $co: $black);
+}
+
+.header {
+    @include dFlexAllCenter($ai: center, $jc: space-between);
+    width: 100%;
+
+    .btn-close {
+        position: unset;
+    }
+}
+
+.profile-avater {
+    height: 200px;
+    width: auto;
+    border-radius: 100%;
+}
+
+.profile-name-state-content {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: flex-start, $g: 15px);
+    width: 100%;
+}
+
+.profile-name-content {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: space-between);
+    width: 100%;
+
+    >button {
+        background: transparent;
+        border: none;
+        @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-1);
+        cursor: pointer;
+
+        &:hover {
+            @include fontSizeWeightColor($si: 18px, $we: 700, $co: $purple-1);
+        }
+    }
+}
+
+.profile-state-content {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start);
+    width: 100%;
+}
+
+.state-icon {
+    background-color: $green;
+    border-radius: 100%;
+    width: 16px;
+    height: 16px;
+}
+
+.state-text {
+    color: $green;
+    margin-left: 15px;
+    @include fontSizeWeightColor($si: 20px, $we: 400, $co: $green);
+}
+
+.profile-email {
+    @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: flex-start, $g: 15px);
+    width: 100%;
+
+    > div {
+        @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start);
+
+        > span {
+            @include fontSizeWeightColor($si: 20px, $we: 700, $co: $black);
+            margin-left: 20px;
+        }
+    }
+
+    > a {
+        margin-left: 44px;
+        @include fontSizeWeightColor($si: 18px, $we: 500, $co: $blue);
+    }
+}
+
+.btn-msg {
+    @include fontSizeWeightColor($si: 18px, $we: 700, $co: $white);
+}
