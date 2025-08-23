@@ -4,6 +4,8 @@ import { firstValueFrom, filter, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-details.component';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dlg-profile-menu',
@@ -13,10 +15,13 @@ import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-d
 })
 export class DlgProfileMenuComponent {
   auth = inject(AuthService);
+  facade = inject(UsersFacadeService);
   router = inject(Router); 
   dialog = inject(MatDialog);
   dialogRef = inject(MatDialogRef<DlgProfileMenuComponent>);
 
+  readonly currentUserSig = toSignal(this.facade.currentUser(), { initialValue: null });
+  
   /**
    * Sign out the current user and navigate back to the login page.
    */
@@ -39,8 +44,8 @@ export class DlgProfileMenuComponent {
         top: "120px",
         right: "16px"
       },
-      panelClass: 'no-top-right-radius-dialog',
-      autoFocus: false
+      panelClass: 'no-top-right-radius-dialog',      
+      data: this.currentUserSig
     });
   }
 }
