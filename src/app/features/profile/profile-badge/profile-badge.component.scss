@@ -1,0 +1,13 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/profile.scss" as *;
+
+.profile-badge-content {
+    @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 15px);
+}
+
+.profile-avatar {    
+    width: 50px;
+    height: 50px;
+}

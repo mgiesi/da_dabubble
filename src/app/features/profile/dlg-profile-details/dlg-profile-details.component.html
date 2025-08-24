@@ -20,7 +20,7 @@
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>
-                <button *ngIf="isSelf()">Bearbeiten</button>
+                <button *ngIf="isSelf">Bearbeiten</button>
             </div>
             <div class="profile-state-content">
                 <div [ngClass]="u.status === 'online' ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
@@ -44,7 +44,7 @@
             </div>
             <a class="link" href="mailto:{{u.email}}">{{ u.email }}</a>
         </div>
-        <button *ngIf="!isSelf()" class="btn-blue-with-img btn-msg">
+        <button *ngIf="!isSelf" class="btn-blue-with-img btn-msg">
             <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <mask id="mask0_813_12194" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
                     height="25">

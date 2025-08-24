@@ -1,0 +1,6 @@
+<ng-container *ngIf="user() as user">
+    <div class="profile-badge-content">
+        <app-profile-avatar [user]="user" [imgSize]="50"></app-profile-avatar>
+        {{ user.displayName }} <span *ngIf="isSelf()">(Du)</span>
+    </div>
+</ng-container>

@@ -14,17 +14,11 @@ import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 })
 export class DlgProfileDetailsComponent {
   dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
+  facade = inject(UsersFacadeService);
 
   readonly user = inject<Signal<User | null>>(MAT_DIALOG_DATA);
 
-  private readonly facade = inject(UsersFacadeService);
-  private readonly me = toSignal(this.facade.currentUser(), { initialValue: null });
-
-  readonly isSelf = computed(() => {
-    const u = this.user();
-    const m = this.me();
-    return !!u && !!m && u.id === m.id;
-  });
+  readonly isSelf = this.facade.isCurrentUser(this.user);
 
   closeDialog() {
     this.dialogRef.close(false);

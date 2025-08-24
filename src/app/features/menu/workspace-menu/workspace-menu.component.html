@@ -75,11 +75,7 @@
       </span>
     </div>
     <div class="dm-content" [class.collapsed]="dmClosed">
-      <div class="dm-item" *ngFor="let dm of directMessages">
-        <div class="user-avatar"></div>
-        <span>{{ dm.name }}</span>
-        <div class="status-dot" [class]="dm.status"></div>
-      </div>
+        <app-profile-badge class="dm-item" *ngFor="let user of users(); trackBy: trackById" [user]="user"></app-profile-badge>
     </div>
   </section>
 </div>

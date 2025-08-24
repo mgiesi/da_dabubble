@@ -2,6 +2,9 @@ import { Component, inject, OnInit, Output, OnDestroy, EventEmitter } from '@ang
 import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { ChannelFormComponent } from '../../channels/channel-form/channel-form.component';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
+import { User } from '../../../shared/models/user';
 
 /**
  * Workspace menu component that displays channels and direct messages in a sidebar.
@@ -13,7 +16,7 @@ import { ChannelFormComponent } from '../../channels/channel-form/channel-form.c
  */
 @Component({
   selector: 'app-workspace-menu',
-  imports: [NgFor, ChannelFormComponent],
+  imports: [NgFor, ChannelFormComponent, ProfileBadgeComponent],
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
 })
@@ -21,6 +24,7 @@ export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
 
   private channelsFacade = inject(ChannelsFacadeService);
+  private usersFacade = inject(UsersFacadeService);
 
   /** Name of the current workspace */
   workspaceName = 'Devspace';
@@ -34,9 +38,10 @@ export class WorkspaceMenuComponent implements OnInit {
   /** Flag to control if channel creation form is visible */
   showChannelForm = false;
 
-  /** Array of direct message conversations */
-  directMessages: any[] = [];
-
+  /** List of all available users */
+  readonly users = this.usersFacade.users;
+  trackById = (_: number, u: User) => u.id;
+  
   get channels() {
     return this.channelsFacade.channels();
   }

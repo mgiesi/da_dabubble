@@ -26,6 +26,9 @@ export class UsersFacadeService {
   /** Converts the shared users$ observable into an Angular Signal. */
   readonly users = toSignal<User[]>(this.users$, { initialValue: [] as any });
  
+  private readonly currentUser$ = this.currentUser();
+  readonly currentUserSig = toSignal<User | null>(this.currentUser$, { initialValue: null });
+  
   /**
    * Returns the currently authenticated user as an observable of user.
    * This stream updates automatically when authentication state changes.
@@ -67,5 +70,40 @@ export class UsersFacadeService {
    */
   async updateImgUrl(userId: string, imgUrl: string) {
     await this.data.updateImgUrl(userId, imgUrl);
+  }
+
+  /**
+   * Returns a reactive, read-only computed signal indicating whether the
+   * provided `user()` is the same as the current user.
+   *
+   * The computation tracks both the supplied `user()` accessor and
+   * `this.currentUserSig()`, and re-evaluates automatically when either changes.
+   *
+   * @param user - A function that returns a `User` (or `null`/`undefined`) when called.
+   * @returns A computed read-only signal (accessor) that yields `true` if both users exist
+   *          and their `id` fields match; otherwise `false`.
+   */
+  isCurrentUser(user: () => User | null | undefined) {
+    return computed(() => {
+      const u = user();
+      const me = this.currentUserSig();
+      return !!u && !!me && u.id === me.id;
+    });
+  }
+
+  /**
+   * Performs a one-off, non-reactive check to determine whether the given
+   * `user` is the current user.
+   *
+   * Unlike {@link isCurrentUser}, this method returns a plain boolean and does not
+   * subscribe to changes of the current user or the argument.
+   *
+   * @param user - A `User` instance (or `null`/`undefined`) to compare.
+   * @returns `true` if both `user` and the current user exist and their `id` fields match;
+   *          otherwise `false`.
+   */
+  isCurrentUserValue(user: User | null | undefined): boolean {
+    const me = this.currentUserSig();
+    return !!user && !!me && user.id === me.id;
   }
 }
