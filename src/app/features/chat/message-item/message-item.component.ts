@@ -1,13 +1,13 @@
-import { Component, EventEmitter, computed, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, computed, inject, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Input, Output } from '@angular/core';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { ProfileAvatarComponent } from '../../profile/profile-avatar/profile-avatar.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
-import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'app-message-item',
-  imports: [NgClass, NgIf, NgFor, ProfileAvatarComponent, EmojiPickerComponent],
+  imports: [NgClass, NgIf, NgFor, ProfileAvatarComponent, PickerComponent],
   templateUrl: './message-item.component.html',
   styleUrl: './message-item.component.scss'
 })
@@ -19,7 +19,7 @@ export class MessageItemComponent {
 
   private usersFacade = inject(UsersFacadeService);
 
-  showEmojiPicker = false;
+  viewEmojiPicker = false;
   selectedEmoji: string | null = null;
 
   messageUser = computed(() => {
@@ -55,22 +55,24 @@ export class MessageItemComponent {
     console.log('Reaction added:', emoji, 'to message:', this.message.id);
   }
 
+  showEmojiPicker(event: MouseEvent) {
+    event.stopPropagation();
+    this.viewEmojiPicker = !this.viewEmojiPicker;
+  }
+
+  addEmoji(event: any) {
+    const emoji = event.emoji.native;
+    this.selectedEmoji = emoji;  // Unicode Emoji direkt speichern
+    this.viewEmojiPicker = false;
+    console.log('Emoji selected:', emoji);
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeEmojiPicker(event: Event) {
+    this.viewEmojiPicker = false;
+  }
+
   trackByReaction(index: number, reaction: any): string {
     return `${reaction.emoji}-${reaction.count}`;
-  }
-
-  toggleEmojiPicker(event: MouseEvent) {
-    event.stopPropagation();
-    console.log('BEFORE toggle - showEmojiPicker:', this.showEmojiPicker);
-    this.showEmojiPicker = !this.showEmojiPicker;
-    console.log('AFTER toggle - showEmojiPicker:', this.showEmojiPicker);
-    this.cdr.detectChanges();
-    console.log('AFTER detectChanges - showEmojiPicker:', this.showEmojiPicker);
-  }
-
-  selectEmoji(emoji: string) {
-    this.selectedEmoji = emoji;
-    this.showEmojiPicker = false; // Schließt nach Auswahl
-    this.cdr.detectChanges();
   }
 }
