@@ -20,6 +20,10 @@
     @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center, $g: 10px);
     @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
 
+    p {
+        padding-right: 15px;
+    }
+
     button {
         @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
 
