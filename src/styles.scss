@@ -7,9 +7,9 @@
 
 
 
-html {
-  scrollbar-gutter: stable;
-}
+// html {
+//   scrollbar-gutter: stable;
+// }
 
 body {
   width: 100%;
@@ -31,6 +31,13 @@ body {
   left: 25px;
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $rosa);
   transition: $transition-0-3-ease-in-out;
+}
+
+.logo-text-box {
+  position: absolute;
+  top: 55px;
+  left: 55px;
+  @include dFlexAllCenter($g: 16px);
 }
 
 body.no-scroll {

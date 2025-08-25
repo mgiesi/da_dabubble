@@ -13,10 +13,40 @@
     max-width: $max-content-width-1920;
 }
 
+.animation-overlay {
+    background: $bg-animation-logo;
+    z-index: 11;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100dvh;
+    width: 100%;
+    @include dFlexAllCenter($ai: center, $jc: center);
+
+    .animation-overlay-content {
+        @include dFlexAllCenter($ai: center, $jc: center);
+        width: 187px;
+        height: 184px;
+
+
+        img {
+            width: 100%;
+        }
+
+        // p {
+        //     @include fontSizeWeightColor($si: $font-size-20, $we: 700, $co: $purple-1);
+        //     animation: pulse 2s infinite;
+        // }
+    }
+}
+
+
+
 .create-account-box {
     position: absolute;
-    top: 60px;
-    right: 50px;
+    top: 55px;
+    right: 55px;
     @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center, $g: 10px);
     @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
 
