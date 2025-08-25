@@ -1,75 +1,248 @@
-@use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 .message-wrapper {
-    @include dFlexAllCenter($ai: flex-start, $jc: flex-start, $g: 15px);
-    margin-bottom: 20px;
+  @include dFlexAllCenter($ai: flex-start, $jc: flex-start, $g: 12px);
+  padding: 8px 16px;
+  transition: $transition-0-3-ease-in-out;
+  position: relative;
+  margin: 0 -45px;
 
-    &.own-message {
-        @include dFlexAllCenter($ai: flex-start, $jc: flex-end, $g: 15px);
-        flex-direction: row-reverse; // Avatar rechts
+  // Hover Effekte
+  &:hover {
+    background-color: $bg-color; // Ganze Zeile wird grau
+
+    .message-body {
+      background-color: $white; // Sprechblase wird weiß
     }
-}
 
-.message-bubble {
-    max-width: 352px;
-    background-color: $bg-color;
-    border-radius: 30px 30px 30px 0;
-    padding: 15px;
-
-    .own-message & {
-        max-width: 698px;
-        background-color: $purple-2;
-        border-radius: 30px 0 30px 30px;
+    .message-hover-actions {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
+  }
+
+  &.own-message {
+    flex-direction: row-reverse;
+
+    .message-header {
+      justify-content: flex-end;
+    }
+
+    .message-hover-actions {
+      left: 0; // statt rechts
+      right: auto; // Rechtsecke aufheben
+      transform: translateY(5px); // gleiche Y-Position wie default
+    }
+
+    .message-content {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .message-body {
+      background-color: $purple-2;
+      color: $white;
+      border-radius: 20px 0 20px 20px;
+      margin-left: auto;
+    }
+
+  }
 }
 
-.message-header {
-    @include dFlexAllCenter($jc: space-between);
-    margin-bottom: 8px;
-}
+.message-left {
+  flex-shrink: 0;
 
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    flex-shrink: 0; // Avatar bleibt fix
-}
-
-.message-info {
-    @include dFlexAllCenter($fld: column, $ai: flex-start);
-}
-
-.username {
-    @include fontSizeWeightColor($si: 18px, $we: 700, $co: $black);
-}
-
-.timestamp {
-    @include fontSizeWeightColor($si: 14px, $we: 400, $co: $text-gray);
+  app-profile-avatar {
+    display: block;
+  }
 }
 
 .message-content {
-    margin: 10px 0;
-    @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
+  flex: 1;
+  min-width: 0;
+  position: relative;
 }
 
-.message-content-wrapper {
-    @include dFlexAllCenter($fld: column, $ai: flex-start);
+.message-header {
+  @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 8px);
+  margin-bottom: 4px;
 }
 
-.message-actions {
-    margin-top: 8px;
-    margin-left: 15px; // Gleicher Abstand wie Bubble-Padding
+.username {
+  @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $black);
 }
 
-.reply-btn {
-    background: transparent;
-    border: none;
-    @include fontSizeWeightColor($si: 14px, $we: 400, $co: $purple-1);
-    cursor: pointer;
-    padding: 4px 0;
+.timestamp {
+  @include fontSizeWeightColor($si: 12px, $we: 400, $co: $text-gray);
+}
 
-    &:hover {
-        @include fontSizeWeightColor($si: 14px, $we: 700, $co: $purple-1);
+.message-body {
+  background-color: $bg-color;
+  padding: 15px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  max-width: 70%;
+  word-wrap: break-word;
+  transition: $transition-0-3-ease-in-out; // Smooth transition für BG-Change
+  position: relative;
+}
+
+.message-text {
+  margin: 0;
+  line-height: 1.4;
+  @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+}
+
+.message-hover-actions {
+  position: absolute;
+  top: -16px;
+  right: 0;
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  background-color: $white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  padding: 8px 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(5px);
+  transition: all 0.15s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.quick-reaction-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: $transition-0-3-ease-in-out;
+  line-height: 1;
+  @include dFlexAllCenter($ai: center, $jc: center);
+
+  &:hover {
+    background-color: $bg-color;
+    transform: scale(1.15);
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+}
+
+.hover-action-btn {
+  @include dFlexAllCenter($ai: center, $jc: center);
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: $transition-0-3-ease-in-out;
+
+  &:hover {
+    background-color: $bg-color;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    color: $text-gray;
+  }
+}
+
+.thread-link {
+  margin-top: 4px;
+}
+
+.thread-replies-text {
+  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $purple-1);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.message-reactions {
+  @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 4px);
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.selected-emoji-display {
+  @include dFlexAllCenter($ai: center, $jc: flex-end, $g: 4px);
+  margin-top: 8px;
+
+  &.own-message-emoji {
+    @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 4px);
+  }
+}
+
+.selected-emoji-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  padding: 4px 8px;
+  background-color: rgba(29, 28, 29, 0.04);
+  border: 1px solid rgba(29, 28, 29, 0.13);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: $transition-0-3-ease-in-out;
+
+  &:hover {
+    background-color: rgba(29, 28, 29, 0.08);
+  }
+}
+
+.reaction-item {
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  padding: 2px 8px;
+  background-color: rgba(29, 28, 29, 0.04);
+  border: 1px solid rgba(29, 28, 29, 0.13);
+  border-radius: 16px;
+  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $black);
+  cursor: pointer;
+  transition: $transition-0-3-ease-in-out;
+
+  &:hover {
+    background-color: rgba(29, 28, 29, 0.08);
+  }
+}
+
+.message-wrapper.thread-view {
+  .message-body {
+    max-width: 85%;
+  }
+
+  .message-hover-actions {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .message-wrapper {
+    padding: 8px 20px;
+    margin: 0 -12px;
+    gap: 8px;
+  }
+
+  .message-body {
+    max-width: 85%;
+    padding: 10px 12px;
+  }
+
+  .action-btn {
+    padding: 4px 8px;
+
+    .action-label {
+      display: none;
     }
+  }
 }
