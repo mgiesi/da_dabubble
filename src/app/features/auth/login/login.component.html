@@ -10,6 +10,8 @@
 </div>
 
 <div class="login-container">
+    <mat-progress-bar class="progress-bar" *ngIf="inProgress" mode="indeterminate"></mat-progress-bar>
+
     <h1>Anmeldung</h1>
     <p class="description-login">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
 
@@ -17,7 +19,7 @@
         <label class="label-input-field-gray-with-img" for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
-                [disabled]="inProgress" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required
+                [disabled]="googleLoginInProgress" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required
                 #emailField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
 
             @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
@@ -37,7 +39,7 @@
         <label class="label-input-field-gray-with-img" for="password">
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
             <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
-                [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="inProgress"
+                [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="googleLoginInProgress"
                 minlength="8" required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
             @if (pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !==
             '') {
@@ -68,12 +70,12 @@
         </div>
 
         <div class="google-btn-box">
-            <button (click)="triggerGoogleSignIn()" class="btn-google" [disabled]="inProgress">
-                <img src="icons/google.svg" alt="Google icon" [class.spin]="inProgress">
-                @if (!inProgress) {
+            <button (click)="triggerGoogleSignIn()" class="btn-google" [disabled]="googleLoginInProgress">
+                <img src="icons/google.svg" alt="Google icon" [class.spin]="googleLoginInProgress">
+                @if (!googleLoginInProgress) {
                 <span>Anmelden mit Google</span>
                 }
-                @if (inProgress) {
+                @if (googleLoginInProgress) {
                 <span>Bitte warten...</span>
                 }
 
@@ -84,10 +86,11 @@
         </div>
 
         <div class="login-btns">
-            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">
+            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress || googleLoginInProgress">
                 {{ inProgress ? 'Anmelden...' : 'Anmelden' }}
             </button>
-            <button class="btn-white" (click)="signInAsGuest()" [disabled]="inProgress">Gäste-Login</button>
+            <button class="btn-white" (click)="signInAsGuest()"
+                [disabled]="inProgress || googleLoginInProgress">Gäste-Login</button>
         </div>
 
     </form>

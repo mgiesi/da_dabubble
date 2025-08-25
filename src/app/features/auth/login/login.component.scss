@@ -35,7 +35,8 @@
     padding: 60px;
     border-radius: 30px;
     box-shadow: $box-shadow;
-    overflow-y: auto;
+    position: relative;
+
 
     @media screen and (max-width: $breakpoint-700) {
         width: 100%;
@@ -46,6 +47,12 @@
         @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
     }
 
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    width: 90%;
 }
 
 form {

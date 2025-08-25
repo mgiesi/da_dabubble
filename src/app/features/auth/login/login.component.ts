@@ -7,11 +7,18 @@ import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
 import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, LegalBtnsComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    LegalBtnsComponent,
+    MatProgressBarModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -23,6 +30,7 @@ export class LoginComponent implements OnInit {
   email: string = '';
   pwd: string = '';
 
+  googleLoginInProgress = false;
   inProgress = false;
   errMsg: string = '';
 
@@ -64,9 +72,9 @@ export class LoginComponent implements OnInit {
    * Google Sign-In mit Fallback
    */
   async triggerGoogleSignIn() {
-    if (this.inProgress) return; // Doppelklick-Schutz
+    if (this.googleLoginInProgress) return; // Doppelklick-Schutz
     this.errMsg = '';
-    this.inProgress = true;
+    this.googleLoginInProgress = true;
 
     try {
       // Zuerst Popup versuchen
@@ -93,7 +101,7 @@ export class LoginComponent implements OnInit {
         error.code === 'auth/popup-closed-by-user' ||
         error.message?.includes('abgebrochen')
       ) {
-        this.inProgress = false; // Ladezustand sofort beenden
+        this.googleLoginInProgress = false; // Ladezustand sofort beenden
         this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
         setTimeout(() => {
           this.errMsg = '';
@@ -138,7 +146,7 @@ export class LoginComponent implements OnInit {
     } finally {
       // In diesem Fall, wenn der Fehler nicht "popup-closed-by-user" ist,
       // stellen wir sicher, dass inProgress zurückgesetzt wird.
-      if (this.inProgress) this.inProgress = false;
+      if (this.googleLoginInProgress) this.googleLoginInProgress = false;
     }
   }
 
