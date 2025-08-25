@@ -1,4 +1,4 @@
-import { Component, EventEmitter, computed, inject, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, EventEmitter, computed, inject, ChangeDetectorRef, HostListener, OnInit } from '@angular/core';
 import { Input, Output } from '@angular/core';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { ProfileAvatarComponent } from '../../profile/profile-avatar/profile-avatar.component';
@@ -11,13 +11,15 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
   templateUrl: './message-item.component.html',
   styleUrl: './message-item.component.scss'
 })
-export class MessageItemComponent {
-  private cdr = inject(ChangeDetectorRef);
+export class MessageItemComponent implements OnInit {
+
   @Input() isThreadView: boolean = false;
   @Input() message!: any;
   @Output() replyClicked = new EventEmitter<any>();
 
   private usersFacade = inject(UsersFacadeService);
+  private emojiUsageCount: { [emoji: string]: number } = {};
+  private cdr = inject(ChangeDetectorRef);
 
   viewEmojiPicker = false;
   selectedEmoji: string | null = null;
@@ -33,6 +35,10 @@ export class MessageItemComponent {
     ) || null;
   });
 
+  ngOnInit() {
+    this.loadEmojiUsage();
+  }
+
   onReplyClick() {
     this.replyClicked.emit(this.message);
   }
@@ -46,11 +52,6 @@ export class MessageItemComponent {
     return count === 1 ? '1 Antwort' : `${count} Antworten`;
   }
 
-  getTopEmoji(index: number): string {
-    const topEmojis = ['flexed_biceps', 'grinning_face_with_big_eyes'];
-    return topEmojis[index] || '';
-  }
-
   addReaction(emoji: string) {
     console.log('Reaction added:', emoji, 'to message:', this.message.id);
   }
@@ -62,9 +63,28 @@ export class MessageItemComponent {
 
   addEmoji(event: any) {
     const emoji = event.emoji.native;
-    this.selectedEmoji = emoji;  // Unicode Emoji direkt speichern
-    this.viewEmojiPicker = false;
+    this.selectedEmoji = emoji;
+
+    this.emojiUsageCount[emoji] = (this.emojiUsageCount[emoji] || 0) + 1;
+    this.saveEmojiUsage();
     console.log('Emoji selected:', emoji);
+  }
+
+  private saveEmojiUsage() {
+    localStorage.setItem('emojiUsage', JSON.stringify(this.emojiUsageCount));
+  }
+
+  private loadEmojiUsage() {
+    const stored = localStorage.getItem('emojiUsage');
+    this.emojiUsageCount = stored ? JSON.parse(stored) : {};
+  }
+
+  getTopEmoji(index: number): string {
+    const sortedEmojis = Object.entries(this.emojiUsageCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(([emoji]) => emoji);
+
+    return sortedEmojis[index] || '';
   }
 
   @HostListener('document:click', ['$event'])
