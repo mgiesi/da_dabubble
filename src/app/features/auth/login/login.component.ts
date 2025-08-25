@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   pwd: string = '';
 
   googleLoginInProgress = false;
-  showAnimation = true;
+  showAnimation = false;
   inProgress = false;
   errMsg: string = '';
 
