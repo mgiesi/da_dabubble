@@ -6,7 +6,7 @@
     height: 940px;
     background: $white;
     color: $black;
-    border-radius: 30px;
+    border-radius: 20px;
     padding: 32px 30px;
     @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 25px);
     position: relative;
