@@ -1,10 +1,11 @@
 import { Component, computed, Inject, inject, Input, Signal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../shared/models/user';
 import { NgIf } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.component';
 
 @Component({
   selector: 'app-dlg-profile-details',
@@ -15,6 +16,7 @@ import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 export class DlgProfileDetailsComponent {
   dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
   facade = inject(UsersFacadeService);
+  dialog = inject(MatDialog);
 
   readonly user = inject<Signal<User | null>>(MAT_DIALOG_DATA);
 
@@ -22,5 +24,20 @@ export class DlgProfileDetailsComponent {
 
   closeDialog() {
     this.dialogRef.close(false);
+  }
+  
+
+  /**
+   * Opens the profile menu overlay.
+   */
+  editProfile() {
+    this.dialog.open(DlgProfileEditComponent, {
+      position: {
+        top: "120px",
+        right: "16px"
+      },
+      panelClass: 'no-top-right-radius-dialog',      
+      data: this.user
+    });
   }
 }

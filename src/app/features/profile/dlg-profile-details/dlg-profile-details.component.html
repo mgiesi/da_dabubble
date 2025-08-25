@@ -16,11 +16,11 @@
                 </svg>
             </button>
         </div>
-        <img class="profile-avater" src="/img/avatar/sofia-müller.png">
+        <img class="profile-avater" src="/img/avatar/{{ u.imgUrl }}">
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>
-                <button *ngIf="isSelf()">Bearbeiten</button>
+                <button (click)="editProfile()" *ngIf="isSelf()">Bearbeiten</button>
             </div>
             <div class="profile-state-content">
                 <div [ngClass]="u.status === 'online' ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
