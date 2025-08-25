@@ -1,3 +1,9 @@
+<div class="animation-overlay">
+    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
+    <p></p>
+</div>
+
+
 <div class="create-account-box">
     <p>Neu bei DABubble?</p>
     <button class="btn-white-without-border" routerLink="/register">Konto erstellen</button>
@@ -30,8 +36,14 @@
         </div>
 
 
-        <!-- Google Sign-In Button -->
-        <div id="g_id_signin"></div>
+
+        <!-- Google Sign-In Button nach Vorlage -->
+        <div class="jobluu-social-login">
+            <button (click)="triggerGoogleSignIn()" class="jobluu-button jobluu-button-google">
+                <img src="icons/google.svg" alt="Google icon">
+                <span>Continue with Google</span>
+            </button>
+        </div>
 
         <div class="login-btns">
             <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">

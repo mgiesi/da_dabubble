@@ -6,8 +6,6 @@ import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
 import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 
-declare const google: any;
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -29,86 +27,76 @@ export class LoginComponent implements OnInit {
     this.signIn('guest@guest.com', 'secretguest');
   }
 
-  ngOnInit(): void {
-    // Initialisiere die Google-Anmeldung
-    this.initializeGoogleLogin();
-  }
+  async ngOnInit(): Promise<void> {
+    // Redirect-Ergebnis verarbeiten (falls von Google zurückgekehrt)
+    try {
+      const { getRedirectResult } = await import('firebase/auth');
+      const result = await getRedirectResult(this.auth.firebaseAuth);
 
-  /**
-   * Initialisiert und rendert den Google-Button.
-   * Der gerenderte Button ist unsichtbar, damit wir ihn anklicken können.
-   */
-  initializeGoogleLogin() {
-    setTimeout(() => {
-      if (
-        typeof google !== 'undefined' &&
-        google.accounts &&
-        google.accounts.id
-      ) {
-        google.accounts.id.initialize({
-          client_id:
-            '962703875124-ap0prgharathae40ggg7533t9t8nhs94.apps.googleusercontent.com',
-          callback: this.handleCredentialResponse.bind(this),
-          ux_mode: 'popup',
-        });
-
-        google.accounts.id.renderButton(
-          document.getElementById('g_id_signin'),
-          {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            shape: 'pill',
-            logo_alignment: 'left',
-            width: '100%',
-            height: 60,
-          }
-        );
-        // Styling nachträglich per JS setzen, da Google Inline-Styles überschreibt
-        setTimeout(() => {
-          const googleBtn = document.querySelector('#g_id_signin > div');
-          if (googleBtn) {
-            googleBtn.setAttribute(
-              'style',
-              `
-              width: 100% !important;
-              height: 60px !important;
-            `
-            );
-          }
-        }, 100);
-      } else {
-        console.error(
-          'Google Identity Service Skript nicht geladen oder verfügbar!'
-        );
+      if (result) {
+        console.log('Google Redirect erfolgreich:', result.user.email);
+        await this.router.navigate(['/chat']);
       }
-    }, 0);
+    } catch (error: any) {
+      // Nur loggen, wenn es ein anderer Fehler als 'auth/argument-error' ist
+      if (error.code && error.code !== 'auth/argument-error') {
+        console.error('Redirect-Ergebnis Fehler:', error);
+      }
+      // Sonst ignoriere den Fehler still
+    }
   }
 
-  // async signInWithGoogle() {
-  //   const googleBtn = document.getElementById('g_id_signin');
-  //   if (googleBtn) {
-  //     (googleBtn.firstChild as HTMLElement)?.click();
-  //   } else {
-  //     console.error('Google-Button-Container nicht gefunden!');
-  //   }
-  // }
-
   /**
-   * Verarbeitet die Google-Token-Antwort nach erfolgreicher Anmeldung.
+   * Google Sign-In mit Fallback
    */
-  async handleCredentialResponse(response: any) {
-    console.log('Token: ' + response.credential);
-
+  async triggerGoogleSignIn() {
+    this.errMsg = '';
     this.inProgress = true;
 
     try {
-      await this.auth.signInWithGoogleToken(response.credential);
-      this.router.navigate(['/chat']);
-    } catch (e) {
-      console.error('Google Sign-in failed', e);
-      this.errMsg = this.mapAuthError(e);
+      // Zuerst Popup versuchen
+      await this.auth.signInWithGoogleOAuth();
+      await this.router.navigate(['/chat']);
+    } catch (error: any) {
+      console.error('Google Popup Error:', error);
+
+      // Spezielle Behandlung für Popup-Probleme
+      if (
+        error.message?.includes('Popup wurde blockiert') ||
+        error.code === 'auth/popup-blocked'
+      ) {
+        // Fallback zu Redirect
+        try {
+          console.log('Fallback zu Redirect-Methode...');
+          await this.auth.signInWithGoogleRedirect();
+          // Nach Redirect wird die App neu geladen, daher kein Navigation nötig
+        } catch (redirectError: any) {
+          console.error('Google Redirect Error:', redirectError);
+          this.errMsg =
+            'Google Sign-In nicht verfügbar. Bitte Popup-Blocker deaktivieren.';
+        }
+      } else if (
+        error.message?.includes('abgebrochen') ||
+        error.code === 'auth/popup-closed-by-user'
+      ) {
+        this.errMsg = 'Anmeldung wurde abgebrochen.';
+      } else if (
+        error.message?.includes('Mehrere Popup-Anfragen') ||
+        error.code === 'auth/cancelled-popup-request'
+      ) {
+        this.errMsg =
+          'Mehrere Popup-Anfragen. Bitte warten Sie kurz und versuchen Sie es erneut.';
+      } else if (
+        error.code === 'auth/operation-not-supported-in-this-environment'
+      ) {
+        this.errMsg =
+          'Google Sign-In wird in dieser Umgebung nicht unterstützt.';
+      } else if (error.code === 'auth/argument-error') {
+        this.errMsg =
+          'Firebase Konfigurationsfehler. Bitte Administrator kontaktieren.';
+      } else {
+        this.errMsg = this.mapAuthError(error);
+      }
     } finally {
       this.inProgress = false;
     }
@@ -154,6 +142,14 @@ export class LoginComponent implements OnInit {
           return 'Zu viele Versuche. Bitte später erneut versuchen.';
         case 'auth/network-request-failed':
           return 'Netzwerkfehler. Bitte Verbindung prüfen.';
+        case 'auth/popup-closed-by-user':
+          return 'Anmeldung wurde abgebrochen.';
+        case 'auth/popup-blocked':
+          return 'Popup wurde blockiert. Bitte Popup-Blocker deaktivieren.';
+        case 'auth/cancelled-popup-request':
+          return 'Mehrere Popup-Anfragen. Bitte warten Sie kurz.';
+        case 'auth/argument-error':
+          return 'Konfigurationsfehler. Bitte Administrator kontaktieren.';
         default:
           return fallback;
       }
