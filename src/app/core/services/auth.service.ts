@@ -56,9 +56,7 @@ export class AuthService {
       console.log('Google Sign-in erfolgreich:', result.user.email);
       return result;
     } catch (error: any) {
-      console.error('Google OAuth Sign-In Error:', error);
-
-      // Detailierte Fehlerbehandlung
+      // Kein Logging für Popup geschlossen
       if (error.code === 'auth/popup-blocked') {
         throw new Error(
           'Popup wurde blockiert. Bitte Popup-Blocker deaktivieren.'
@@ -79,6 +77,8 @@ export class AuthService {
         );
       }
 
+      // Nur für andere Fehler loggen
+      console.error('Google OAuth Sign-In Error:', error);
       throw error;
     }
   }

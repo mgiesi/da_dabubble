@@ -83,9 +83,25 @@ export class LoginComponent implements OnInit {
             user.photoURL ?? ''
           );
         }
+        await this.router.navigate(['/chat']);
       }
-      await this.router.navigate(['/chat']);
     } catch (error: any) {
+      // Hier die Anpassung für das sofortige Beenden des Ladevorgangs.
+      // Wenn das Popup vom Nutzer geschlossen wird, setzen wir den Ladezustand
+      // sofort zurück und beenden die Funktion.
+      if (
+        error.code === 'auth/popup-closed-by-user' ||
+        error.message?.includes('abgebrochen')
+      ) {
+        this.inProgress = false; // Ladezustand sofort beenden
+        this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
+        setTimeout(() => {
+          this.errMsg = '';
+        }, 3000);
+        return; // Frühzeitiges Beenden, um unnötige Verarbeitung zu vermeiden
+      }
+
+      // Nur für andere Fehler loggen
       console.error('Google Popup Error:', error);
 
       // Spezielle Behandlung für Popup-Probleme
@@ -104,11 +120,6 @@ export class LoginComponent implements OnInit {
             'Google Sign-In nicht verfügbar. Bitte Popup-Blocker deaktivieren.';
         }
       } else if (
-        error.message?.includes('abgebrochen') ||
-        error.code === 'auth/popup-closed-by-user'
-      ) {
-        this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
-      } else if (
         error.message?.includes('Mehrere Popup-Anfragen') ||
         error.code === 'auth/cancelled-popup-request'
       ) {
@@ -125,7 +136,9 @@ export class LoginComponent implements OnInit {
         this.errMsg = this.mapAuthError(error);
       }
     } finally {
-      this.inProgress = false;
+      // In diesem Fall, wenn der Fehler nicht "popup-closed-by-user" ist,
+      // stellen wir sicher, dass inProgress zurückgesetzt wird.
+      if (this.inProgress) this.inProgress = false;
     }
   }
 
