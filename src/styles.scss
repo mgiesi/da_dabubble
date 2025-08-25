@@ -4,6 +4,9 @@
 @use "../public/assets/styles/btn-style.scss" as *;
 @use "../public/assets/styles/input-field.scss" as *;
 
+
+
+
 html {
   scrollbar-gutter: stable;
 }
@@ -20,6 +23,14 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Nunito";
+}
+
+.error-message {
+  position: absolute;
+  bottom: -20px;
+  left: 25px;
+  @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $rosa);
+  transition: $transition-0-3-ease-in-out;
 }
 
 body.no-scroll {
@@ -57,10 +68,8 @@ input {
 .btn-icon {
   width: 24px;
   height: 24px;
-  // Hier könntest du auch andere Stile für dein Icon definieren
 }
 
-// For Mat-Dialog
 .no-top-right-radius-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
-    border-top-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }

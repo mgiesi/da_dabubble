@@ -1,3 +1,9 @@
+<!-- <div class="animation-overlay">
+    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
+    <p></p>
+</div> -->
+
+
 <div class="create-account-box">
     <p>Neu bei DABubble?</p>
     <button class="btn-white-without-border" routerLink="/register">Konto erstellen</button>
@@ -5,19 +11,51 @@
 
 <div class="login-container">
     <h1>Anmeldung</h1>
-    <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+    <p class="description-login">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
 
     <form #f="ngForm">
         <label class="label-input-field-gray-with-img" for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
-                [disabled]="inProgress">
+                [disabled]="inProgress" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required
+                #emailField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+
+            @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
+            '') {
+            <p class="error-message">
+                *Bitte geben Sie eine gültige E-Mail-Adresse ein
+            </p>
+            }
+            @if (emailField.errors?.['pattern'] && !emailField.errors?.['required'] && (emailField.touched ||
+            emailField.dirty)) {
+            <p class="error-message">
+                *Diese E-Mail ist leider ungültig
+            </p>
+            }
         </label>
 
         <label class="label-input-field-gray-with-img" for="password">
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
-            <input id="password" [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort"
-                [disabled]="inProgress">
+            <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
+                [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="inProgress"
+                minlength="8" required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+            @if (pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !==
+            '') {
+            <p class="error-message">
+                *Bitte geben Sie ein Passwort ein
+            </p>
+            }
+            @if (pwdField.errors?.['minlength'] && (pwdField.touched || pwdField.dirty)) {
+            <p class="error-message">
+                *Das Passwort muss mindestens 8 Zeichen lang sein
+            </p>
+            }
+            @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
+            pwdField.dirty)) {
+            <p class="error-message">
+                *Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten
+            </p>
+            }
         </label>
 
         <button class="btn-forgot-password">Passwort vergessen?</button>
@@ -29,9 +67,21 @@
             </div>
         </div>
 
+        <div class="google-btn-box">
+            <button (click)="triggerGoogleSignIn()" class="btn-google" [disabled]="inProgress">
+                <img src="icons/google.svg" alt="Google icon" [class.spin]="inProgress">
+                @if (!inProgress) {
+                <span>Anmelden mit Google</span>
+                }
+                @if (inProgress) {
+                <span>Bitte warten...</span>
+                }
 
-        <!-- Google Sign-In Button -->
-        <div id="g_id_signin"></div>
+            </button>
+            @if (errMsg) {
+            <p class="error-message">{{ errMsg }}</p>
+            }
+        </div>
 
         <div class="login-btns">
             <button class="btn-blue" (click)="signIn()" [disabled]="inProgress">
@@ -39,6 +89,7 @@
             </button>
             <button class="btn-white" (click)="signInAsGuest()" [disabled]="inProgress">Gäste-Login</button>
         </div>
+
     </form>
 </div>
 
