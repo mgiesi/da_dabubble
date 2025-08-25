@@ -3,6 +3,8 @@ import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.compone
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../shared/models/user';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-details.component';
 
 @Component({
   selector: 'app-profile-badge',
@@ -12,9 +14,19 @@ import { User } from '../../../shared/models/user';
 })
 export class ProfileBadgeComponent {
   facade = inject(UsersFacadeService);
+  dialog = inject(MatDialog);
   
   /** Input variable for the Firebase user object which should be used with this component */
   user: InputSignal<User | null> = input<User | null>(null);
   /** Helper variable (signal) to check if linked user is current user */
   readonly isSelf = this.facade.isCurrentUser(this.user);
+
+  /**
+   * Opens the profile info overlay.
+   */
+  openProfileDetails() {
+    this.dialog.open(DlgProfileDetailsComponent, {  
+      data: this.user
+    });
+  }
 }
