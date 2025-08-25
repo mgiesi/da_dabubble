@@ -15,31 +15,84 @@
 
 .animation-overlay {
     background: $bg-animation-logo;
-    z-index: 11;
+    z-index: 2;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 100dvh;
     width: 100%;
-    @include dFlexAllCenter($ai: center, $jc: center);
+
+    // @include dFlexAllCenter($ai: center, $jc: center);
+    // overflow: hidden; // Hides the content that's outside the container
+
+
+
+
 
     .animation-overlay-content {
-        @include dFlexAllCenter($ai: center, $jc: center);
-        width: 187px;
-        height: 184px;
+        background: linear-gradient(#5D63ED, #4D55EA);
 
 
-        img {
-            width: 100%;
-        }
+        // background-color: transparent;
+        width: 667px;
+        height: 185px;
+        position: absolute;
+        overflow: hidden;
+        z-index: 4;
+        top: 50%;
+        left: 64%;
+        transform: translate(-50%, -50%);
+        @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
+        // animation: logoAnimation 0.7s ease forwards 1s;
+        // animation: contentAnimation 1s ease forwards 1s;
 
-        // p {
-        //     @include fontSizeWeightColor($si: $font-size-20, $we: 700, $co: $purple-1);
-        //     animation: pulse 2s infinite;
-        // }
     }
 }
+
+.logo {
+    position: absolute;
+    left: 0%;
+    transform: translate(0%, 0%);
+    display: grid;
+    place-items: center;
+    background: linear-gradient(#5D63ED, #4D55EA);
+    z-index: 3;
+    width: 187px;
+    height: 100%;
+    // animation: logoAnimation $animation-login-overlay-logo;
+
+}
+
+.placeholder-box {
+    z-index: 2;
+    width: 667px;
+    height: 185px;
+    position: absolute;
+    background: linear-gradient(#5D63ED, #4D55EA);
+
+    top: 50%;
+    left: -145px;
+    transform: translate(-50%, -50%);
+}
+
+.text {
+    position: absolute;
+    top: 50%;
+    left: -41%;
+    transform: translate(0%, -50%);
+    background-color: transparent;
+    display: grid;
+    z-index: 1;
+    place-items: center;
+    @include fontSizeWeightColor($si: $font-size-48, $we: 700, $co: $white);
+    height: 100%;
+    // animation: textAnimation $animation-login-overlay-text;
+
+}
+
+
+
 
 
 
@@ -149,5 +202,46 @@ form {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+
+
+@keyframes contentAnimation {
+    0% {
+        left: 64%;
+
+
+    }
+
+    100% {
+        left: 50%;
+
+    }
+}
+
+@keyframes logoAnimation {
+    0% {
+        left: 0%;
+        transform: translate(0%, 0%);
+    }
+
+    100% {
+        left: 2%;
+        transform: translate(0%, 0%);
+    }
+}
+
+@keyframes textAnimation {
+    0% {
+        left: -41%;
+        transform: translate(0%, -50%);
+
+    }
+
+    100% {
+        left: 31%;
+        transform: translate(0%, -50%);
+
     }
 }

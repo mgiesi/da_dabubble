@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
   pwd: string = '';
 
   googleLoginInProgress = false;
+  showAnimation = true;
   inProgress = false;
   errMsg: string = '';
 
@@ -39,7 +40,23 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    // Redirect-Ergebnis verarbeiten (falls von Google zurückgekehrt)
+    // this.checkFirstVisitAndShowAnimation();
+    await this.handleRedirectResult();
+  }
+
+  private checkFirstVisitAndShowAnimation(): void {
+    const hasVisited = sessionStorage.getItem('firstPageVisit');
+
+    if (!hasVisited) {
+      this.showAnimation = true;
+      sessionStorage.setItem('firstPageVisit', 'true');
+      // setTimeout(() => {
+      //   this.showAnimation = false;
+      // }, 2000);
+    }
+  }
+
+  private async handleRedirectResult(): Promise<void> {
     try {
       const { getRedirectResult } = await import('firebase/auth');
       const result = await getRedirectResult(this.auth.firebaseAuth);

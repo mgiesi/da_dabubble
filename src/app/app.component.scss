@@ -8,21 +8,11 @@
     max-width: $max-content-width-1920;
     margin: 0 auto;
     position: relative;
-
 }
 
-
+// .logo-text-box in style.scss
 
 .app-content {
-    height: calc(100% - 150px);
-}
-
-.app-header {
-    padding: 20px;
-
-    @include dFlexAllCenter($ai: center, $jc: start, $g: 20px);
-}
-
-.logo {
-    height: 60px;
+    // height: calc(100% - 150px);
+    height: 100%;
 }

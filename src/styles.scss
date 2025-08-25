@@ -38,6 +38,15 @@ body {
   top: 55px;
   left: 55px;
   @include dFlexAllCenter($g: 16px);
+
+  img {
+    width: 70px;
+    aspect-ratio: 1 / 1;
+  }
+
+  p {
+    @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+  }
 }
 
 body.no-scroll {
@@ -60,12 +69,16 @@ input {
 
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: $purple-1;
   border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: $purple-2;
 }
 
 ::-webkit-scrollbar-track {
