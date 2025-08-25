@@ -2,24 +2,6 @@
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 
-#g_id_signin>div {
-    background-color: $bg-color !important;
-    border: 1px solid $bg-color !important;
-    border-radius: 50px !important;
-    padding: 11px 32px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 60px !important;
-    font-size: 18px !important;
-    font-weight: 400 !important;
-    color: $purple-1 !important;
-    width: 100% !important;
-    box-shadow: $box-shadow !important;
-    min-width: 320px !important;
-    max-width: 100% !important;
-}
-
 :host {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
     overflow-y: auto;
@@ -64,15 +46,15 @@
         @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
     }
 
-    p {
-        @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
-
-    }
 }
 
 form {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
     width: 100%;
+}
+
+.description-login {
+    @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
 }
 
 .vector-text-box {
@@ -106,5 +88,25 @@ form {
         background-color: $bg-color;
 
 
+    }
+}
+
+.google-btn-box {
+    width: 100%;
+    position: relative;
+}
+
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
     }
 }

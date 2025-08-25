@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
@@ -9,13 +11,14 @@ import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.compone
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink, LegalBtnsComponent],
+  imports: [CommonModule, FormsModule, RouterLink, LegalBtnsComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
   auth = inject(AuthService);
   router = inject(Router);
+  usersService = inject(UsersService);
 
   email: string = '';
   pwd: string = '';
@@ -33,8 +36,19 @@ export class LoginComponent implements OnInit {
       const { getRedirectResult } = await import('firebase/auth');
       const result = await getRedirectResult(this.auth.firebaseAuth);
 
-      if (result) {
-        console.log('Google Redirect erfolgreich:', result.user.email);
+      if (result && result.user) {
+        // Prüfe, ob User-Dokument existiert, sonst anlegen
+        const user = result.user;
+        const userDoc = await firstValueFrom(this.usersService.currentUser$());
+        if (!userDoc) {
+          await this.usersService.createUser(
+            user.uid,
+            user.email ?? '',
+            user.displayName ?? '',
+            user.photoURL ?? ''
+          );
+        }
+        console.log('Google Redirect erfolgreich:', user.email);
         await this.router.navigate(['/chat']);
       }
     } catch (error: any) {
@@ -50,12 +64,26 @@ export class LoginComponent implements OnInit {
    * Google Sign-In mit Fallback
    */
   async triggerGoogleSignIn() {
+    if (this.inProgress) return; // Doppelklick-Schutz
     this.errMsg = '';
     this.inProgress = true;
 
     try {
       // Zuerst Popup versuchen
-      await this.auth.signInWithGoogleOAuth();
+      const result = await this.auth.signInWithGoogleOAuth();
+      if (result && result.user) {
+        // Prüfe, ob User-Dokument existiert, sonst anlegen
+        const user = result.user;
+        const userDoc = await firstValueFrom(this.usersService.currentUser$());
+        if (!userDoc) {
+          await this.usersService.createUser(
+            user.uid,
+            user.email ?? '',
+            user.displayName ?? '',
+            user.photoURL ?? ''
+          );
+        }
+      }
       await this.router.navigate(['/chat']);
     } catch (error: any) {
       console.error('Google Popup Error:', error);
@@ -79,13 +107,12 @@ export class LoginComponent implements OnInit {
         error.message?.includes('abgebrochen') ||
         error.code === 'auth/popup-closed-by-user'
       ) {
-        this.errMsg = 'Anmeldung wurde abgebrochen.';
+        this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
       } else if (
         error.message?.includes('Mehrere Popup-Anfragen') ||
         error.code === 'auth/cancelled-popup-request'
       ) {
-        this.errMsg =
-          'Mehrere Popup-Anfragen. Bitte warten Sie kurz und versuchen Sie es erneut.';
+        this.errMsg = 'Bitte warte kurz, bevor du es erneut versuchst.';
       } else if (
         error.code === 'auth/operation-not-supported-in-this-environment'
       ) {

@@ -1,6 +1,5 @@
 @use "./variables.scss" as *;
 
-
 @mixin dFlexAllCenter($ai: center, $jc: center, $fld: unset, $g: 0) {
   display: flex;
   flex-direction: $fld;
@@ -39,6 +38,7 @@
     cursor: not-allowed;
     background-color: $text-gray;
     color: $white;
+    border: 1px solid transparent;
 
     &:hover {
       background-color: $text-gray;
@@ -81,6 +81,12 @@
   @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-1);
   width: 100%;
   height: 60px;
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: $text-gray;
+    color: $white;
+  }
 
   p {
     transition: $transition-0-3-ease-in-out;
@@ -285,7 +291,7 @@
 
   &:hover {
     background-color: $bg-color;
-    
+
     svg path {
       fill: $purple-1;
     }
