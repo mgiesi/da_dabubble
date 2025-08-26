@@ -2,11 +2,22 @@
 
   @if (!(showAnimation$ | async)) {
   <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-true' : 'logo-text-box-false'">
-    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
-    <h1>DABubble</h1>
+    <!-- Dynamic logo source based on current view and screen size -->
+    <img [src]="logoSrc()" alt="Logo">
+    
+    <!-- Show back arrow only on mobile in chat/thread view -->
+    @if (showBackArrow()) {
+      <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    }
+    
+    <!-- Dynamic header title based on current view -->
+    <h1>{{ headerTitle() }}</h1>
   </div>
   }
-
 
   <div class="header-right" *ngIf="isAuthenticated$ | async">
     <app-profile-menu></app-profile-menu>

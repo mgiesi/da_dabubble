@@ -9,6 +9,8 @@ import type { User } from "../../../shared/models/user"
 import type { Channel } from "../../../shared/models/channel"
 import { MockDataService } from "../../../core/services/mock-data.service"
 import { MessageItemComponent } from "../message-item/message-item.component"
+import { Router } from '@angular/router';
+import { LogoStateService } from "../../../core/services/logo-state.service"
 
 /**
  * Main chat area component that displays channel information, messages, and input field.
@@ -27,6 +29,8 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   @Input() channelId: string | null = null
   @Output() threadOpened = new EventEmitter<any>()
 
+  private router = inject(Router);
+  private logoState = inject(LogoStateService);
   private channelsFacade = inject(ChannelsFacadeService)
   private usersFacade = inject(UsersFacadeService)
   private mockData = inject(MockDataService)
@@ -54,6 +58,7 @@ export class ChatAreaComponent implements OnInit, OnChanges {
       this.loadChannelData()
       this.loadChannelMembers()
       this.loadMessages()
+      this.logoState.setCurrentView('chat');
     }
   }
 
@@ -128,4 +133,13 @@ export class ChatAreaComponent implements OnInit, OnChanges {
     console.log("Reply to:", message)
     this.threadOpened.emit(message)
   }
+
+  openThread(threadId: string) {
+    this.logoState.setCurrentView('thread');
+    // 👉 Nur mobile Routing aktivieren
+    if (this.logoState.showBackArrow()) {
+      this.router.navigate(['/m/thread', threadId]);
+    }
+  }
+
 }

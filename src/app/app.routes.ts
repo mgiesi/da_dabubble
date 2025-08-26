@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard, redirectIfAuthedGuard } from './core/guards/auth.guard';
+import { WorkspaceMenuComponent } from './features/menu/workspace-menu/workspace-menu.component';
+import { ChatAreaComponent } from './features/chat/chat-area/chat-area.component';
+import { ThreadPanelComponent } from './features/chat/thread-panel/thread-panel.component';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -10,7 +14,7 @@ export const routes: Routes = [
       import('./features/auth/login/login.component').then(
         (c) => c.LoginComponent
       ),
-      canMatch: [redirectIfAuthedGuard],
+    canMatch: [redirectIfAuthedGuard],
   },
   {
     path: 'register',
@@ -18,7 +22,7 @@ export const routes: Routes = [
       import('./features/auth/register/register.component').then(
         (c) => c.RegisterComponent
       ),
-      canMatch: [redirectIfAuthedGuard],
+    canMatch: [redirectIfAuthedGuard],
   },
   {
     path: 'avatar-selection',
@@ -41,7 +45,7 @@ export const routes: Routes = [
       import('./features/shell/main-layout/main-layout.component').then(
         (c) => c.MainLayoutComponent
       ),
-      canActivate: [authGuard],
+    canActivate: [authGuard],
   },
 
   {
@@ -61,4 +65,9 @@ export const routes: Routes = [
   },
 
   { path: '**', redirectTo: '/login' },
+
+  { path: 'm/workspace', component: WorkspaceMenuComponent },
+  { path: 'm/chat/:channelId', component: ChatAreaComponent },
+  { path: 'm/thread/:threadId', component: ThreadPanelComponent },
+  { path: 'm', pathMatch: 'full', redirectTo: 'm/workspace' },
 ];

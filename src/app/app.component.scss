@@ -19,8 +19,31 @@
         width: 70px;
     }
 
-    p {
+    .back-arrow {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $black;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    p, h1 {
         @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+        margin: 0;
     }
 }
 

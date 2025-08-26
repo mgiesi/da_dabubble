@@ -1,9 +1,11 @@
-import { Component, inject, OnInit, Output, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { ChannelFormComponent } from '../../channels/channel-form/channel-form.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
+import { Router } from '@angular/router';
+import { LogoStateService } from '../../../core/services/logo-state.service';
 import { User } from '../../../shared/models/user';
 
 /**
@@ -22,7 +24,8 @@ import { User } from '../../../shared/models/user';
 })
 export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
-
+  private router = inject(Router);
+  private logoState = inject(LogoStateService);
   private channelsFacade = inject(ChannelsFacadeService);
   private usersFacade = inject(UsersFacadeService);
 
@@ -41,7 +44,7 @@ export class WorkspaceMenuComponent implements OnInit {
   /** List of all available users */
   readonly users = this.usersFacade.users;
   trackById = (_: number, u: User) => u.id;
-  
+
   get channels() {
     return this.channelsFacade.channels();
   }
@@ -105,5 +108,12 @@ export class WorkspaceMenuComponent implements OnInit {
    */
   closeChannelForm() {
     this.showChannelForm = false;
+  }
+
+  openChannel(channelId: string) {
+    this.logoState.setCurrentView('chat');
+    if (this.logoState.showBackArrow()) {
+      this.router.navigate(['/m/chat', channelId]);
+    }
   }
 }
