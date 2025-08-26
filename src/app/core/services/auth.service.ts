@@ -1,4 +1,11 @@
 import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map, take, shareReplay } from 'rxjs/operators';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  browserPopupRedirectResolver,
+} from 'firebase/auth';
 import {
   Auth,
   UserCredential,
@@ -6,15 +13,8 @@ import {
   authState,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  fetchSignInMethodsForEmail,
 } from '@angular/fire/auth';
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  browserPopupRedirectResolver,
-} from 'firebase/auth';
-import { Observable } from 'rxjs';
-import { map, take, shareReplay } from 'rxjs/operators';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -33,6 +33,20 @@ export class AuthService {
   isAuthenticatedOnce$: Observable<boolean> = this.isAuthenticated$.pipe(
     take(1)
   );
+
+  /**
+   * Checks if an email is already registered in Firebase Auth.
+   * Returns true if the email exists, false otherwise.
+   */
+  async emailExists(email: string): Promise<boolean> {
+    try {
+      const methods = await fetchSignInMethodsForEmail(this.auth, email);
+      return methods && methods.length > 0;
+    } catch (e) {
+      // Optionally handle invalid email format
+      return false;
+    }
+  }
 
   async signIn(email: string, password: string): Promise<UserCredential> {
     return await signInWithEmailAndPassword(this.auth, email, password);

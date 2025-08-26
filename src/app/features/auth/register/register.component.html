@@ -43,7 +43,7 @@
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                 pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required #emailField="ngModel"
-                [ngModelOptions]="{ updateOn: 'blur' }" />
+                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExists()" />
 
             <ng-container
                 *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
@@ -52,12 +52,12 @@
                 </p>
             </ng-container>
 
-            <!-- das ist eine if abfrage ob die email schon vorhanden ist oder nicht -->
-            <!-- @if () {
-            <p class="error-message">
-                *Diese E-Mail ist schon vorhanden
-            </p>
-            } -->
+
+            <ng-container *ngIf="emailExists && emailField.valid && emailField.value">
+                <p class="error-message" @fadeInOut>
+                    *Diese E-Mail ist schon vorhanden
+                </p>
+            </ng-container>
 
             @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
             '') {
@@ -145,7 +145,7 @@
 
         <div class="next-btn-box">
             <button class="btn-blue"
-                [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked">
+                [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked || emailExists">
                 Weiter
             </button>
         </div>

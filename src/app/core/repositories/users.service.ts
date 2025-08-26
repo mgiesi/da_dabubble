@@ -1,27 +1,42 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, query, orderBy, collectionData, addDoc, serverTimestamp, doc, updateDoc, where } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  query,
+  orderBy,
+  collectionData,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  where,
+  getDocs,
+} from '@angular/fire/firestore';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { User } from '../../shared/models/user';
+
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-/**
- * UsersService encapsulates Firestore CRUD operations for the `users` collection.
- *
- * Exposes a reactive `users$()` stream sorted by `displayName` and
- * provides helpers to create users and update profile fields.
- *
- * Notes:
- * - Timestamps use Firestore `serverTimestamp()` to avoid client clock drift.
- * - `collectionData(..., { idField: 'id' })` hydrates the document ID into `user.id`.
- */
 export class UsersService {
   private fs = inject(Firestore);
   private auth = inject(AuthService);
-  
-  constructor() { }
+
+  constructor() {}
+
+  /**
+   * Checks if a user with the given email exists in the Firestore users collection.
+   * Returns true if found, false otherwise.
+   */
+  async emailExistsInFirestore(email: string): Promise<boolean> {
+    const ref = collection(this.fs, 'users');
+    const q = query(ref, where('email', '==', email));
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  }
+  // ...existing code...
 
   /**
    * Returns a live stream of all users ordered by `displayName` ascending.
@@ -39,23 +54,23 @@ export class UsersService {
 
   /**
    * Returns the current application user as an observable.
-   * First it gets the current user-object from the Firebase authentication. If it 
+   * First it gets the current user-object from the Firebase authentication. If it
    * exist, it queries the users collection in Firestore for a document whose uid field
    * matches the Firebase user's UID.
-   * 
+   *
    * @returns Observable<User | null> — the current user object from Firestore,
    *          or `null` if not authenticated or no matching record is found.
    */
   currentUser$(): Observable<User | null> {
     return this.auth.user$.pipe(
-      switchMap(firebaseUser => {
+      switchMap((firebaseUser) => {
         if (!firebaseUser) {
           return of(null);
         }
         const ref = collection(this.fs, 'users');
         const q = query(ref, where('uid', '==', firebaseUser.uid));
         return collectionData(q, { idField: 'id' }).pipe(
-          map(users => users[0] as User ?? null)
+          map((users) => (users[0] as User) ?? null)
         );
       })
     );
@@ -73,7 +88,12 @@ export class UsersService {
    * @param imgUrl Absolute URL for the user's avatar image.
    * @returns Promise that resolves when the document is written.
    */
-  async createUser(uid: string, email: string, displayName: string, imgUrl: string) {
+  async createUser(
+    uid: string,
+    email: string,
+    displayName: string,
+    imgUrl: string
+  ) {
     const ref = collection(this.fs, 'users');
     await addDoc(ref, {
       uid,
@@ -81,7 +101,7 @@ export class UsersService {
       email,
       imgUrl,
       createdAt: serverTimestamp(),
-      lastSeenAt: serverTimestamp()
+      lastSeenAt: serverTimestamp(),
     } as User);
   }
 
@@ -94,7 +114,10 @@ export class UsersService {
    */
   async updateDisplayName(userId: string, displayName: string) {
     const ref = doc(this.fs, `users/${userId}`);
-    await updateDoc(ref, { displayName: displayName, updatedAt: serverTimestamp() });
+    await updateDoc(ref, {
+      displayName: displayName,
+      updatedAt: serverTimestamp(),
+    });
   }
 
   /**
