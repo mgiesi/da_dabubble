@@ -1,0 +1,57 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+
+:host {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+    overflow-y: auto;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    max-width: $max-content-width-1920;
+}
+
+
+.register-container {
+    background-color: $white;
+    max-width: 610px;
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
+    text-align: center;
+    position: relative;
+    padding: 60px;
+    border-radius: 30px;
+    box-shadow: $box-shadow;
+    position: relative;
+
+
+    @media screen and (max-width: $breakpoint-700) {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+    }
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    width: 90%;
+}
+
+form {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
+    width: 100%;
+}
+
+.description-login {
+    @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
+}
+
+.next-btn-box {
+    width: 100%;
+    @include dFlexAllCenter($jc: flex-end, $g: 30px);
+}

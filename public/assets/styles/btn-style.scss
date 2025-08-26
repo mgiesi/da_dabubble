@@ -74,3 +74,15 @@
 .btn-add-circle {
     @include btn-chat-header-style($width-container: 40px, $width-svg: 24px);
 }
+
+.visibility-btn {
+    position: absolute;
+    right: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text-gray;
+    @include dFlexAllCenter();
+}

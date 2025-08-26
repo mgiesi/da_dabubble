@@ -39,13 +39,6 @@
                 </p>
             </ng-container>
 
-            <!-- das ist eine if abfrage ob die email schon vorhanden ist oder nicht -->
-            <!-- @if () {
-            <p class="error-message">
-                *Diese E-Mail ist schon vorhanden
-            </p>
-            } -->
-
             @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
             '') {
             <p class="error-message" @fadeInOut>
