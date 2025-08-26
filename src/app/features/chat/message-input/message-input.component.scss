@@ -3,7 +3,7 @@
 
 .message-input-wrapper {
     width: 100%;
-
+    padding: 20px;
     .input-container {
         @include dFlexAllCenter($ai: end, $g: 12px);
         background: $white;
