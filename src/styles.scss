@@ -27,7 +27,8 @@ body {
 
 .error-message {
   position: absolute;
-  bottom: -20px;
+  // bottom: -20px;
+  top: 56px;
   left: 25px;
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $rosa);
   transition: $transition-0-3-ease-in-out;

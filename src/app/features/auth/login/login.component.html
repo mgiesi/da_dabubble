@@ -83,6 +83,17 @@
                 *Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten
             </p>
             }
+
+            @if (
+            errMsg === 'E-Mail und Passwort stimmen nicht überein.' &&
+            pwdField.value !== '' &&
+            emailField.valid &&
+            pwdField.valid
+            ) {
+            <p class="error-message">
+                *Es existiert kein Benutzer mit dieser E-Mail-Adresse
+            </p>
+            }
         </label>
 
         <button class="btn-forgot-password">Passwort vergessen?</button>
@@ -105,13 +116,14 @@
                 }
 
             </button>
-            @if (errMsg) {
+            @if (errMsg && errMsg !== 'E-Mail und Passwort stimmen nicht überein.') {
             <p class="error-message">{{ errMsg }}</p>
             }
         </div>
 
         <div class="login-btns">
-            <button class="btn-blue" (click)="signIn()" [disabled]="inProgress || googleLoginInProgress">
+            <button class="btn-blue" (click)="signIn()"
+                [disabled]="!f.valid || inProgress || googleLoginInProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.'">
                 {{ inProgress ? 'Anmelden...' : 'Anmelden' }}
             </button>
             <button class="btn-white" (click)="signInAsGuest()"
