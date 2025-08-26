@@ -55,9 +55,9 @@
   padding: 10px 15px;
   text-align: center;
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  @include dFlexAllCenter();
+  white-space: nowrap;
+  width: 153px;
 
   @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-2);
   transition: $transition-0-3-ease-in-out;
