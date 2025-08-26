@@ -1,18 +1,20 @@
 <div class="main-layout">
-  <aside class="workspace-sidebar">
+  <aside class="workspace-sidebar" [class.active]="currentView === 'workspace'">
     <app-workspace-menu (channelSelected)="onChannelSelected($event)"></app-workspace-menu>
   </aside>
 
-  <main class="chat-main">
-    <app-chat-area *ngIf="selectedChannelId" [channelId]="selectedChannelId" (threadOpened)="onThreadOpened($event)">
+  <main class="chat-main" [class.active]="currentView === 'chat'">
+    <app-chat-area *ngIf="selectedChannelId" [channelId]="selectedChannelId" (threadOpened)="onThreadOpened($event)"
+      (backToWorkspace)="onBackToWorkspace()">
     </app-chat-area>
     <div *ngIf="!selectedChannelId" class="no-channel-selected">
       Wähle einen Channel aus
     </div>
   </main>
 
-  <aside class="thread-sidebar">
-    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName">
+  <aside class="thread-sidebar" [class.active]="currentView === 'thread'">
+    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName"
+      (backToChat)="onBackToChat()">
     </app-thread-panel>
   </aside>
 </div>

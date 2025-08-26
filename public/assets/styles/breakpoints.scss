@@ -1,0 +1,58 @@
+// breakpoints.scss
+// Responsive Breakpoints für verschiedene Layout-Systeme
+
+// Main Layout Breakpoints (3-Spalten Chat-Layout)
+$main_layout_mobile: 768px;    // Mobile: Einzelansicht
+$main_layout_tablet: 1024px;   // Tablet: 2-Spalten  
+$main_layout_desktop: 1200px;  // Desktop: 3-Spalten
+
+// General Breakpoints (für andere Komponenten)
+$breakpoint_sm: 576px;
+$breakpoint_md: 768px;
+$breakpoint_lg: 1024px;
+$breakpoint_xl: 1200px;
+$breakpoint_xxl: 1400px;
+
+// Main Layout Mixins
+@mixin main_mobile_only {
+  @media (max-width: ($main_layout_mobile - 1px)) {
+    @content;
+  }
+}
+
+@mixin main_tablet_up {
+  @media (min-width: $main_layout_mobile) {
+    @content;
+  }
+}
+
+@mixin main_tablet_only {
+  @media (min-width: $main_layout_mobile) and (max-width: ($main_layout_desktop - 1px)) {
+    @content;
+  }
+}
+
+@mixin main_desktop_up {
+  @media (min-width: $main_layout_desktop) {
+    @content;
+  }
+}
+
+// General Mixins
+@mixin mobile_sm {
+  @media (max-width: ($breakpoint_sm - 1px)) {
+    @content;
+  }
+}
+
+@mixin tablet_md {
+  @media (min-width: $breakpoint_md) {
+    @content;
+  }
+}
+
+@mixin desktop_lg {
+  @media (min-width: $breakpoint_lg) {
+    @content;
+  }
+}

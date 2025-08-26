@@ -1,9 +1,57 @@
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
+
 .main-layout {
   display: grid;
-  grid-template-columns: auto 1fr auto;
   height: 100vh;
   gap: 40px;
   padding: 0 20px;
+
+  // Desktop: 3 Spalten (20% + 60% + 20%)
+  @include main_desktop_up {
+    grid-template-columns: 1fr 3fr 1fr;
+  }
+
+  // Tablet: 2 Spalten (40% + 60%)
+  @include main_tablet_only {
+    grid-template-columns: 2fr 3fr;
+    gap: 20px;
+    
+    .thread-sidebar {
+      display: none;
+      
+      &.active {
+        display: block;
+        grid-column: 2;
+      }
+      
+      &.active + .chat-main {
+        display: none;
+      }
+    }
+  }
+
+  // Mobile: 1 Spalte (100%)
+  @include main_mobile_only {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0;
+
+    .workspace-sidebar,
+    .chat-main,
+    .thread-sidebar {
+      grid-column: 1;
+      display: none;
+      
+      &.active {
+        display: block;
+      }
+    }
+    
+    // Default: Workspace sichtbar
+    .workspace-sidebar {
+      display: block;
+    }
+  }
 }
 
 .workspace-sidebar {

@@ -8,6 +8,7 @@ import type { User } from "../../../shared/models/user"
 import type { Channel } from "../../../shared/models/channel"
 import { MockDataService } from "../../../core/services/mock-data.service"
 import { MessageItemComponent } from "../message-item/message-item.component"
+
 /**
  * Main chat area component that displays channel information, messages, and input field.
  * Shows the selected channel's header with member avatars, message area, and message input.
@@ -24,6 +25,7 @@ import { MessageItemComponent } from "../message-item/message-item.component"
 export class ChatAreaComponent implements OnInit, OnChanges {
   @Input() channelId: string | null = null
   @Output() threadOpened = new EventEmitter<any>()
+  @Output() backToWorkspace = new EventEmitter<void>()
 
   private channelsFacade = inject(ChannelsFacadeService)
   private usersFacade = inject(UsersFacadeService)
@@ -51,7 +53,7 @@ export class ChatAreaComponent implements OnInit, OnChanges {
     if (this.channelId) {
       this.loadChannelData()
       this.loadChannelMembers()
-      this.loadMessages() // Load messages once on init
+      this.loadMessages()
     }
   }
 
@@ -63,7 +65,7 @@ export class ChatAreaComponent implements OnInit, OnChanges {
     if (this.channelId) {
       this.loadChannelData()
       this.loadChannelMembers()
-      this.loadMessages() // Reload messages when channelId changes
+      this.loadMessages()
     }
   }
 
@@ -96,18 +98,15 @@ export class ChatAreaComponent implements OnInit, OnChanges {
     if (!this.channelId) return
 
     try {
-      // Member-IDs aus Channel laden
       const userIds = await this.channelsFacade.getChannelMembers(this.channelId)
       this.memberCount = userIds.length
 
-      // Alle Users laden und filtern
       const allUsers = this.usersFacade.users()
       if (allUsers) {
         this.members = allUsers.filter((user) => userIds.includes(user.id || ""))
       }
     } catch (error) {
       console.error("Failed to load channel members:", error)
-      // Fallback: Mock-Daten
       this.memberCount = 3
       this.members = this.usersFacade.users()?.slice(0, 3) || []
     }
@@ -116,11 +115,16 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   /**
    * Gets the display name for the current chat.
    * Returns the channel name or a fallback if no channel is selected.
-   *
-   * @returns The name of the current channel or 'Entwicklerteam' as fallback
    */
   get currentChatName(): string {
     return this.currentChannel?.name || "Entwicklerteam"
+  }
+
+  /**
+   * Handles back navigation to workspace (for mobile/tablet view).
+   */
+  onBackToWorkspace() {
+    this.backToWorkspace.emit()
   }
 
   onReplyToMessage(message: any) {

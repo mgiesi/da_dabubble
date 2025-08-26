@@ -1,5 +1,6 @@
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .workspace-menu {
     width: 366px;
@@ -13,6 +14,16 @@
     top: 115px;
     left: 20px;
     box-shadow: $box-shadow;
+
+    @include main_mobile_only {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-radius: 0;
+        z-index: 1000;
+    }
 }
 
 .workspace-header {
@@ -144,58 +155,6 @@
     }
 }
 
-.channel-item {
-    @include dFlexAllCenter($jc: start, $g: 12px);
-    padding: 12px 16px;
-    cursor: pointer;
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    border-radius: 25px;
-    margin-bottom: 8px;
-
-    svg {
-
-        path {
-            fill: black;
-        }
-    }
-
-    &:hover {
-        background: $bg-color;
-
-        svg path {
-            fill: $purple-1;
-        }
-    }
-}
-
-.add-channel {
-    @include dFlexAllCenter($jc: start, $g: 12px);
-    padding: 12px 16px;
-    cursor: pointer;
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    border-radius: 25px;
-    margin-bottom: 8px;
-
-    svg {
-
-        path {
-            fill: black;
-        }
-    }
-
-    &.active svg path {
-        fill: $purple-1;
-    }
-
-    &:hover {
-        color: $purple-1;
-
-        svg path {
-            fill: $purple-1;
-        }
-    }
-}
-
 .add-channel-container {
     @include dFlexAllCenter($jc: start, $g: 12px);
     padding: 12px 16px;
@@ -205,7 +164,6 @@
     margin-bottom: 8px;
 
     svg {
-
         path {
             fill: black;
         }
@@ -221,5 +179,32 @@
         svg path {
             fill: $purple-1;
         }
+    }
+}
+
+.channel-item {
+    @include dFlexAllCenter($ai: center, $jc: start, $g: 8px);
+    padding: 6px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+
+    .hashtag-icon {
+        width: 14px;
+        height: 14px;
+        flex: 0 0 14px;
+
+        path {
+            fill: currentColor;
+        }
+    }
+
+    span {
+        @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: inherit);
+    }
+
+    &:hover,
+    &.active {
+        color: $purple-3;
+        background: rgba($purple-3, 0.08);
     }
 }

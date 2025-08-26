@@ -14,16 +14,42 @@ import { ChannelsFacadeService } from '../../../core/facades/channels-facade.ser
 export class MainLayoutComponent {
   selectedChannelId: string | null = null;
   selectedThread: any = null;
+  currentView: 'workspace' | 'chat' | 'thread' = 'workspace';
   
   private channelsFacade = inject(ChannelsFacadeService);
 
   onChannelSelected(channelId: string) {
     console.log('Main layout received channel:', channelId);
     this.selectedChannelId = channelId;
+    this.currentView = 'chat';
   }
 
   onThreadOpened(message: any) {
     this.selectedThread = message;
+    this.currentView = 'thread';
+  }
+
+  onBackToWorkspace() {
+    this.currentView = 'workspace';
+    this.selectedChannelId = null;
+    this.selectedThread = null;
+  }
+
+  onBackToChat() {
+    this.currentView = 'chat';
+    this.selectedThread = null;
+  }
+
+  get workspaceSidebarClasses() {
+    return this.currentView === 'workspace' ? 'active' : '';
+  }
+
+  get chatMainClasses() {
+    return this.currentView === 'chat' ? 'active' : '';
+  }
+
+  get threadSidebarClasses() {
+    return this.currentView === 'thread' ? 'active' : '';
   }
 
   get currentChannelName(): string {
