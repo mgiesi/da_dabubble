@@ -72,7 +72,7 @@
             }
         </label>
 
-        <label class="label-input-field-gray-with-img" for="password" style="position:relative;">
+        <label class="label-input-field-gray-with-img" for="password">
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
             <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
                 [(ngModel)]="pwd" name="pwd" [type]="showPwd ? 'text' : 'password'" placeholder="Passwort" minlength="8"
