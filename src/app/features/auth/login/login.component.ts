@@ -76,7 +76,17 @@ export class LoginComponent implements OnInit {
   }
 
   async signInAsGuest() {
-    this.signIn('guest@guest.com', 'secretguest');
+    this.errMsg = '';
+    this.inProgress = true;
+    try {
+      await this.signIn('guest@guest.com', 'secretguest');
+      // Wenn kein Fehler, wird zur Chat-Seite navigiert
+    } catch (e) {
+      // Fehler abfangen und anzeigen
+      this.errMsg = this.mapAuthError(e);
+    } finally {
+      this.inProgress = false;
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -201,12 +211,16 @@ export class LoginComponent implements OnInit {
       if (!inputEmail || !inputPwd) {
         return;
       }
-      if (!AuthService.EMAIL_PATTERN.test(inputEmail)) {
-        return;
-      }
-      this.emailExists = await this.auth.emailExists(inputEmail);
-      if (!this.emailExists) {
-        return;
+      // Für Gäste-Login keine E-Mail-Validierung/Existenzprüfung
+      const isGuest = inputEmail === 'guest@guest.com';
+      if (!isGuest) {
+        if (!AuthService.EMAIL_PATTERN.test(inputEmail)) {
+          return;
+        }
+        this.emailExists = await this.auth.emailExists(inputEmail);
+        if (!this.emailExists) {
+          return;
+        }
       }
       await this.auth.signIn(inputEmail, inputPwd);
       await firstValueFrom(
