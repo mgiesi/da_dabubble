@@ -44,8 +44,14 @@ $max-content-width-1920: 1920px;
 $transition-0-3-ease-in-out: all 0.3s ease-in-out;
 
 //animation
-$animation-login-overlay-logo: 0.85s ease forwards 1s;
-$animation-login-overlay-text: 1s ease forwards 1s;
+$animation-login-overlay-logo: 0.75s ease forwards 1s;
+$animation-login-overlay-text: 0.9s ease forwards 1.1s;
+$animation-login-overlay: 0.9s ease forwards 1s;
+$second-step-animation: 0.9s ease forwards 2s;
+$backgroundAnimation :0.8s ease forwards 3.4s;
+$overlayToLeftCornerAnimation: 0.75s ease forwards 3s;
+$removeBgColor: 0.01s ease forwards 2s;
+$textColorAnimation: 0.7s ease forwards 2.9s;
 
 //shadow
 $box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);

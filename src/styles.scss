@@ -33,21 +33,7 @@ body {
   transition: $transition-0-3-ease-in-out;
 }
 
-.logo-text-box {
-  position: absolute;
-  top: 55px;
-  left: 55px;
-  @include dFlexAllCenter($g: 16px);
 
-  img {
-    width: 70px;
-    aspect-ratio: 1 / 1;
-  }
-
-  p {
-    @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
-  }
-}
 
 body.no-scroll {
   overflow: hidden;

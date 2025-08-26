@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
@@ -8,6 +8,7 @@ import { FirebaseError } from '@angular/fire/app';
 import { firstValueFrom, filter } from 'rxjs';
 import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
 
 @Component({
   selector: 'app-login',
@@ -26,34 +27,41 @@ export class LoginComponent implements OnInit {
   auth = inject(AuthService);
   router = inject(Router);
   usersService = inject(UsersService);
+  sharedFunctions = inject(SharedFunctionsService);
+
+  @Output() showAnimationBoolean = new EventEmitter<boolean>();
 
   email: string = '';
   pwd: string = '';
 
   googleLoginInProgress = false;
-  showAnimation = false;
+  showAnimation$ = this.sharedFunctions.showAnimation$;
   inProgress = false;
   errMsg: string = '';
 
-  async signInAsGuest() {
-    this.signIn('guest@guest.com', 'secretguest');
-  }
-
-  async ngOnInit(): Promise<void> {
-    // this.checkFirstVisitAndShowAnimation();
-    await this.handleRedirectResult();
+  emitBoolean() {
+    this.showAnimationBoolean.emit(false);
   }
 
   private checkFirstVisitAndShowAnimation(): void {
     const hasVisited = sessionStorage.getItem('firstPageVisit');
 
     if (!hasVisited) {
-      this.showAnimation = true;
+      this.sharedFunctions.setShowAnimation(true);
       sessionStorage.setItem('firstPageVisit', 'true');
-      // setTimeout(() => {
-      //   this.showAnimation = false;
-      // }, 2000);
+      setTimeout(() => {
+        this.sharedFunctions.setShowAnimation(false);
+      }, 4100);
     }
+  }
+
+  async signInAsGuest() {
+    this.signIn('guest@guest.com', 'secretguest');
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.handleRedirectResult();
+    this.checkFirstVisitAndShowAnimation();
   }
 
   private async handleRedirectResult(): Promise<void> {
@@ -62,7 +70,6 @@ export class LoginComponent implements OnInit {
       const result = await getRedirectResult(this.auth.firebaseAuth);
 
       if (result && result.user) {
-        // Prüfe, ob User-Dokument existiert, sonst anlegen
         const user = result.user;
         const userDoc = await firstValueFrom(this.usersService.currentUser$());
         if (!userDoc) {

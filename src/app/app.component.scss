@@ -10,7 +10,21 @@
     position: relative;
 }
 
-// .logo-text-box in style.scss
+.logo-text-box {
+    position: absolute;
+    top: 55px;
+    left: 55px;
+    @include dFlexAllCenter($g: 16px);
+
+    img {
+        width: 70px;
+        // aspect-ratio: 1 / 1;
+    }
+
+    p {
+        @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+    }
+}
 
 .app-content {
     // height: calc(100% - 150px);
