@@ -10,20 +10,28 @@
     position: relative;
 }
 
-.logo-text-box {
+.logo-text-box-false,
+.logo-text-box-true {
     position: absolute;
-    top: 55px;
-    left: 55px;
     @include dFlexAllCenter($g: 16px);
 
     img {
         width: 70px;
-        // aspect-ratio: 1 / 1;
     }
 
     p {
         @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
     }
+}
+
+.logo-text-box-false {
+    top: 55px;
+    left: 55px;
+}
+
+.logo-text-box-true {
+    top: 20px;
+    left: 45px;
 }
 
 .app-content {

@@ -1,7 +1,7 @@
 <div class="app-container">
 
   @if (!(showAnimation$ | async)) {
-  <div class="logo-text-box">
+  <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-true' : 'logo-text-box-false'">
     <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
     <h1>DABubble</h1>
   </div>
