@@ -32,12 +32,27 @@
                 [disabled]="googleLoginInProgress" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required
                 #emailField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
 
+            <ng-container
+                *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
+                <p class="error-message">
+                    *Bitte geben Sie eine gültige E-Mail-Adresse ein
+                </p>
+            </ng-container>
+
+            <!-- das ist eine if abfrage ob die email schon vorhanden ist oder nicht -->
+            <!-- @if () {
+            <p class="error-message">
+                *Diese E-Mail ist schon vorhanden
+            </p>
+            } -->
+
             @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
             '') {
             <p class="error-message">
                 *Bitte geben Sie eine gültige E-Mail-Adresse ein
             </p>
             }
+
             @if (emailField.errors?.['pattern'] && !emailField.errors?.['required'] && (emailField.touched ||
             emailField.dirty)) {
             <p class="error-message">
