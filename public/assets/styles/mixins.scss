@@ -105,10 +105,9 @@
   &:hover {
     border: 1px solid $purple-1;
 
-
-    img,
-    p {
-      font-weight: 700;
+    p,
+    span {
+      font-weight: 600;
     }
   }
 }
