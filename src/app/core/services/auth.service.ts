@@ -34,16 +34,11 @@ export class AuthService {
     take(1)
   );
 
-  /**
-   * Checks if an email is already registered in Firebase Auth.
-   * Returns true if the email exists, false otherwise.
-   */
   async emailExists(email: string): Promise<boolean> {
     try {
       const methods = await fetchSignInMethodsForEmail(this.auth, email);
       return methods && methods.length > 0;
     } catch (e) {
-      // Optionally handle invalid email format
       return false;
     }
   }
