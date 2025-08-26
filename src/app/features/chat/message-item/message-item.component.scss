@@ -249,20 +249,20 @@
   .emoji-mart {
     background: $white !important;
     border: 1px solid rgba(0, 0, 0, 0.15) !important;
-    border-radius: 20px !important; // Runder wie eure Bubbles
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important; // Weicher
+    border-radius: 20px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
     font-family: inherit !important;
-    max-height: 350px !important; // Einheitliche Höhe
-    overflow: hidden !important; // Wichtig für saubere Ränder
-    width: 320px !important; // Feste Breite
+    max-height: 350px !important;
+    overflow: hidden !important;
+    width: 320px !important;
+    z-index: 2000 !important;
   }
 
   .emoji-mart-scroll {
-    max-height: 280px !important; // Angepasst an Gesamthöhe
+    max-height: 280px !important;
     overflow-y: auto !important;
     padding: 0 8px !important;
     
-    // Custom Scrollbar
     &::-webkit-scrollbar {
       width: 4px !important;
     }
@@ -306,7 +306,6 @@
     transition: all 0.15s ease !important;
   }
 
-  // Deine bestehenden Versteck-Regeln
   .emoji-mart-anchor {
     display: none !important;
   }

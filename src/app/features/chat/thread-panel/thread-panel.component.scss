@@ -4,18 +4,21 @@
 @use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .thread-panel {
+  width: 366px;
+  height: 940px;
   background: $white;
   border-radius: 20px;
   box-shadow: $box-shadow;
   @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start);
-  height: 100%;
-  width: 100%;
+  position: relative;
+  top: 115px;
+  right: 20px;
 
   @include main_mobile_only {
     width: 100%;
-    height: calc(100vh - 120px); // Reduced height by 120px instead of using full viewport height
+    height: calc(100vh - 120px);
     position: fixed;
-    top: 120px; // Added top: 120px to push component down on mobile
+    top: 120px;
     left: 0;
     right: 0;
     border-radius: 0;
@@ -36,10 +39,10 @@
 
     .thread-title {
       display: flex;
-      flex-direction: row; // Horizontal nebeneinander
+      flex-direction: row;
       align-items: center;
       gap: 8px;
-      flex: 0 0 auto; // Nimmt nur den benötigten Platz ein
+      flex: 0 0 auto;
 
       h3 {
         margin: 0;
@@ -88,21 +91,23 @@
   .thread-content {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    overflow-x: hidden;
+    padding: 20px 20px 20px 20px;
     @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
 
     @include main_mobile_only {
-      padding: 15px;
+      padding: 15px 60px 15px 15px;
     }
 
     .original-message {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      padding-bottom: 16px;
+      padding: 20px;
       margin-bottom: 16px;
     }
 
     .thread-messages {
       @include dFlexAllCenter($fld: column, $ai: stretch, $g: 12px);
+      padding: 20px;
 
       .thread-count {
         @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $text-gray);

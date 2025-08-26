@@ -20,7 +20,7 @@ export class MessageInputComponent {
 
   onSendMessage(event?: KeyboardEvent) {
     if (event && event.shiftKey) {
-      return; // Shift+Enter für neue Zeile
+      return;
     }
     
     if (event) {
@@ -29,7 +29,6 @@ export class MessageInputComponent {
     
     if (this.messageText.trim()) {
       console.log('Sending message:', this.messageText);
-      // Hier später Message Service aufrufen
       this.messageText = '';
     }
   }
