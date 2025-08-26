@@ -1,13 +1,10 @@
-<!-- src/app/features/chat/thread-panel/thread-panel.component.html -->
 <div class="thread-panel">
   <div class="thread-header">
-    <!-- Thread Title Links -->
     <div class="thread-title">
       <h3>Thread</h3>
       <span class="channel-name"># {{currentChannelName}}</span>
     </div>
     
-    <!-- Close Button Rechts -->
     <button class="btn-close" (click)="onBackToChat()">
       <svg width="24" height="24" viewBox="0 0 24 24">
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="black"/>
@@ -16,12 +13,10 @@
   </div>
 
   <div class="thread-content">
-    <!-- Original Message -->
     <div class="original-message">
       <app-message-item [message]="message" [isThreadView]="true"></app-message-item>
     </div>
 
-    <!-- Thread Messages -->
     <div class="thread-messages">
       <div class="thread-count">2 Antworten</div>
       <app-message-item 
@@ -32,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Thread Input -->
   <div class="thread-input">
     <app-message-input></app-message-input>
   </div>

@@ -29,14 +29,20 @@
     padding: 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px 20px 0 0;
-    @include dFlexAllCenter($jc: space-between, $ai: center);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     @include main_mobile_only {
       border-radius: 0;
     }
 
     .thread-title {
-      @include dFlexAllCenter($fld: column, $ai: flex-start, $g: 4px);
+      display: flex;
+      flex-direction: row; // Horizontal nebeneinander
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto; // Nimmt nur den benötigten Platz ein
 
       h3 {
         margin: 0;
@@ -48,20 +54,24 @@
       }
     }
 
-    // Close Button nur auf Mobile sichtbar, rechts positioniert
+   
     .btn-close {
       display: none;
-      margin-left: auto; // Explizit rechts positionieren
+      flex: 0 0 auto;
 
       @include main_mobile_only {
+        position: relative;
         display: flex;
-        @include dFlexAllCenter();
+        align-items: center;
+        justify-content: center;
         background: none;
         border: none;
         cursor: pointer;
         padding: 8px;
         border-radius: 50%;
         transition: background-color 0.3s ease;
+        width: 40px;
+        height: 40px;
 
         &:hover {
           background-color: $bg-color;
