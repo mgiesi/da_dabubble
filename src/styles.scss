@@ -5,6 +5,32 @@
 @use "../public/assets/styles/input-field.scss" as *;
 
 
+.error-marquee {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  min-height: 20px;
+  color: #e53935;
+
+  span {
+    display: inline-block;
+    padding-left: 50%;
+    animation: marquee-bounce 4s linear infinite alternate;
+  }
+}
+
+@keyframes marquee-bounce {
+  0% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+
 
 
 // html {
@@ -27,12 +53,18 @@ body {
 
 .error-message {
   position: absolute;
-  // bottom: -20px;
-  top: 56px;
+  top: 57px;
   left: 25px;
-  @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $rosa);
+  @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $rosa);
   transition: $transition-0-3-ease-in-out;
+  min-height: 20px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+
 
 
 

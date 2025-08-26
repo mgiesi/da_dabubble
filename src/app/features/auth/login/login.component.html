@@ -72,9 +72,9 @@
             }
             @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
             pwdField.dirty)) {
-            <p class="error-message" @fadeInOut>
-                *Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten
-            </p>
+            <div class="error-message error-marquee" @fadeInOut>
+                <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten</span>
+            </div>
             }
 
             @if (

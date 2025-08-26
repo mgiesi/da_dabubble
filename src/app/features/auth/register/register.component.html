@@ -21,11 +21,9 @@
 
             @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
             fullNameField.value !== '') {
-            <p class="error-message" @fadeInOut>
-                *Bitte geben Sie Ihren Namen ein.
-            </p>
-            } @else if (customMinLengthError && (fullNameField.touched || fullNameField.dirty)&&
-            fullNameField.value !== '') {
+            <div class="error-message error-marquee" @fadeInOut>
+                <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten</span>
+            </div>
             <p class="error-message" @fadeInOut>
                 *Der Name muss mindestens 4 Buchstaben enthalten.
             </p>
@@ -96,9 +94,9 @@
             }
             @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
             pwdField.dirty)) {
-            <p class="error-message" @fadeInOut>
-                *Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten
-            </p>
+            <div class="error-message error-marquee" @fadeInOut>
+                <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten</span>
+            </div>
             }
 
             @if (
