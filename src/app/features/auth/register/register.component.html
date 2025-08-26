@@ -19,16 +19,19 @@
                 required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+" #fullNameField="ngModel"
                 [ngModelOptions]="{ updateOn: 'blur' }" (blur)="validateNameLength()" />
 
-            @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty)) {
-            <p class="error-message">
+            @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
+            fullNameField.value !== '') {
+            <p class="error-message" @fadeInOut>
                 *Bitte geben Sie Ihren Namen ein.
             </p>
-            } @else if (customMinLengthError && (fullNameField.touched || fullNameField.dirty)) {
-            <p class="error-message">
+            } @else if (customMinLengthError && (fullNameField.touched || fullNameField.dirty)&&
+            fullNameField.value !== '') {
+            <p class="error-message" @fadeInOut>
                 *Der Name muss mindestens 4 Buchstaben enthalten.
             </p>
-            } @else if (fullNameField.errors?.['pattern'] && (fullNameField.touched || fullNameField.dirty)) {
-            <p class="error-message">
+            } @else if (fullNameField.errors?.['pattern'] && (fullNameField.touched || fullNameField.dirty)&&
+            fullNameField.value !== '') {
+            <p class="error-message" @fadeInOut>
                 *Bitte geben Sie Vor- und Nachnamen an.
             </p>
             }
