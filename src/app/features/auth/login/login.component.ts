@@ -26,6 +26,24 @@ import { SharedFunctionsService } from '../../../core/services/shared-functions.
   animations: [fadeInOut],
 })
 export class LoginComponent implements OnInit {
+  get emailPattern(): string {
+    return AuthService.EMAIL_PATTERN.source;
+  }
+  get emailPatternHtml(): string {
+    return AuthService.getEmailPatternHtml();
+  }
+  emailExists: boolean | null = null;
+  emailCheckInProgress = false;
+  async checkEmailExistsOnBlur() {
+    this.emailExists = null;
+    this.errMsg = '';
+    if (!this.email || !AuthService.EMAIL_PATTERN.test(this.email)) {
+      return;
+    }
+    this.emailCheckInProgress = true;
+    this.emailExists = await this.auth.emailExists(this.email);
+    this.emailCheckInProgress = false;
+  }
   auth = inject(AuthService);
   router = inject(Router);
   usersService = inject(UsersService);
@@ -181,7 +199,13 @@ export class LoginComponent implements OnInit {
     this.inProgress = true;
     try {
       if (!inputEmail || !inputPwd) {
-        this.errMsg = 'Bitte E-Mail und Passwort eingeben.';
+        return;
+      }
+      if (!AuthService.EMAIL_PATTERN.test(inputEmail)) {
+        return;
+      }
+      this.emailExists = await this.auth.emailExists(inputEmail);
+      if (!this.emailExists) {
         return;
       }
       await this.auth.signIn(inputEmail, inputPwd);

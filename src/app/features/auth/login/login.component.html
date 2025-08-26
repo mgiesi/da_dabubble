@@ -20,7 +20,8 @@
 </div>
 
 <div class="login-container">
-    <mat-progress-bar class="progress-bar" *ngIf="inProgress" mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar class="progress-bar" *ngIf="inProgress || emailCheckInProgress"
+        mode="indeterminate"></mat-progress-bar>
 
     <h1>Anmeldung</h1>
     <p class="description-login">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
@@ -29,18 +30,13 @@
         <label class="label-input-field-gray-with-img" for="email">
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
-                [disabled]="googleLoginInProgress" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required
-                #emailField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+                [disabled]="googleLoginInProgress" [pattern]="emailPattern" required #emailField="ngModel"
+                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExistsOnBlur()" [pattern]="emailPatternHtml"
+                required />
 
-            <ng-container
-                *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
-                <p class="error-message" @fadeInOut>
-                    *Bitte geben Sie eine gültige E-Mail-Adresse ein
-                </p>
-            </ng-container>
 
-            @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
-            '') {
+            @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== '')
+            {
             <p class="error-message" @fadeInOut>
                 *Bitte geben Sie eine gültige E-Mail-Adresse ein
             </p>
@@ -50,6 +46,12 @@
             emailField.dirty)) {
             <p class="error-message" @fadeInOut>
                 *Diese E-Mail ist leider ungültig
+            </p>
+            }
+
+            @if (emailExists === false && !emailCheckInProgress && emailField.valid) {
+            <p class="error-message" @fadeInOut>
+                *Es existiert kein Benutzer mit dieser E-Mail-Adresse
             </p>
             }
         </label>
