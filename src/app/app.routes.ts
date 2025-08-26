@@ -48,6 +48,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  { path: 'm/workspace', component: WorkspaceMenuComponent },
+  { path: 'm/chat/:channelId', component: ChatAreaComponent },
+  { path: 'm/thread/:threadId', component: ThreadPanelComponent },
+  { path: 'm', pathMatch: 'full', redirectTo: 'm/workspace' },
+
   {
     path: 'imprint',
     loadComponent: () =>
@@ -66,8 +71,4 @@ export const routes: Routes = [
 
   { path: '**', redirectTo: '/login' },
 
-  { path: 'm/workspace', component: WorkspaceMenuComponent },
-  { path: 'm/chat/:channelId', component: ChatAreaComponent },
-  { path: 'm/thread/:threadId', component: ThreadPanelComponent },
-  { path: 'm', pathMatch: 'full', redirectTo: 'm/workspace' },
 ];
