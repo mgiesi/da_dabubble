@@ -19,6 +19,8 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
+  static readonly EMAIL_PATTERN: RegExp =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   get firebaseAuth() {
     return this.auth;
   }

@@ -34,10 +34,12 @@ export class RegisterComponent {
   errMsg: string = '';
   inProgress = false;
   checked: boolean = false;
+  isHovered: boolean = false;
   showPwd: boolean = false;
   showConfirmPwd: boolean = false;
   customMinLengthError: boolean = false;
   emailExists: boolean = false;
+
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
 
@@ -46,8 +48,21 @@ export class RegisterComponent {
     this.customMinLengthError = cleanedName.length < 4;
   }
 
+  toggleCheckbox() {
+    this.checked = !this.checked;
+  }
+
+  onMouseEnter() {
+    this.isHovered = true;
+  }
+
+  onMouseLeave() {
+    this.isHovered = false;
+  }
+
   async checkEmailExists() {
-    if (!this.email) {
+    // Verwende das globale Pattern aus AuthService
+    if (!this.email || !AuthService.EMAIL_PATTERN.test(this.email)) {
       this.emailExists = false;
       return;
     }

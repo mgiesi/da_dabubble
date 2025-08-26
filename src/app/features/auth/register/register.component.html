@@ -131,12 +131,17 @@
             }
         </label>
 
-        <section class="example-section">
-            <mat-checkbox [ngModelOptions]="{ updateOn: 'blur' }" class="example-margin" [(ngModel)]="checked"
-                name="checked">
-                <p>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu</p>
-            </mat-checkbox>
-            <p class="error-message" @fadeInOut *ngIf="f.submitted && !checked">
+
+
+        <section (click)="toggleCheckbox()" class="checkbox-section" (mouseenter)="onMouseEnter()"
+            (mouseleave)="onMouseLeave()">
+            <img [src]="checked ? '/icons/checkbox-checked.svg' : (isHovered ? '/icons/checkbox-empty-hover.svg' : '/icons/checkbox-empty.svg')"
+                alt="Checkbox Icons">
+
+            <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu</span>
+
+            <p class="error-message"
+                *ngIf="!checked && fullNameField.valid && emailField.valid && pwdField.valid && confirmPwdField.valid">
                 *Bitte akzeptiere die Datenschutzerklärung
             </p>
         </section>

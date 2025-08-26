@@ -55,3 +55,27 @@ form {
     width: 100%;
     @include dFlexAllCenter($jc: flex-end, $g: 30px);
 }
+
+.checkbox-section {
+    position: relative;
+    @include dFlexAllCenter($g: 10px);
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    span {
+        @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+
+        a {
+            @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $purple-2);
+            padding: 3px 2px;
+            border-radius: 50px;
+
+            &:hover {
+                color: $purple-1;
+                background-color: $bg-color;
+            }
+        }
+    }
+}
