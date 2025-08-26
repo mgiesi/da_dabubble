@@ -61,7 +61,6 @@ export class RegisterComponent {
   }
 
   async checkEmailExists() {
-    // Verwende das globale Pattern aus AuthService
     if (!this.email || !AuthService.EMAIL_PATTERN.test(this.email)) {
       this.emailExists = false;
       return;
