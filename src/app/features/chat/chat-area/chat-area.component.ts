@@ -1,3 +1,4 @@
+// src/app/features/chat/chat-area/chat-area.component.ts
 import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter } from "@angular/core"
 import { MatCardModule } from "@angular/material/card"
 import { NgFor } from "@angular/common"
@@ -25,7 +26,6 @@ import { MessageItemComponent } from "../message-item/message-item.component"
 export class ChatAreaComponent implements OnInit, OnChanges {
   @Input() channelId: string | null = null
   @Output() threadOpened = new EventEmitter<any>()
-  @Output() backToWorkspace = new EventEmitter<void>()
 
   private channelsFacade = inject(ChannelsFacadeService)
   private usersFacade = inject(UsersFacadeService)
@@ -121,12 +121,9 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Handles back navigation to workspace (for mobile/tablet view).
+   * Handles thread opening when user replies to a message.
+   * Emits the message to parent component for thread view.
    */
-  onBackToWorkspace() {
-    this.backToWorkspace.emit()
-  }
-
   onReplyToMessage(message: any) {
     console.log("Reply to:", message)
     this.threadOpened.emit(message)

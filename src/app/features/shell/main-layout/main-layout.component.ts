@@ -1,3 +1,4 @@
+// src/app/features/shell/main-layout/main-layout.component.ts
 import { Component, inject } from '@angular/core';
 import { WorkspaceMenuComponent } from '../../../features/menu/workspace-menu/workspace-menu.component';
 import { ChatAreaComponent } from '../../chat/chat-area/chat-area.component';
@@ -18,40 +19,38 @@ export class MainLayoutComponent {
   
   private channelsFacade = inject(ChannelsFacadeService);
 
+  /**
+   * Handles channel selection from workspace menu.
+   * Switches to chat view and sets selected channel.
+   */
   onChannelSelected(channelId: string) {
     console.log('Main layout received channel:', channelId);
     this.selectedChannelId = channelId;
     this.currentView = 'chat';
   }
 
+  /**
+   * Handles thread opening from chat area.
+   * Switches to thread view and sets selected thread.
+   */
   onThreadOpened(message: any) {
     this.selectedThread = message;
     this.currentView = 'thread';
   }
 
-  onBackToWorkspace() {
-    this.currentView = 'workspace';
-    this.selectedChannelId = null;
-    this.selectedThread = null;
-  }
-
+  /**
+   * Handles back navigation from thread to chat.
+   * Only used on mobile/tablet layouts.
+   */
   onBackToChat() {
     this.currentView = 'chat';
     this.selectedThread = null;
   }
 
-  get workspaceSidebarClasses() {
-    return this.currentView === 'workspace' ? 'active' : '';
-  }
-
-  get chatMainClasses() {
-    return this.currentView === 'chat' ? 'active' : '';
-  }
-
-  get threadSidebarClasses() {
-    return this.currentView === 'thread' ? 'active' : '';
-  }
-
+  /**
+   * Gets the current channel name for thread panel.
+   * Returns channel name or empty string if no channel selected.
+   */
   get currentChannelName(): string {
     if (!this.selectedChannelId) return '';
     

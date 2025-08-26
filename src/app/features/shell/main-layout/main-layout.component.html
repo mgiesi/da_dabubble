@@ -4,8 +4,7 @@
   </aside>
 
   <main class="chat-main" [class.active]="currentView === 'chat'">
-    <app-chat-area *ngIf="selectedChannelId" [channelId]="selectedChannelId" (threadOpened)="onThreadOpened($event)"
-      (backToWorkspace)="onBackToWorkspace()">
+    <app-chat-area *ngIf="selectedChannelId" [channelId]="selectedChannelId" (threadOpened)="onThreadOpened($event)">
     </app-chat-area>
     <div *ngIf="!selectedChannelId" class="no-channel-selected">
       Wähle einen Channel aus

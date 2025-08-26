@@ -1,12 +1,10 @@
-// breakpoints.scss
-// Responsive Breakpoints für verschiedene Layout-Systeme
 
 // Main Layout Breakpoints (3-Spalten Chat-Layout)
 $main_layout_mobile: 768px;    // Mobile: Einzelansicht
 $main_layout_tablet: 1024px;   // Tablet: 2-Spalten  
 $main_layout_desktop: 1200px;  // Desktop: 3-Spalten
 
-// General Breakpoints (für andere Komponenten)
+// General Breakpoints (ggf für andere Komponenten)
 $breakpoint_sm: 576px;
 $breakpoint_md: 768px;
 $breakpoint_lg: 1024px;
