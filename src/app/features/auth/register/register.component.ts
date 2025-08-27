@@ -12,6 +12,7 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

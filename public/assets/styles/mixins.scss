@@ -7,7 +7,7 @@
   top: 0;
   height: 100%;
   width: 100%;
-  z-index: 2;
+  overflow-x: hidden;
   max-width: $max-content-width-1920;
 }
 
@@ -349,7 +349,7 @@
   height: 16px;
 }
 
-@mixin successfullyCreatedOverlay {
+@mixin accountCreatedSuccessfully {
   @include dFlexAllCenter($g: clamp(18px, 16px + 0.625vw, 28px));
   padding: clamp(30px, 26px + 1.25vw, 50px);
   background-color: $purple-1;

@@ -89,8 +89,12 @@ input {
   transition: $transition-0-3-ease-in-out;
 }
 
-.successfully-created-overlay {
-  @include successfullyCreatedOverlay;
+.account-created-successfully {
+  @include accountCreatedSuccessfully;
+  position: absolute;
+  bottom: 45px;
+  right: 45px;
+  transform: translateX(115%);
 }
 
 .error-marquee {
