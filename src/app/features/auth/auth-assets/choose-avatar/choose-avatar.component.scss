@@ -1,0 +1,90 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/btn-style.scss" as *;
+
+.choose-avatar-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 25px);
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $black);
+    }
+}
+
+.hero-icon-box {
+    background-color: aqua;
+    border-radius: 50%;
+    width: clamp(120px, 110.4px + 3vw, 168px);
+    aspect-ratio: 1/1;
+    @include dFlexAllCenter();
+    overflow: hidden;
+
+    img {
+        width: 100%;
+    }
+}
+
+.choose-avatar-text-box {
+    width: 100%;
+    text-align: start;
+}
+
+.avatar-icons-box {
+    @include dFlexAllCenter($g: 15px);
+}
+
+.single-avatar-box {
+    overflow: hidden;
+    border-radius: 50%;
+    width: 56px;
+    aspect-ratio: 1/1;
+    @include dFlexAllCenter();
+    cursor: pointer;
+    border: 4px solid transparent;
+
+
+    img {
+        width: 100%;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    img.loaded {
+        opacity: 1;
+    }
+
+    .avatar-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        z-index: 1;
+        overflow: hidden;
+        background: #eee;
+        background: linear-gradient(135deg, #eee 40%, #f5f5f5 50%, #eee 60%);
+        background-size: 200% 200%;
+        animation: shimmer 1.2s linear infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: 100% 0;
+        }
+
+        100% {
+            background-position: 0 100%;
+        }
+    }
+
+    &:hover {
+        border: 4px solid $bg-color;
+    }
+}
+
+.button-box {
+    width: 100%;
+    @include dFlexAllCenter($jc: flex-end);
+
+}

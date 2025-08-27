@@ -1,0 +1,22 @@
+<div class="choose-avatar-container">
+    <div class="hero-icon-box">
+        <img src="/img/avatar/unknown-image.png" alt="Leerer Avatar">
+    </div>
+    <h1>Frederik Beck</h1>
+    <div class="choose-avatar-text-box">
+        <p>Aus der Liste wählen</p>
+    </div>
+    <div class="avatar-icons-box">
+        <ng-container *ngFor="let avatar of avatarIconsArray; index as i">
+            <div class="single-avatar-box" style="position: relative;">
+                <img [src]="avatar.src" [alt]="avatar.alt" (load)="onAvatarLoad(avatar)" [class.loaded]="avatar.loaded">
+                <div class="avatar-placeholder" *ngIf="!avatar.loaded"></div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="button-box">
+        <button disabled class="btn-blue ">Konto erstellen</button>
+    </div>
+
+</div>
