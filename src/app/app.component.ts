@@ -210,14 +210,8 @@ export class AppComponent {
   }
 
   onBackClick() {
-<<<<<<< HEAD
     const isMobile = window.innerWidth < 768; // prüfe < $main_layout_mobile
     this.logoState.setCurrentView('workspace');
     if (isMobile) this.router.navigate(['/m/workspace'], { replaceUrl: true });
   }
-=======
-    this.logoState.setCurrentView('workspace');
-  }
-
->>>>>>> 387074314c743cd2b4a6d930f256921d2cf3287c
 }
