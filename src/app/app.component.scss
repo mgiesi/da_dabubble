@@ -18,35 +18,49 @@
     max-width: $max-content-width-1920;
     margin: 0 auto;
     position: relative;
+    max-width: $max-content-width-1920;
+
 }
 
 .animation-overlay {
     background: $bg-animation-logo;
     z-index: 2;
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    // top: 0;
+    // left: 0;
+    // right: 0;
     height: 100dvh;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     animation: backgroundAnimation $backgroundAnimation;
+
+
+
+}
+
+.overlay-box {
     max-width: $max-content-width-1920;
+    position: relative;
+    height: 100dvh;
+    width: 100%;
 
+}
 
-    .animation-overlay-content {
-        width: 667px;
-        height: 185px;
-        position: absolute;
-        z-index: 4;
-        top: 50%;
-        left: 50%;
+.animation-overlay-content {
+    width: 667px;
+    height: 185px;
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
 
-        transform: translate(-15%, -50%);
-        @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
-        animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
-        max-width: $max-content-width-1920;
+    transform: translate(-15%, -50%);
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
+    animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
-    }
 }
 
 .logo {
@@ -95,8 +109,8 @@
     }
 }
 
-.logo-text-box-false,
-.logo-text-box-true {
+.logo-text-box-logged-out,
+.logo-text-box-logged-in {
     position: absolute;
     @include dFlexAllCenter($g: 16px);
 
@@ -133,12 +147,12 @@
     }
 }
 
-.logo-text-box-false {
+.logo-text-box-logged-out {
     top: 55px;
     left: 55px;
 }
 
-.logo-text-box-true {
+.logo-text-box-logged-in {
     top: 20px;
     left: 45px;
 }

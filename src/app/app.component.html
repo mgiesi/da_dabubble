@@ -1,13 +1,14 @@
 @if (showAnimation$ | async) {
 <div class="animation-overlay">
-  <div class="animation-overlay-content">
-    <div class="logo">
-      <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
-    </div>
-    <div class="placeholder"></div>
-
-    <div class="text">
-      <h1>DABubble</h1>
+  <div class="overlay-box">
+    <div class="animation-overlay-content">
+      <!-- <div class="logo">
+        <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
+      </div> -->
+      <!-- <div class="placeholder"></div>
+      <div class="text">
+        <h1>DABubble</h1>
+      </div> -->
     </div>
   </div>
 </div>
@@ -16,7 +17,7 @@
 <div class="app-container">
 
   @if (!(showAnimation$ | async)) {
-  <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-true' : 'logo-text-box-false'">
+  <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'">
     <!-- Dynamic logo source based on current view and screen size -->
     <img [src]="logoSrc()" alt="Logo">
 
