@@ -337,3 +337,19 @@
   width: 16px;
   height: 16px;
 }
+
+@mixin successfullyCreatedOverlay {
+  @include dFlexAllCenter($g: clamp(18px, 16px + 0.625vw, 28px));
+  padding: clamp(30px, 26px + 1.25vw, 50px);
+  background-color: $purple-1;
+  border-radius: $padding-20-30 $padding-20-30 0 $padding-20-30;
+
+  p {
+    @include fontSizeWeightColor($si: $font-size-22-36, $we: 700, $co: $white);
+  }
+
+  img {
+    width: clamp(24px, 20.8px + 1vw, 40px);
+    aspect-ratio: 1 / 1;
+  }
+}

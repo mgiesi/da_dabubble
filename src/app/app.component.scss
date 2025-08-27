@@ -2,12 +2,96 @@
 @use "../../public/assets/styles/mixins.scss" as *;
 @use "../../public/assets/styles/variables.scss" as *;
 @use "../../public/assets/styles/btn-style.scss" as *;
+@use "../../public/assets/styles/animation-login-overlay.scss" as *;
+
+
+:host {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+    overflow-y: auto;
+    position: relative;
+    height: 100dvh;
+}
 
 .app-container {
-    height: 100dvh;
+    height: 100%;
+    width: 100%;
     max-width: $max-content-width-1920;
     margin: 0 auto;
     position: relative;
+}
+
+.animation-overlay {
+    background: $bg-animation-logo;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100dvh;
+    width: 100%;
+    animation: backgroundAnimation $backgroundAnimation;
+
+
+    .animation-overlay-content {
+        width: 667px;
+        height: 185px;
+        position: absolute;
+        z-index: 4;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-15%, -50%);
+        @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
+        animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
+        max-width: $max-content-width-1920;
+
+    }
+}
+
+.logo {
+    position: absolute;
+    left: 0%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background: linear-gradient(#5D63ED, #4D55EA);
+    z-index: 3;
+    width: 190px;
+    height: 100%;
+    animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+
+    img {
+        height: 100%;
+    }
+}
+
+.placeholder {
+    z-index: 2;
+    position: absolute;
+
+    background: linear-gradient(#5D63ED, #4D55EA);
+    width: 667px;
+    height: 185px;
+    left: -477px;
+    animation: placeholderAnimation $animation-login-overlay;
+}
+
+.text {
+    position: absolute;
+    top: 50%;
+    left: -41%;
+    transform: translate(0%, -50%);
+    background-color: transparent;
+    display: grid;
+    z-index: 1;
+    place-items: center;
+    height: 100%;
+    animation: textAnimation $animation-login-overlay-text;
+
+    h1 {
+        @include fontSizeWeightColor($si: 70px, $we: 700, $co: $white);
+        animation: textColorAnimation $textColorAnimation, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    }
 }
 
 .logo-text-box-false,
@@ -41,7 +125,8 @@
         }
     }
 
-    p, h1 {
+    p,
+    h1 {
         @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
         margin: 0;
     }

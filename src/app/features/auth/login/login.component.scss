@@ -5,83 +5,86 @@
 :host {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
     overflow-y: auto;
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 2;
-    max-width: $max-content-width-1920;
-}
-
-.animation-overlay {
-    background: $bg-animation-logo;
-    z-index: 2;
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     right: 0;
-    height: 100dvh;
+    height: 100%;
     width: 100%;
-    animation: backgroundAnimation $backgroundAnimation;
-
-
-    .animation-overlay-content {
-        width: 667px;
-        height: 185px;
-        position: absolute;
-        z-index: 4;
-        top: 50%;
-        left: 63.5%;
-        transform: translate(-50%, -50%);
-        @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
-        animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    }
+    // z-index: 2;
 }
 
-.logo {
-    position: absolute;
-    left: 0%;
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    background: linear-gradient(#5D63ED, #4D55EA);
-    z-index: 3;
-    width: 190px;
-    height: 100%;
-    animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+// .animation-overlay {
+//     background: $bg-animation-logo;
+//     z-index: 2;
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     height: 100dvh;
+//     width: 100%;
+//     // animation: backgroundAnimation $backgroundAnimation;
 
-    img {
-        height: 100%;
-    }
-}
 
-.placeholder {
-    z-index: 2;
-    position: absolute;
-    background: linear-gradient(#5D63ED, #4D55EA);
-    width: 667px;
-    height: 185px;
-    left: -477px;
-    animation: placeholderAnimation $animation-login-overlay;
-}
+//     .animation-overlay-content {
+//         width: 667px;
+//         height: 185px;
+//         position: absolute;
+//         z-index: 4;
+//         top: 50%;
+//         left: 63.5%;
+//         transform: translate(-50%, -50%);
+//         @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
+//         // animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
+//         // max-width: $max-content-width-1920;
 
-.text {
-    position: absolute;
-    top: 50%;
-    left: -41%;
-    transform: translate(0%, -50%);
-    background-color: transparent;
-    display: grid;
-    z-index: 1;
-    place-items: center;
-    height: 100%;
-    animation: textAnimation $animation-login-overlay-text;
+//     }
+// }
 
-    h1 {
-        @include fontSizeWeightColor($si: 70px, $we: 700, $co: $white);
-        animation: textColorAnimation $textColorAnimation, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    }
-}
+// .logo {
+//     position: absolute;
+//     left: 0%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: end;
+//     background: linear-gradient(#5D63ED, #4D55EA);
+//     z-index: 3;
+//     width: 190px;
+//     height: 100%;
+//     // animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+
+//     img {
+//         height: 100%;
+//     }
+// }
+
+// .placeholder {
+//     z-index: 2;
+//     position: absolute;
+//     background: linear-gradient(#5D63ED, #4D55EA);
+//     width: 667px;
+//     height: 185px;
+//     left: -477px;
+//     // animation: placeholderAnimation $animation-login-overlay;
+// }
+
+// .text {
+//     position: absolute;
+//     top: 50%;
+//     left: -41%;
+//     transform: translate(0%, -50%);
+//     background-color: transparent;
+//     display: grid;
+//     z-index: 1;
+//     place-items: center;
+//     height: 100%;
+//     animation: textAnimation $animation-login-overlay-text;
+
+//     h1 {
+//         @include fontSizeWeightColor($si: 70px, $we: 700, $co: $white);
+//         // animation: textColorAnimation $textColorAnimation, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
+//     }
+// }
 
 .create-account-box {
     position: absolute;
@@ -186,126 +189,126 @@ form {
 
 
 
-@keyframes backgroundAnimation {
-    0% {
-        background-color: rgba(93, 99, 237, 1);
-    }
+// @keyframes backgroundAnimation {
+//     0% {
+//         background-color: rgba(93, 99, 237, 1);
+//     }
 
-    25% {
-        background: rgba(93, 99, 237, 0.75);
-    }
+//     25% {
+//         background: rgba(93, 99, 237, 0.75);
+//     }
 
-    50% {
-        background: rgba(93, 99, 237, 0.5);
-    }
+//     50% {
+//         background: rgba(93, 99, 237, 0.5);
+//     }
 
-    75% {
-        background: rgba(93, 99, 237, 0.25);
-    }
+//     75% {
+//         background: rgba(93, 99, 237, 0.25);
+//     }
 
-    100% {
-        background: rgba(93, 99, 237, 0);
-    }
-}
-
-
-@keyframes contentAnimation {
-    0% {
-        left: 63.5%;
-    }
-
-    100% {
-        left: 50%;
-    }
-}
+//     100% {
+//         background: rgba(93, 99, 237, 0);
+//     }
+// }
 
 
-@keyframes removeBgColor {
-    0% {
-        background: rgba(93, 99, 237, 1);
-    }
+// @keyframes contentAnimation {
+//     0% {
+//         left: 63.5%;
+//     }
 
-    100% {
-        background: rgba(93, 99, 237, 0);
-    }
-}
-
-@keyframes textColorAnimation {
-    0% {
-        color: $white;
-    }
-
-    25% {
-        color: rgba(192, 192, 192, 1);
-    }
-
-    50% {
-        color: rgba(128, 128, 128, 1);
-    }
-
-    75% {
-        color: rgba(64, 64, 64, 1);
-    }
-
-    100% {
-        color: $black;
-    }
-}
+//     100% {
+//         left: 50%;
+//     }
+// }
 
 
-@keyframes textAnimation {
-    0% {
-        left: -41%;
-    }
+// @keyframes removeBgColor {
+//     0% {
+//         background: rgba(93, 99, 237, 1);
+//     }
 
-    100% {
-        left: 31%;
-    }
-}
+//     100% {
+//         background: rgba(93, 99, 237, 0);
+//     }
+// }
 
-@keyframes overlayToLeftCornerAnimation {
-    0% {
-        top: 50%;
-        left: 50%;
-        width: 667px;
-        height: 185px;
-        transform: translate(-50%, -50%);
-    }
+// @keyframes textColorAnimation {
+//     0% {
+//         color: $white;
+//     }
 
-    100% {
-        left: 55px;
-        top: 55px;
-        width: 242px;
-        height: 70px;
-        transform: translate(0%, 0%);
-    }
-}
+//     25% {
+//         color: rgba(192, 192, 192, 1);
+//     }
 
-@keyframes logoToLeftCornerAnimation {
-    0% {
-        width: 187px;
-        justify-content: flex-end;
-    }
+//     50% {
+//         color: rgba(128, 128, 128, 1);
+//     }
 
-    100% {
-        width: 71.5px;
-        justify-content: flex-start;
-    }
-}
+//     75% {
+//         color: rgba(64, 64, 64, 1);
+//     }
 
-@keyframes textToLeftCornerAnimation {
-    0% {
-        font-size: 70px;
-    }
+//     100% {
+//         color: $black;
+//     }
+// }
 
-    100% {
-        font-size: 32px;
-        transform: translateX(11px);
-    }
-}
 
-@keyframes placeholderAnimation {
-    to {
-        display: none;
-    }
-}
+// @keyframes textAnimation {
+//     0% {
+//         left: -41%;
+//     }
+
+//     100% {
+//         left: 31%;
+//     }
+// }
+
+// @keyframes overlayToLeftCornerAnimation {
+//     0% {
+//         top: 50%;
+//         left: 50%;
+//         width: 667px;
+//         height: 185px;
+//         transform: translate(-50%, -50%);
+//     }
+
+//     100% {
+//         left: 55px;
+//         top: 55px;
+//         width: 242px;
+//         height: 70px;
+//         transform: translate(0%, 0%);
+//     }
+// }
+
+// @keyframes logoToLeftCornerAnimation {
+//     0% {
+//         width: 187px;
+//         justify-content: flex-end;
+//     }
+
+//     100% {
+//         width: 71.5px;
+//         justify-content: flex-start;
+//     }
+// }
+
+// @keyframes textToLeftCornerAnimation {
+//     0% {
+//         font-size: 70px;
+//     }
+
+//     100% {
+//         font-size: 32px;
+//         transform: translateX(11px);
+//     }
+// }
+
+// @keyframes placeholderAnimation {
+//     to {
+//         display: none;
+//     }
+// }
