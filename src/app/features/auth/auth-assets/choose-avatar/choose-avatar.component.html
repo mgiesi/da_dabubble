@@ -8,7 +8,7 @@
     </div>
     <div class="avatar-icons-box">
         <ng-container *ngFor="let avatar of avatarIconsArray; index as i">
-            <div class="single-avatar-box" style="position: relative;">
+            <div class="single-avatar-box">
                 <img [src]="avatar.src" [alt]="avatar.alt" (load)="onAvatarLoad(avatar)" [class.loaded]="avatar.loaded">
                 <div class="avatar-placeholder" *ngIf="!avatar.loaded"></div>
             </div>
