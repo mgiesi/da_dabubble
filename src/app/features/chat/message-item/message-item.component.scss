@@ -85,9 +85,9 @@
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
-  max-width: 70%;
+  width: fit-content; // Passt sich dem Text an
   word-wrap: break-word;
-  transition: $transition-0-3-ease-in-out; // Smooth transition für BG-Change
+  transition: $transition-0-3-ease-in-out;
   position: relative;
 }
 
@@ -176,13 +176,24 @@
   flex-wrap: wrap;
 }
 
-.selected-emoji-display {
-  @include dFlexAllCenter($ai: center, $jc: flex-end, $g: 4px);
-  margin-top: 8px;
+.message-bubble-wrapper {
+  width: fit-content;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
 
-  &.own-message-emoji {
-    @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 4px);
-  }
+.selected-emoji-display {
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  margin-top: 4px;
+  width: fit-content;
+}
+
+// Für eigene Nachrichten
+.own-message .message-bubble-wrapper {
+  align-items: flex-start; // Emoji linksbündig
+  margin-left: auto;
 }
 
 .selected-emoji-unicode {
@@ -262,11 +273,11 @@
     max-height: 280px !important;
     overflow-y: auto !important;
     padding: 0 8px !important;
-    
+
     &::-webkit-scrollbar {
       width: 4px !important;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 0.2) !important;
       border-radius: 2px !important;
@@ -275,14 +286,14 @@
 
   .emoji-mart-search {
     padding: 12px !important;
-    
+
     input {
       border: 1px solid $bg-color !important;
       border-radius: 12px !important;
       padding: 8px 12px !important;
       background: $bg-color !important;
       font-size: 14px !important;
-      
+
       &:focus {
         border-color: $purple-1 !important;
         outline: none !important;
