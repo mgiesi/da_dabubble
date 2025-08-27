@@ -32,7 +32,7 @@
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                 [disabled]="googleLoginInProgress" [pattern]="emailPattern" required #emailField="ngModel"
                 [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExistsOnBlur()" [pattern]="emailPatternHtml"
-                required />
+                [class.input-error-border]="emailField.invalid && (emailField.touched || emailField.dirty) && emailField.value !== ''" />
 
 
             @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== '')
@@ -60,7 +60,8 @@
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
             <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
                 [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort" [disabled]="googleLoginInProgress"
-                minlength="8" required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+                minlength="8" required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }"
+                [class.input-error-border]="pwdField.invalid && (pwdField.touched || pwdField.dirty) && pwdField.value !== ''" />
             @if (pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !==
             '') {
             <p class="error-message" @fadeInOut>

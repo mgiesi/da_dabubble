@@ -59,6 +59,11 @@ input {
   }
 }
 
+.input-error-border {
+  border: 1px solid $rosa !important;
+  transition: $transition-0-3-ease-in-out;
+}
+
 .error-marquee {
   overflow: hidden;
   white-space: nowrap;

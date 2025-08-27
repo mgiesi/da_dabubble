@@ -17,7 +17,8 @@
             <img src="icons/person_filled.svg" alt="Bild vom Namens-Eingabefeld">
             <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Name und Nachname"
                 required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+" #fullNameField="ngModel"
-                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="validateNameLength()" />
+                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="validateNameLength()"
+                [class.input-error-border]="fullNameField.invalid && (fullNameField.touched || fullNameField.dirty) && fullNameField.value !== ''" />
 
             @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
             fullNameField.value !== '') {
@@ -41,7 +42,8 @@
             <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
             <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                 pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required #emailField="ngModel"
-                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExists()" />
+                [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExists()"
+                [class.input-error-border]="emailField.invalid && (emailField.touched || emailField.dirty) && emailField.value !== ''" />
 
             <ng-container
                 *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
@@ -76,7 +78,8 @@
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
             <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
                 [(ngModel)]="pwd" name="pwd" [type]="showPwd ? 'text' : 'password'" placeholder="Passwort" minlength="8"
-                required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+                required #pwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }"
+                [class.input-error-border]="pwdField.invalid && (pwdField.touched || pwdField.dirty) && pwdField.value !== ''" />
             <div class="visibility-btn" type="button" (click)="showPwd = !showPwd">
                 <mat-icon *ngIf="!showPwd">visibility_off</mat-icon>
                 <mat-icon *ngIf="showPwd">visibility</mat-icon>
@@ -115,7 +118,10 @@
             <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
             <input id="confirmPassword" [(ngModel)]="confirmPwd" name="confirmPwd"
                 [type]="showConfirmPwd ? 'text' : 'password'" placeholder="Passwort bestätigen" required
-                #confirmPwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+                #confirmPwdField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" [class.input-error-border]="
+                                    (confirmPwdField.invalid && (confirmPwdField.touched || confirmPwdField.dirty) && confirmPwdField.value !== '') ||
+                                    ((confirmPwdField.dirty || confirmPwdField.touched) && pwd !== confirmPwd && pwdField.value !== '')
+                                " />
             <div class="visibility-btn" type="button" (click)="showConfirmPwd = !showConfirmPwd">
                 <mat-icon *ngIf="!showConfirmPwd">visibility_off</mat-icon>
                 <mat-icon *ngIf="showConfirmPwd">visibility</mat-icon>
