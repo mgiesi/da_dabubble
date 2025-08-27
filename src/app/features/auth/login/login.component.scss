@@ -6,6 +6,12 @@
     @include authCardHost();
 }
 
+.progress-bar {
+    position: absolute;
+    top: 0;
+    width: 90%;
+}
+
 
 .create-account-box {
     position: absolute;
