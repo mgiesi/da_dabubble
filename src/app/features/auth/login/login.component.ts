@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,8 @@ import { FirebaseError } from '@angular/fire/app';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
+import { RegisterContainerComponent } from '../auth-assets/register-container/register-container.component';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -18,6 +20,7 @@ import { SharedFunctionsService } from '../../../core/services/shared-functions.
     RouterLink,
     LegalBtnsComponent,
     MatProgressBarModule,
+    RegisterContainerComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
