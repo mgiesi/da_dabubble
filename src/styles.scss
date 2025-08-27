@@ -44,6 +44,7 @@ input {
 .auth-card-container {
   background-color: $white;
   max-width: 610px;
+  min-width: clamp(610px, 672.9508px + -3.2787vw, 650px);
   @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
   text-align: center;
   padding: 60px;

@@ -6,9 +6,8 @@ import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthService } from '../../../core/services/auth.service';
-import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { ChooseAvatarComponent } from '../auth-assets/choose-avatar/choose-avatar.component';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -21,12 +20,17 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
     MatIconModule,
     AuthCardComponent,
     RouterLink,
+    ChooseAvatarComponent,
   ],
   templateUrl: './avatar-selection.component.html',
   styleUrl: './avatar-selection.component.scss',
   animations: [fadeInOut],
 })
 export class AvatarSelectionComponent {
-  avatarInProgress: string = '';
+  avatarSectionInProgress: boolean = true;
   accountCreatedSuccessfully: boolean = false;
+
+  onAvatarsLoaded() {
+    this.avatarSectionInProgress = false;
+  }
 }
