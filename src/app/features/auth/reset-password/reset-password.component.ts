@@ -11,7 +11,7 @@ import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
 
 @Component({
-  selector: 'app-forgot-password',
+  selector: 'app-reset-password',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,30 +22,15 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
     AuthCardComponent,
     RouterLink,
   ],
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss',
+  templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.scss',
   animations: [fadeInOut],
 })
-export class ForgotPasswordComponent {
-  resetEmail: string = '';
-  emailExists: boolean | null = null;
-  emailCheckInProgress = false;
+export class ResetPasswordComponent {
+  newPassword: string = '';
+  setNewPasswordInProgress: boolean = false;
+  showPwd: boolean = false;
   errMsg: string = '';
-
-  authService = inject(AuthService);
-  usersService = inject(UsersService);
-
-  async checkEmailExists() {
-    this.emailExists = null;
-    this.errMsg = '';
-    if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
-      return;
-    }
-    this.emailCheckInProgress = true;
-    this.emailExists = await this.authService.emailExists(this.resetEmail);
-    if (!this.emailExists) {
-      this.errMsg = 'Es existiert kein Benutzer mit dieser E-Mail-Adresse';
-    }
-    this.emailCheckInProgress = false;
-  }
+  showConfirmPwd: boolean = false;
+  confirmPwdTouched: boolean = false;
 }

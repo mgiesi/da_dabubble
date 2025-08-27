@@ -4,7 +4,6 @@ import { WorkspaceMenuComponent } from './features/menu/workspace-menu/workspace
 import { ChatAreaComponent } from './features/chat/chat-area/chat-area.component';
 import { ThreadPanelComponent } from './features/chat/thread-panel/thread-panel.component';
 
-
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
@@ -36,6 +35,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/forgot-password/forgot-password.component').then(
         (c) => c.ForgotPasswordComponent
+      ),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./features/auth/reset-password/reset-password.component').then(
+        (c) => c.ResetPasswordComponent
       ),
   },
 
@@ -70,5 +76,4 @@ export const routes: Routes = [
   },
 
   { path: '**', redirectTo: '/login' },
-
 ];
