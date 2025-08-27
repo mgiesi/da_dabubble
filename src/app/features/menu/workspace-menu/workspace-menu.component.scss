@@ -3,208 +3,200 @@
 @use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .workspace-menu {
-    width: 366px;
-    height: 940px;
-    background: $white;
-    color: $black;
-    border-radius: 20px;
-    padding: 32px 30px;
-    @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 25px);
-    position: relative;
-    top: 115px;
-    left: 20px;
-    box-shadow: $box-shadow;
+  width: 366px;
+  height: 940px;
+  background: $white;
+  color: $black;
+  border-radius: 20px;
+  padding: 32px 30px;
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 25px);
+  position: relative;
+  top: 115px;
+  left: 20px;
+  box-shadow: $box-shadow;
 
-    @include main_mobile_only {
-        width: 100%;
-        height: calc(100vh - 120px);
-   
-        top: 120px;
-        left: 0;
-        border-radius: 0;
-        z-index: 100;
-    }
+  @include main_mobile_only {
+    width: 100%;
+    height: calc(100vh - 120px);
+    top: 120px;
+    left: 0;
+    border-radius: 0;
+    z-index: 100;
+  }
 }
 
 .workspace-header {
-    @include dFlexAllCenter($jc: space-between);
+  @include dFlexAllCenter($jc: space-between);
 
-    .workspace-title {
-        @include dFlexAllCenter($jc: start, $g: 12px);
+  .workspace-title {
+    @include dFlexAllCenter($jc: start, $g: 12px);
+  }
+
+  .workspace-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  h2 {
+    margin: 0;
+    @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+  }
+
+  .edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+
+    svg path {
+      fill: $black;
     }
 
-    .workspace-logo {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
+    &:hover svg path {
+      fill: $purple-1;
     }
 
-    h2 {
-        margin: 0;
-        @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+    &:hover {
+      background: $bg-color;
+      border-radius: 50%;
     }
-
-    .edit-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px;
-        border-radius: 4px;
-        width: 40px;
-        height: 40px;
-
-        svg path {
-            fill: $black;
-        }
-
-        &:hover svg path {
-            fill: $purple-1;
-        }
-
-        &:hover {
-            background: $bg-color;
-            border-radius: 50%;
-        }
-    }
+  }
 }
 
 .section-header {
-    @include dFlexAllCenter($jc: space-between);
-    margin-bottom: 12px;
-    @include fontSizeWeightColor($si: $font-size-18, $we: 700, $co: $black);
+  @include dFlexAllCenter($jc: space-between);
+  margin-bottom: 12px;
+  @include fontSizeWeightColor($si: $font-size-18, $we: 700, $co: $black);
 
-    span {
-        @include dFlexAllCenter($jc: start, $g: 8px);
+  span {
+    @include dFlexAllCenter($jc: start, $g: 8px);
 
-        &:hover {
-            cursor: pointer;
-            color: $purple-1;
-        }
-
-        &:hover .close-icon svg path {
-            fill: $purple-1;
-        }
-
-        &:hover .close-icon svg {
-            transform: scale(1.1);
-        }
+    &:hover {
+      cursor: pointer;
+      color: $purple-1;
     }
 
-    .close-icon {
-        @include dFlexAllCenter();
-
-        &.closed {
-            transform: rotate(-90deg);
-        }
+    &:hover .close-icon svg path {
+      fill: $purple-1;
     }
 
-    span {
-        &:hover {
-            cursor: pointer;
-            color: $purple-1;
-        }
+    &:hover .close-icon svg {
+      transform: scale(1.1);
+    }
+  }
+
+  .close-icon {
+    @include dFlexAllCenter();
+
+    &.closed {
+      transform: rotate(-90deg);
+    }
+  }
+
+  .add-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    @include dFlexAllCenter();
+
+    svg path {
+      fill: $black;
     }
 
-    .add-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        @include dFlexAllCenter();
-
-        svg path {
-            fill: $black;
-        }
-
-        &:hover svg path {
-            fill: $purple-1;
-        }
-
-        &:hover {
-            background: $bg-color;
-        }
+    &:hover svg path {
+      fill: $purple-1;
     }
+
+    &:hover {
+      background: $bg-color;
+    }
+  }
 }
 
 .channels-section,
 .dm-section {
-    width: 100%;
+  width: 100%;
 }
 
 .channels-content,
 .dm-content {
-    overflow: hidden;
+  max-height: 348px;
+  overflow-y: auto;
+  overflow-x: hidden;
 
-    &.collapsed {
-        max-height: 0;
-        opacity: 0;
-    }
+  &.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
 }
 
 .dm-item {
-    @include dFlexAllCenter($jc: start, $g: 12px);
-    padding: 12px 16px;
-    cursor: pointer;
-    border-radius: 25px;
-    margin-bottom: 8px;
+  @include dFlexAllCenter($jc: start, $g: 12px);
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin-bottom: 8px;
 
-    &:hover {
-        background: $bg-color;
-    }
+  &:hover {
+    background: $bg-color;
+  }
 }
 
 .add-channel-container {
-    @include dFlexAllCenter($jc: start, $g: 12px);
-    padding: 12px 16px;
-    cursor: pointer;
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    border-radius: 25px;
-    margin-bottom: 8px;
+  @include dFlexAllCenter($jc: start, $g: 12px);
+  padding: 12px 16px;
+  cursor: pointer;
+  @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+  border-radius: 25px;
+  margin-bottom: 8px;
 
-    svg {
-        path {
-            fill: black;
-        }
+  svg path {
+    fill: black;
+  }
+
+  &.active svg path {
+    fill: $purple-1;
+  }
+
+  &:hover {
+    color: $purple-1;
+
+    svg path {
+      fill: $purple-1;
     }
-
-    &.active svg path {
-        fill: $purple-1;
-    }
-
-    &:hover {
-        color: $purple-1;
-
-        svg path {
-            fill: $purple-1;
-        }
-    }
+  }
 }
 
 .channel-item {
-    @include dFlexAllCenter($ai: center, $jc: start, $g: 8px);
-    padding: 6px 8px;
-    border-radius: 12px;
-    cursor: pointer;
+  @include dFlexAllCenter($ai: center, $jc: start, $g: 8px);
+  padding: 6px 8px;
+  border-radius: 12px;
+  cursor: pointer;
 
-    .hashtag-icon {
-        width: 14px;
-        height: 14px;
-        flex: 0 0 14px;
+  .hashtag-icon {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
 
-        path {
-            fill: currentColor;
-        }
+    path {
+      fill: currentColor;
     }
+  }
 
-    span {
-        @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: inherit);
-    }
+  span {
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: inherit);
+  }
 
-    &:hover,
-    &.active {
-        color: $purple-3;
-        background: rgba($purple-3, 0.08);
-    }
+  &:hover,
+  &.active {
+    color: $purple-3;
+    background: rgba($purple-3, 0.08);
+  }
 }
