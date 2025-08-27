@@ -12,6 +12,7 @@ export interface Message {
   channelId: string
   reactions?: any[]
   threadId?: string
+  isOwnMessage?: boolean
 }
 
 export interface Topic {
@@ -75,7 +76,7 @@ export class MessagesFacadeService {
       .pipe(
         switchMap((topics: Topic[]) => {
           console.log(`[v3] Found ${topics.length} topics`)
-          
+
           if (topics.length === 0) {
             // No topics, return empty messages
             return new Observable<Message[]>(observer => observer.next([]))
@@ -97,7 +98,7 @@ export class MessagesFacadeService {
               topicMessages.forEach((messages: Message[]) => {
                 allMessages.push(...messages)
               })
-              
+
               // Sort by timestamp
               return allMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
             })
@@ -106,7 +107,15 @@ export class MessagesFacadeService {
       )
       .subscribe((messages: Message[]) => {
         console.log(`[v3] Received ${messages.length} messages`)
-        callback(messages)
+
+        // Add isOwnMessage property to each message
+        const currentUserId = this.auth.currentUser?.uid
+        const messagesWithOwnership = messages.map(message => ({
+          ...message,
+          isOwnMessage: message.senderId === currentUserId
+        }))
+
+        callback(messagesWithOwnership)
       })
 
     return () => {
