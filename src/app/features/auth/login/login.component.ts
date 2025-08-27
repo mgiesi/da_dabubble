@@ -7,9 +7,8 @@ import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
-import { RegisterContainerComponent } from '../auth-assets/register-container/register-container.component';
+import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
 
 @Component({
   selector: 'app-login',
@@ -18,9 +17,8 @@ import { RegisterContainerComponent } from '../auth-assets/register-container/re
     CommonModule,
     FormsModule,
     RouterLink,
-    LegalBtnsComponent,
     MatProgressBarModule,
-    RegisterContainerComponent,
+    AuthCardComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

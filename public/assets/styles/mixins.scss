@@ -1,5 +1,16 @@
 @use "./variables.scss" as *;
 
+@mixin authCardHost {
+  @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+  overflow-y: auto;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  max-width: $max-content-width-1920;
+}
+
 @mixin dFlexAllCenter($ai: center, $jc: center, $fld: unset, $g: 0) {
   display: flex;
   flex-direction: $fld;

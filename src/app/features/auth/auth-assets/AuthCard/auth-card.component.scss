@@ -1,0 +1,7 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/btn-style.scss" as *;
+
+:host {
+    position: relative;
+}

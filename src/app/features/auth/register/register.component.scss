@@ -3,14 +3,7 @@
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 :host {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
-    overflow-y: auto;
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 2;
-    max-width: $max-content-width-1920;
+    @include authCardHost();
 }
 
 

@@ -41,6 +41,31 @@ input {
   text-shadow: 0 0 0 $purple-1;
 }
 
+.auth-card-container {
+  background-color: $white;
+  max-width: 610px;
+  @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
+  text-align: center;
+  padding: 60px;
+  border-radius: 30px;
+  box-shadow: $box-shadow;
+  position: relative;
+
+  @media screen and (max-width: $breakpoint-700) {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  h1 {
+    @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+  }
+
+  form {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
+    width: 100%;
+  }
+}
+
 
 .error-message {
   position: absolute;
