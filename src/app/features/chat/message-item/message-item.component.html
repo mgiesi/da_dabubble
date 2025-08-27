@@ -7,7 +7,7 @@
   <div class="message-content">
     <div class="message-header">
       <span class="username">{{ messageUser()?.displayName || message?.user || 'Anonymous' }}</span>
-      <span class="timestamp">{{ message?.time || 'now' }}</span>
+      <span class="timestamp">{{ formatTime(message?.timestamp) }}</span>
     </div>
 
     <div class="message-body">

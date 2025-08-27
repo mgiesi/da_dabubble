@@ -1,4 +1,4 @@
-import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter } from "@angular/core"
+import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter, ChangeDetectorRef, OnDestroy } from "@angular/core"
 import { MatCardModule } from "@angular/material/card"
 import { NgFor, NgIf } from "@angular/common"
 import { MessageInputComponent } from "../message-input/message-input.component"
@@ -17,7 +17,7 @@ import { LogoStateService } from "../../../core/services/logo-state.service"
   templateUrl: "./chat-area.component.html",
   styleUrl: "./chat-area.component.scss",
 })
-export class ChatAreaComponent implements OnInit, OnChanges {
+export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   @Input() channelId: string | null = null
   @Output() threadOpened = new EventEmitter<any>()
 
@@ -26,6 +26,7 @@ export class ChatAreaComponent implements OnInit, OnChanges {
   private channelsFacade = inject(ChannelsFacadeService)
   private usersFacade = inject(UsersFacadeService)
   private messagesFacade = inject(MessagesFacadeService)
+  private cdr = inject(ChangeDetectorRef)
 
   currentChannel: Channel | null = null
   memberCount = 0
@@ -75,12 +76,13 @@ export class ChatAreaComponent implements OnInit, OnChanges {
     if (!this.channelId) return
 
     console.log(`[v2] Setting up subscription for channel: ${this.channelId}`)
-    
+
     this.messageSubscription = this.messagesFacade.subscribeToChannelMessages(
-      this.channelId, 
+      this.channelId,
       (messages) => {
         console.log(`[v2] Callback received ${messages.length} messages:`, messages)
         this.messages = messages
+        this.cdr.detectChanges() // Das hat gefehlt!
       }
     )
   }

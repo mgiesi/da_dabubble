@@ -4,6 +4,7 @@ import { NgClass, NgIf, NgFor } from "@angular/common"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { PickerComponent } from "@ctrl/ngx-emoji-mart"
+import { formatMessageTime } from "../../../shared/utils/timestamp"
 
 @Component({
   selector: "app-message-item",
@@ -35,10 +36,10 @@ export class MessageItemComponent implements OnInit {
       return null
     }
 
-    const user = allUsers.find((user) => 
+    const user = allUsers.find((user) =>
       user.id === this.message.senderId || user.uid === this.message.senderId
     ) || null
-    
+
     console.log("Found user for senderId", this.message.senderId, ":", user)
     return user
   })
@@ -103,5 +104,12 @@ export class MessageItemComponent implements OnInit {
 
   trackByReaction(index: number, reaction: any): string {
     return `${reaction.emoji}-${reaction.count}`
+  }
+
+  /**
+ * Format message timestamp for display
+ */
+  formatTime(timestamp: Date | null | undefined): string {
+    return formatMessageTime(timestamp)
   }
 }
