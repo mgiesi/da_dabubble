@@ -13,6 +13,7 @@ export interface Message {
   reactions?: any[]
   threadId?: string
   parentMessageId?: string
+  threadCount?: number
   isOwnMessage?: boolean
 }
 
@@ -75,7 +76,7 @@ export class MessagesFacadeService {
 
   /**
    * Subscribe to real-time updates for channel messages
-   * Returns all messages from all topics in a channel
+   * Returns all messages from all topics in a channel with thread counts
    */
   subscribeToChannelMessages(channelId: string, callback: (messages: Message[]) => void): () => void {
     console.log(`[v3] Starting subscription for channel ${channelId}`)
@@ -104,7 +105,10 @@ export class MessagesFacadeService {
                 allMessages.push(...messages)
               })
 
-              return allMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+              const sortedMessages = allMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+              
+              // Add thread counts to each message
+              return this.addThreadCounts(sortedMessages)
             })
           )
         })
@@ -182,5 +186,18 @@ export class MessagesFacadeService {
       console.log(`[Thread] Cleaning up thread subscription`)
       subscription.unsubscribe()
     }
+  }
+
+  /**
+   * Adds thread counts to messages by counting replies for each message
+   */
+  private addThreadCounts(messages: Message[]): Message[] {
+    return messages.map(message => {
+      const threadCount = messages.filter(m => m.parentMessageId === message.id).length
+      return {
+        ...message,
+        threadCount
+      }
+    })
   }
 }
