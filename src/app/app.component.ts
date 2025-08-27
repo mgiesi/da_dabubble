@@ -27,9 +27,7 @@ export class AppComponent {
   readonly showBackArrow = this.logoState.showBackArrow
 
   onBackClick() {
-  const isMobile = window.innerWidth < 768; // prüfe < $main_layout_mobile
-  this.logoState.setCurrentView('workspace');
-  if (isMobile) this.router.navigate(['/m/workspace'], { replaceUrl: true });
-}
+    this.logoState.setCurrentView('workspace');
+  }
 
 }
