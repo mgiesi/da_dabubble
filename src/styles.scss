@@ -53,6 +53,10 @@ input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  input {
+    border: 1px solid $rosa;
+  }
 }
 
 .error-marquee {

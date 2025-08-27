@@ -26,38 +26,50 @@ import { SharedFunctionsService } from '../../../core/services/shared-functions.
   animations: [fadeInOut],
 })
 export class LoginComponent implements OnInit {
-  get emailPattern(): string {
-    return AuthService.EMAIL_PATTERN.source;
-  }
-  get emailPatternHtml(): string {
-    return AuthService.getEmailPatternHtml();
-  }
-  emailExists: boolean | null = null;
-  emailCheckInProgress = false;
-  async checkEmailExistsOnBlur() {
-    this.emailExists = null;
-    this.errMsg = '';
-    if (!this.email || !AuthService.EMAIL_PATTERN.test(this.email)) {
-      return;
-    }
-    this.emailCheckInProgress = true;
-    this.emailExists = await this.auth.emailExists(this.email);
-    this.emailCheckInProgress = false;
-  }
+  @Output() showAnimationBoolean = new EventEmitter<boolean>();
+
   auth = inject(AuthService);
   router = inject(Router);
   usersService = inject(UsersService);
   sharedFunctions = inject(SharedFunctionsService);
+  showAnimation$ = this.sharedFunctions.showAnimation$;
 
-  @Output() showAnimationBoolean = new EventEmitter<boolean>();
-
+  emailExists: boolean | null = null;
+  emailCheckInProgress = false;
+  googleLoginInProgress = false;
+  inProgress = false;
+  errMsg: string = '';
   email: string = '';
   pwd: string = '';
 
-  googleLoginInProgress = false;
-  showAnimation$ = this.sharedFunctions.showAnimation$;
-  inProgress = false;
-  errMsg: string = '';
+  get emailPattern(): string {
+    return AuthService.EMAIL_PATTERN.source;
+  }
+
+  get emailPatternHtml(): string {
+    return AuthService.getEmailPatternHtml();
+  }
+
+  async checkEmailExistsOnBlur() {
+    this.resetEmailCheckState();
+    if (!this.isEmailValid(this.email)) return;
+    await this.performEmailCheck();
+  }
+
+  private resetEmailCheckState() {
+    this.emailExists = null;
+    this.errMsg = '';
+  }
+
+  private isEmailValid(email: string): boolean {
+    return !!email && AuthService.EMAIL_PATTERN.test(email);
+  }
+
+  private async performEmailCheck() {
+    this.emailCheckInProgress = true;
+    this.emailExists = await this.auth.emailExists(this.email);
+    this.emailCheckInProgress = false;
+  }
 
   emitBoolean() {
     this.showAnimationBoolean.emit(false);
@@ -76,165 +88,232 @@ export class LoginComponent implements OnInit {
   }
 
   async signInAsGuest() {
-    this.errMsg = '';
-    this.inProgress = true;
+    this.prepareSignIn();
     try {
       await this.signIn('guest@guest.com', 'secretguest');
-      // Wenn kein Fehler, wird zur Chat-Seite navigiert
     } catch (e) {
-      // Fehler abfangen und anzeigen
-      this.errMsg = this.mapAuthError(e);
+      this.handleSignInError(e);
     } finally {
-      this.inProgress = false;
+      this.finishSignIn();
     }
   }
 
+  private prepareSignIn() {
+    this.errMsg = '';
+    this.inProgress = true;
+  }
+
+  private finishSignIn() {
+    this.inProgress = false;
+  }
+
+  private handleSignInError(e: any) {
+    this.errMsg = this.mapAuthError(e);
+  }
+
   async ngOnInit(): Promise<void> {
+    await this.initRedirectAndAnimation();
+  }
+
+  private async initRedirectAndAnimation() {
     await this.handleRedirectResult();
     this.checkFirstVisitAndShowAnimation();
   }
 
   private async handleRedirectResult(): Promise<void> {
     try {
-      const { getRedirectResult } = await import('firebase/auth');
-      const result = await getRedirectResult(this.auth.firebaseAuth);
-
-      if (result && result.user) {
-        const user = result.user;
-        const userDoc = await firstValueFrom(this.usersService.currentUser$());
-        if (!userDoc) {
-          await this.usersService.createUser(
-            user.uid,
-            user.email ?? '',
-            user.displayName ?? '',
-            user.photoURL ?? ''
-          );
-        }
-        console.log('Google Redirect erfolgreich:', user.email);
-        await this.router.navigate(['/chat']);
-      }
+      await this.tryHandleRedirect();
     } catch (error: any) {
-      // Nur loggen, wenn es ein anderer Fehler als 'auth/argument-error' ist
-      if (error.code && error.code !== 'auth/argument-error') {
-        console.error('Redirect-Ergebnis Fehler:', error);
-      }
-      // Sonst ignoriere den Fehler still
+      this.logRedirectError(error);
     }
   }
 
-  /**
-   * Google Sign-In mit Fallback
-   */
+  private async tryHandleRedirect() {
+    const { getRedirectResult } = await import('firebase/auth');
+    const result = await getRedirectResult(this.auth.firebaseAuth);
+    if (result && result.user) {
+      await this.handleRedirectUser(result.user);
+      await this.router.navigate(['/chat']);
+    }
+  }
+
+  private async handleRedirectUser(user: any) {
+    const userDoc = await firstValueFrom(this.usersService.currentUser$());
+    if (!userDoc) {
+      await this.usersService.createUser(
+        user.uid,
+        user.email ?? '',
+        user.displayName ?? '',
+        user.photoURL ?? ''
+      );
+    }
+    console.log('Google Redirect erfolgreich:', user.email);
+  }
+
+  private logRedirectError(error: any) {
+    if (error.code && error.code !== 'auth/argument-error') {
+      console.error('Redirect-Ergebnis Fehler:', error);
+    }
+  }
+
   async triggerGoogleSignIn() {
-    if (this.googleLoginInProgress) return; // Doppelklick-Schutz
+    if (this.googleLoginInProgress) return;
+    this.prepareGoogleSignIn();
+    try {
+      await this.tryGooglePopup();
+    } catch (error: any) {
+      await this.handleGoogleSignInError(error);
+    } finally {
+      this.finishGoogleSignIn();
+    }
+  }
+
+  private prepareGoogleSignIn() {
     this.errMsg = '';
     this.googleLoginInProgress = true;
+  }
 
+  private finishGoogleSignIn() {
+    if (this.googleLoginInProgress) this.googleLoginInProgress = false;
+  }
+
+  private async tryGooglePopup() {
+    const result = await this.auth.signInWithGoogleOAuth();
+    if (result && result.user) {
+      await this.handleGoogleUserAndNavigate(result.user);
+    }
+  }
+
+  private async handleGoogleUserAndNavigate(user: any) {
+    await this.handleGoogleUser(user);
+    await this.router.navigate(['/chat']);
+  }
+
+  private async handleGoogleUser(user: any) {
+    const userDoc = await firstValueFrom(this.usersService.currentUser$());
+    if (!userDoc) {
+      await this.usersService.createUser(
+        user.uid,
+        user.email ?? '',
+        user.displayName ?? '',
+        user.photoURL ?? ''
+      );
+    }
+  }
+
+  private async handleGoogleSignInError(error: any) {
+    if (this.isGooglePopupClosed(error)) {
+      this.handleGooglePopupClosed();
+      return;
+    }
+    this.logGooglePopupError(error);
+    if (this.isGooglePopupBlocked(error)) {
+      await this.handleGooglePopupBlocked();
+    } else if (this.isGooglePopupMultiRequest(error)) {
+      this.errMsg = 'Bitte warte kurz, bevor du es erneut versuchst.';
+    } else if (this.isGoogleNotSupported(error)) {
+      this.errMsg = 'Google Sign-In wird in dieser Umgebung nicht unterstützt.';
+    } else if (this.isGoogleArgumentError(error)) {
+      this.errMsg =
+        'Firebase Konfigurationsfehler. Bitte Administrator kontaktieren.';
+    } else {
+      this.errMsg = this.mapAuthError(error);
+    }
+  }
+
+  private isGooglePopupClosed(error: any): boolean {
+    return (
+      error.code === 'auth/popup-closed-by-user' ||
+      error.message?.includes('abgebrochen')
+    );
+  }
+
+  private handleGooglePopupClosed() {
+    this.googleLoginInProgress = false;
+    this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
+    setTimeout(() => {
+      this.errMsg = '';
+    }, 3000);
+  }
+
+  private logGooglePopupError(error: any) {
+    console.error('Google Popup Error:', error);
+  }
+
+  private isGooglePopupBlocked(error: any): boolean {
+    return (
+      error.message?.includes('Popup wurde blockiert') ||
+      error.code === 'auth/popup-blocked'
+    );
+  }
+
+  private isGooglePopupMultiRequest(error: any): boolean {
+    return (
+      error.message?.includes('Mehrere Popup-Anfragen') ||
+      error.code === 'auth/cancelled-popup-request'
+    );
+  }
+
+  private isGoogleNotSupported(error: any): boolean {
+    return error.code === 'auth/operation-not-supported-in-this-environment';
+  }
+
+  private isGoogleArgumentError(error: any): boolean {
+    return error.code === 'auth/argument-error';
+  }
+
+  private async handleGooglePopupBlocked() {
     try {
-      // Zuerst Popup versuchen
-      const result = await this.auth.signInWithGoogleOAuth();
-      if (result && result.user) {
-        // Prüfe, ob User-Dokument existiert, sonst anlegen
-        const user = result.user;
-        const userDoc = await firstValueFrom(this.usersService.currentUser$());
-        if (!userDoc) {
-          await this.usersService.createUser(
-            user.uid,
-            user.email ?? '',
-            user.displayName ?? '',
-            user.photoURL ?? ''
-          );
-        }
-        await this.router.navigate(['/chat']);
-      }
-    } catch (error: any) {
-      // Hier die Anpassung für das sofortige Beenden des Ladevorgangs.
-      // Wenn das Popup vom Nutzer geschlossen wird, setzen wir den Ladezustand
-      // sofort zurück und beenden die Funktion.
-      if (
-        error.code === 'auth/popup-closed-by-user' ||
-        error.message?.includes('abgebrochen')
-      ) {
-        this.googleLoginInProgress = false; // Ladezustand sofort beenden
-        this.errMsg = 'Google-Anmeldung wurde abgebrochen.';
-        setTimeout(() => {
-          this.errMsg = '';
-        }, 3000);
-        return; // Frühzeitiges Beenden, um unnötige Verarbeitung zu vermeiden
-      }
-
-      // Nur für andere Fehler loggen
-      console.error('Google Popup Error:', error);
-
-      // Spezielle Behandlung für Popup-Probleme
-      if (
-        error.message?.includes('Popup wurde blockiert') ||
-        error.code === 'auth/popup-blocked'
-      ) {
-        // Fallback zu Redirect
-        try {
-          console.log('Fallback zu Redirect-Methode...');
-          await this.auth.signInWithGoogleRedirect();
-          // Nach Redirect wird die App neu geladen, daher kein Navigation nötig
-        } catch (redirectError: any) {
-          console.error('Google Redirect Error:', redirectError);
-          this.errMsg =
-            'Google Sign-In nicht verfügbar. Bitte Popup-Blocker deaktivieren.';
-        }
-      } else if (
-        error.message?.includes('Mehrere Popup-Anfragen') ||
-        error.code === 'auth/cancelled-popup-request'
-      ) {
-        this.errMsg = 'Bitte warte kurz, bevor du es erneut versuchst.';
-      } else if (
-        error.code === 'auth/operation-not-supported-in-this-environment'
-      ) {
-        this.errMsg =
-          'Google Sign-In wird in dieser Umgebung nicht unterstützt.';
-      } else if (error.code === 'auth/argument-error') {
-        this.errMsg =
-          'Firebase Konfigurationsfehler. Bitte Administrator kontaktieren.';
-      } else {
-        this.errMsg = this.mapAuthError(error);
-      }
-    } finally {
-      // In diesem Fall, wenn der Fehler nicht "popup-closed-by-user" ist,
-      // stellen wir sicher, dass inProgress zurückgesetzt wird.
-      if (this.googleLoginInProgress) this.googleLoginInProgress = false;
+      console.log('Fallback zu Redirect-Methode...');
+      await this.auth.signInWithGoogleRedirect();
+    } catch (redirectError: any) {
+      console.error('Google Redirect Error:', redirectError);
+      this.errMsg =
+        'Google Sign-In nicht verfügbar. Bitte Popup-Blocker deaktivieren.';
     }
   }
 
   async signIn(inputEmail: string = this.email, inputPwd: string = this.pwd) {
-    this.errMsg = '';
-    this.inProgress = true;
+    this.prepareSignIn();
     try {
-      if (!inputEmail || !inputPwd) {
-        return;
+      if (!this.isSignInInputValid(inputEmail, inputPwd)) return;
+      if (!this.isGuestLogin(inputEmail)) {
+        if (!this.isEmailValid(inputEmail)) return;
+        await this.checkEmailExistsOrReturn(inputEmail);
       }
-      // Für Gäste-Login keine E-Mail-Validierung/Existenzprüfung
-      const isGuest = inputEmail === 'guest@guest.com';
-      if (!isGuest) {
-        if (!AuthService.EMAIL_PATTERN.test(inputEmail)) {
-          return;
-        }
-        this.emailExists = await this.auth.emailExists(inputEmail);
-        if (!this.emailExists) {
-          return;
-        }
-      }
-      await this.auth.signIn(inputEmail, inputPwd);
-      await firstValueFrom(
-        this.auth.isAuthenticated$.pipe(
-          filter((authenticated) => authenticated === true)
-        )
-      );
-      await this.router.navigate(['/chat']);
+      await this.doSignIn(inputEmail, inputPwd);
+      await this.waitForAuthAndNavigate();
     } catch (e) {
-      console.error('Sign-in failed ', e);
-      this.errMsg = this.mapAuthError(e);
+      this.handleSignInError(e);
     } finally {
-      this.inProgress = false;
+      this.finishSignIn();
     }
+  }
+
+  private isSignInInputValid(email: string, pwd: string): boolean {
+    return !!email && !!pwd;
+  }
+
+  private isGuestLogin(email: string): boolean {
+    return email === 'guest@guest.com';
+  }
+
+  private async checkEmailExistsOrReturn(email: string) {
+    this.emailExists = await this.auth.emailExists(email);
+    if (!this.emailExists) return;
+  }
+
+  private async doSignIn(email: string, pwd: string) {
+    await this.auth.signIn(email, pwd);
+  }
+
+  private async waitForAuthAndNavigate() {
+    await firstValueFrom(
+      this.auth.isAuthenticated$.pipe(
+        filter((authenticated) => authenticated === true)
+      )
+    );
+    await this.router.navigate(['/chat']);
   }
 
   private mapAuthError(err: unknown): string {
