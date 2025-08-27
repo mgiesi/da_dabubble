@@ -64,6 +64,10 @@ input {
   transition: $transition-0-3-ease-in-out;
 }
 
+.successfully-created-overlay {
+  @include successfullyCreatedOverlay;
+}
+
 .error-marquee {
   overflow: hidden;
   white-space: nowrap;

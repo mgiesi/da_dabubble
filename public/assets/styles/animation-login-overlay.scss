@@ -1,0 +1,127 @@
+@use "./mixins.scss" as *;
+@use "./variables.scss" as *;
+
+
+@keyframes backgroundAnimation {
+    0% {
+        background-color: rgba(93, 99, 237, 1);
+    }
+
+    25% {
+        background: rgba(93, 99, 237, 0.75);
+    }
+
+    50% {
+        background: rgba(93, 99, 237, 0.5);
+    }
+
+    75% {
+        background: rgba(93, 99, 237, 0.25);
+    }
+
+    100% {
+        background: rgba(93, 99, 237, 0);
+    }
+}
+
+
+@keyframes contentAnimation {
+    0% {
+        transform: translate(-15%, -50%);
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+
+@keyframes removeBgColor {
+    0% {
+        background: rgba(93, 99, 237, 1);
+    }
+
+    100% {
+        background: rgba(93, 99, 237, 0);
+    }
+}
+
+@keyframes textColorAnimation {
+    0% {
+        color: $white;
+    }
+
+    25% {
+        color: rgba(192, 192, 192, 1);
+    }
+
+    50% {
+        color: rgba(128, 128, 128, 1);
+    }
+
+    75% {
+        color: rgba(64, 64, 64, 1);
+    }
+
+    100% {
+        color: $black;
+    }
+}
+
+
+@keyframes textAnimation {
+    0% {
+        left: -41%;
+    }
+
+    100% {
+        left: 31%;
+    }
+}
+
+@keyframes overlayToLeftCornerAnimation {
+    0% {
+        top: 50%;
+        left: 50%;
+        width: 667px;
+        height: 185px;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        left: 55px;
+        top: 55px;
+        width: 242px;
+        height: 70px;
+        transform: translate(0%, 0%);
+    }
+}
+
+@keyframes logoToLeftCornerAnimation {
+    0% {
+        width: 187px;
+        justify-content: flex-end;
+    }
+
+    100% {
+        width: 71.5px;
+        justify-content: flex-start;
+    }
+}
+
+@keyframes textToLeftCornerAnimation {
+    0% {
+        font-size: 70px;
+    }
+
+    100% {
+        font-size: 32px;
+        transform: translateX(11px);
+    }
+}
+
+@keyframes placeholderAnimation {
+    to {
+        display: none;
+    }
+}
