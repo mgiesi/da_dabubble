@@ -30,6 +30,7 @@
     height: 100dvh;
     width: 100%;
     animation: backgroundAnimation $backgroundAnimation;
+    max-width: $max-content-width-1920;
 
 
     .animation-overlay-content {

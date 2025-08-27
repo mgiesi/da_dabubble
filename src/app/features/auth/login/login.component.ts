@@ -6,11 +6,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
 import { FirebaseError } from '@angular/fire/app';
-import { firstValueFrom, filter } from 'rxjs';
-import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { LegalBtnsComponent } from '../auth-assets/legal-btns/legal-btns.component';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -25,14 +23,11 @@ import { SharedFunctionsService } from '../../../core/services/shared-functions.
   styleUrl: './login.component.scss',
   animations: [fadeInOut],
 })
-export class LoginComponent implements OnInit {
-  @Output() showAnimationBoolean = new EventEmitter<boolean>();
-
+export class LoginComponent {
   auth = inject(AuthService);
   router = inject(Router);
   usersService = inject(UsersService);
-  sharedFunctions = inject(SharedFunctionsService);
-  showAnimation$ = this.sharedFunctions.showAnimation$;
+  showAnimation$ = inject(SharedFunctionsService).showAnimation$;
 
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
@@ -71,22 +66,6 @@ export class LoginComponent implements OnInit {
     this.emailCheckInProgress = false;
   }
 
-  emitBoolean() {
-    this.showAnimationBoolean.emit(false);
-  }
-
-  private checkFirstVisitAndShowAnimation(): void {
-    const hasVisited = sessionStorage.getItem('firstPageVisit');
-
-    if (!hasVisited) {
-      this.sharedFunctions.setShowAnimation(true);
-      sessionStorage.setItem('firstPageVisit', 'true');
-      setTimeout(() => {
-        this.sharedFunctions.setShowAnimation(false);
-      }, 4100);
-    }
-  }
-
   async signInAsGuest() {
     this.prepareSignIn();
     try {
@@ -109,51 +88,6 @@ export class LoginComponent implements OnInit {
 
   private handleSignInError(e: any) {
     this.errMsg = this.mapAuthError(e);
-  }
-
-  async ngOnInit(): Promise<void> {
-    await this.initRedirectAndAnimation();
-  }
-
-  private async initRedirectAndAnimation() {
-    await this.handleRedirectResult();
-    this.checkFirstVisitAndShowAnimation();
-  }
-
-  private async handleRedirectResult(): Promise<void> {
-    try {
-      await this.tryHandleRedirect();
-    } catch (error: any) {
-      this.logRedirectError(error);
-    }
-  }
-
-  private async tryHandleRedirect() {
-    const { getRedirectResult } = await import('firebase/auth');
-    const result = await getRedirectResult(this.auth.firebaseAuth);
-    if (result && result.user) {
-      await this.handleRedirectUser(result.user);
-      await this.router.navigate(['/chat']);
-    }
-  }
-
-  private async handleRedirectUser(user: any) {
-    const userDoc = await firstValueFrom(this.usersService.currentUser$());
-    if (!userDoc) {
-      await this.usersService.createUser(
-        user.uid,
-        user.email ?? '',
-        user.displayName ?? '',
-        user.photoURL ?? ''
-      );
-    }
-    console.log('Google Redirect erfolgreich:', user.email);
-  }
-
-  private logRedirectError(error: any) {
-    if (error.code && error.code !== 'auth/argument-error') {
-      console.error('Redirect-Ergebnis Fehler:', error);
-    }
   }
 
   async triggerGoogleSignIn() {
@@ -190,7 +124,9 @@ export class LoginComponent implements OnInit {
   }
 
   private async handleGoogleUser(user: any) {
-    const userDoc = await firstValueFrom(this.usersService.currentUser$());
+    const userDoc = await (
+      await import('rxjs')
+    ).firstValueFrom(this.usersService.currentUser$());
     if (!userDoc) {
       await this.usersService.createUser(
         user.uid,
@@ -308,9 +244,10 @@ export class LoginComponent implements OnInit {
   }
 
   private async waitForAuthAndNavigate() {
+    const { firstValueFrom, filter } = await import('rxjs');
     await firstValueFrom(
       this.auth.isAuthenticated$.pipe(
-        filter((authenticated) => authenticated === true)
+        filter((authenticated: boolean) => authenticated === true)
       )
     );
     await this.router.navigate(['/chat']);

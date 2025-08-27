@@ -16,7 +16,7 @@
 
 @mixin buttonStyle($btn-bg-color: $purple-1, $hover-bg-color: $purple-2, $text-color: $white, $border: none, $hover-text-color: $white, $gap: 0) {
   background-color: $btn-bg-color;
-  border: 1px solid transparent;
+  border: 1px solid $purple-1;
   border-radius: 25px;
   cursor: pointer;
   padding: 12px 25px;
