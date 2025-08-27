@@ -26,6 +26,7 @@
     <app-thread-panel *ngIf="selectedThread"
                       [message]="selectedThread"
                       [currentChannelName]="currentChannelName"
+                      [selectedChannelId]="selectedChannelId"
                       (backToChat)="onBackToChat()">
     </app-thread-panel>
   </aside>

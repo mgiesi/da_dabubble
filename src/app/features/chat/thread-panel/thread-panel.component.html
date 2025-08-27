@@ -18,7 +18,10 @@
     </div>
 
     <div class="thread-messages">
-      <div class="thread-count">2 Antworten</div>
+      <div class="thread-count">
+        {{threadMessages.length}} 
+        {{threadMessages.length === 1 ? 'Antwort' : 'Antworten'}}
+      </div>
       <app-message-item 
         *ngFor="let threadMsg of threadMessages" 
         [message]="threadMsg"
@@ -28,6 +31,11 @@
   </div>
 
   <div class="thread-input">
-    <app-message-input></app-message-input>
+    <app-message-input 
+      [channelId]="selectedChannelId"
+      [parentMessageId]="message?.id"
+      [parentMessage]="message"
+      placeholder="Antworten...">
+    </app-message-input>
   </div>
 </div>
