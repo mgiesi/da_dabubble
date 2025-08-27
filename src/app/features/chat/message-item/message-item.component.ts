@@ -68,17 +68,26 @@ export class MessageItemComponent implements OnInit {
 
   showEmojiPicker(event: MouseEvent) {
     event.stopPropagation()
+    event.preventDefault()
+    console.log('Toggle emoji picker, current state:', this.viewEmojiPicker)
     this.viewEmojiPicker = !this.viewEmojiPicker
+    console.log('New state:', this.viewEmojiPicker)
+
+    // Force change detection
+    this.cdr.detectChanges()
   }
 
   addEmoji(event: any) {
-    const emoji = event.emoji.native
-    this.selectedEmoji = emoji
+  const emoji = event.emoji.native
+  this.selectedEmoji = emoji
 
-    this.emojiUsageCount[emoji] = (this.emojiUsageCount[emoji] || 0) + 1
-    this.saveEmojiUsage()
-    console.log("Emoji selected:", emoji)
-  }
+  this.emojiUsageCount[emoji] = (this.emojiUsageCount[emoji] || 0) + 1
+  this.saveEmojiUsage()
+  console.log("Emoji selected:", emoji)
+  
+  // Close picker after selecting emoji
+  this.viewEmojiPicker = false
+}
 
   private saveEmojiUsage() {
     localStorage.setItem("emojiUsage", JSON.stringify(this.emojiUsageCount))
@@ -99,6 +108,18 @@ export class MessageItemComponent implements OnInit {
 
   @HostListener("document:click", ["$event"])
   closeEmojiPicker(event: Event) {
+    if (!this.viewEmojiPicker) return // Nur schließen wenn offen
+
+    const target = event.target as HTMLElement
+
+    // Don't close if clicking inside emoji picker or on emoji button
+    if (target.closest('emoji-mart') ||
+      target.closest('.hover-action-btn') ||
+      target.classList.contains('hover-action-btn')) {
+      return
+    }
+
+    console.log('Closing emoji picker - clicked outside')
     this.viewEmojiPicker = false
   }
 
