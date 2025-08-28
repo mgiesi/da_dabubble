@@ -105,10 +105,13 @@ export class MessagesFacadeService {
                 allMessages.push(...messages)
               })
 
-              const sortedMessages = allMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-              
+              // 🔧 FILTER: Nur Haupt-Messages (keine Thread-Replies)
+              const mainMessages = allMessages.filter(message => !message.parentMessageId)
+
+              const sortedMessages = mainMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+
               // Add thread counts to each message
-              return this.addThreadCounts(sortedMessages)
+              return this.addThreadCounts(allMessages, sortedMessages) // Pass allMessages for counting
             })
           )
         })
@@ -161,7 +164,7 @@ export class MessagesFacadeService {
               })
 
               // Filter for thread replies
-              const threadMessages = allMessages.filter(message => 
+              const threadMessages = allMessages.filter(message =>
                 message.parentMessageId === parentMessageId
               )
 
@@ -189,11 +192,13 @@ export class MessagesFacadeService {
   }
 
   /**
-   * Adds thread counts to messages by counting replies for each message
-   */
-  private addThreadCounts(messages: Message[]): Message[] {
-    return messages.map(message => {
-      const threadCount = messages.filter(m => m.parentMessageId === message.id).length
+  * Adds thread counts to messages by counting replies for each message
+  * @param allMessages - All messages including thread replies for counting
+  * @param mainMessages - Only main messages to add counts to
+  */
+  private addThreadCounts(allMessages: Message[], mainMessages: Message[]): Message[] {
+    return mainMessages.map(message => {
+      const threadCount = allMessages.filter(m => m.parentMessageId === message.id).length
       return {
         ...message,
         threadCount
