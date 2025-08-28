@@ -24,10 +24,10 @@
         display: block;
         grid-column: 2;
       }
-      
-      &.active + .chat-main {
-        display: none;
-      }
+    }
+    
+    .chat-main.thread-open {
+      display: none;
     }
   }
 

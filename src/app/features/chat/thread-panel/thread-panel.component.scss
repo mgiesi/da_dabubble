@@ -4,15 +4,14 @@
 @use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .thread-panel {
-  width: 366px;
-  height: 940px;
+  width: 100%;
+  height: calc(100vh - 230px);
   background: $white;
   border-radius: 20px;
   box-shadow: $box-shadow;
   @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start);
   position: relative;
   top: 115px;
-  right: 20px;
 
   @include main_mobile_only {
     width: 100%;
@@ -32,6 +31,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 
     @include main_mobile_only {
       border-radius: 0;
@@ -58,7 +58,7 @@
       display: none;
       flex: 0 0 auto;
 
-      @include main_mobile_only {
+      @include main_tablet_up {
         position: relative;
         display: flex;
         align-items: center;
@@ -118,5 +118,6 @@
 
   .thread-input {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
   }
 }
