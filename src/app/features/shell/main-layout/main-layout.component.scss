@@ -7,31 +7,55 @@
   padding: 0 20px;
   position: relative;
 
-  // Desktop: 3 Spalten (20% + 60% + 20%)
+  // Desktop: Dynamisches Grid basierend auf Workspace-Menu Status
   @include main_desktop_up {
-    grid-template-columns: 1fr 3fr 1fr;
+    // Workspace Menu geschlossen: Chat allein oder Chat + Thread
+    &:not(.workspace-open):not(.thread-open) {
+      grid-template-columns: 1fr;
+    }
+    
+    &:not(.workspace-open).thread-open {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    // Workspace Menu offen: 3 Spalten Layout
+    &.workspace-open {
+      grid-template-columns: 1fr 3fr 1fr;
+    }
   }
 
-  // Tablet: 2 Spalten (40% + 60%)
+  // Tablet: 2 Spalten Layout
   @include main_tablet_only {
-    grid-template-columns: 2fr 3fr;
     gap: 20px;
     
-    .thread-sidebar {
-      display: none;
+    // Workspace Menu geschlossen: Chat allein oder Chat + Thread nebeneinander
+    &:not(.workspace-open):not(.thread-open) {
+      grid-template-columns: 1fr;
+    }
+    
+    &:not(.workspace-open).thread-open {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    // Workspace Menu offen: Workspace + Chat oder Workspace + Thread (abwechselnd)
+    &.workspace-open:not(.thread-open) {
+      grid-template-columns: 2fr 3fr;
+    }
+    
+    &.workspace-open.thread-open {
+      grid-template-columns: 2fr 3fr;
       
-      &.active {
-        display: block;
+      .chat-main {
+        display: none;
+      }
+      
+      .thread-sidebar {
         grid-column: 2;
       }
     }
-    
-    .chat-main.thread-open {
-      display: none;
-    }
   }
 
-  // Mobile: 1 Spalte (100%)
+  // Mobile: Immer 1 Spalte
   @include main_mobile_only {
     grid-template-columns: 1fr;
     gap: 0;
@@ -48,7 +72,6 @@
       }
     }
     
-    // Default: Workspace sichtbar
     .workspace-sidebar {
       display: block;
     }
