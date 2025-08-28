@@ -1,0 +1,102 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+
+.emoji-picker-container {
+  position: relative;
+}
+
+.selected-emoji-display {
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.selected-emoji-unicode {
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: $transition-0-3-ease-in-out;
+  user-select: none;
+
+  &:hover {
+    background-color: rgba(29, 28, 29, 0.08);
+  }
+}
+
+::ng-deep emoji-mart {
+  position: absolute;
+  top: 40px;
+  right: -230px;
+  z-index: 1000;
+
+  .emoji-mart {
+    background: $white !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    font-family: inherit !important;
+    max-height: 350px !important;
+    width: 320px !important;
+    z-index: 2000 !important;
+    padding: 16px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+::ng-deep .emoji-mart-scroll {
+  flex: 1 1 auto !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  padding: 0 8px !important;
+
+  &::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 2px !important;
+  }
+}
+
+::ng-deep .emoji-mart-search {
+  padding: 12px !important;
+
+  input {
+    border: 1px solid $bg-color !important;
+    border-radius: 12px !important;
+    padding: 8px 12px !important;
+    background: $bg-color !important;
+    font-size: 14px !important;
+
+    &:focus {
+      border-color: $purple-1 !important;
+      outline: none !important;
+    }
+  }
+}
+
+::ng-deep .emoji-mart-category-label {
+  background: transparent !important;
+  color: $text-gray !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  padding: 8px 16px 4px !important;
+}
+
+::ng-deep .emoji-mart-emoji:hover {
+  background: $bg-color !important;
+  border-radius: 6px !important;
+  transform: scale(1.05) !important;
+  transition: all 0.15s ease !important;
+}
+
+::ng-deep .emoji-mart-anchors,
+::ng-deep .emoji-mart-preview-emoji,
+::ng-deep .emoji-mart-bar {
+  display: none !important;
+}

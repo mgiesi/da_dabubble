@@ -1,0 +1,45 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+
+.message-reactions {
+  margin-top: 8px;
+  @include dFlexAllCenter($ai: flex-start, $jc: flex-end);
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  max-width: 200px;
+  direction: rtl;
+  justify-items: start;
+}
+
+.reaction-button {
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  padding: 4px 8px;
+  background-color: rgba(29, 28, 29, 0.04);
+  border: 1px solid rgba(29, 28, 29, 0.13);
+  border-radius: 16px;
+  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $black);
+  cursor: pointer;
+  transition: $transition-0-3-ease-in-out;
+  direction: ltr;
+  min-width: 32px;
+  height: 28px;
+
+  &:hover {
+    background-color: rgba(29, 28, 29, 0.08);
+    border-color: rgba(29, 28, 29, 0.2);
+  }
+
+  .emoji {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .count {
+    @include fontSizeWeightColor($si: 11px, $we: 500, $co: $text-gray);
+    margin-left: 2px;
+  }
+}

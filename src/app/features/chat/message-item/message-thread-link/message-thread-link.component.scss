@@ -1,0 +1,15 @@
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+
+.thread-link {
+  margin-top: 4px;
+}
+
+.thread-replies-text {
+  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $purple-1);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

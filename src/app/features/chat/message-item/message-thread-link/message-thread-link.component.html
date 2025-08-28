@@ -1,0 +1,5 @@
+<div class="thread-link" *ngIf="hasThreadReplies() && !isThreadView">
+  <span class="thread-replies-text" (click)="onThreadClick()">
+    {{ getThreadRepliesText() }}
+  </span>
+</div>
