@@ -1,7 +1,15 @@
+<!-- Workspace Menu Toggler - nur Desktop, außerhalb des Grids -->
+<app-workspace-menu-toggler 
+  *ngIf="!logo.isMobile()"
+  [isOpen]="isWorkspaceMenuOpen"
+  (toggle)="onToggleWorkspaceMenu()">
+</app-workspace-menu-toggler>
+
 <div class="main-layout" [class.mobile]="logo.isMobile()">
+
   <!-- Workspace -->
   <aside class="workspace-sidebar"
-         *ngIf="!logo.isMobile() || logo.isWorkspaceView()"
+         *ngIf="(!logo.isMobile() && isWorkspaceMenuOpen) || (logo.isMobile() && logo.isWorkspaceView())"
          [class.active]="currentView === 'workspace'">
     <app-workspace-menu (channelSelected)="onChannelSelected($event)"></app-workspace-menu>
   </aside>

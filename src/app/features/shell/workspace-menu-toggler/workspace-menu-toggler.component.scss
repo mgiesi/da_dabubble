@@ -1,0 +1,42 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
+
+.workspace-menu-toggler {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 310px;
+  background: $white;
+  border: none;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  padding: 20px 12px;
+  cursor: pointer;
+  box-shadow: $box-shadow;
+  @include dFlexAllCenter();
+  z-index: 1000;
+
+  @include main_mobile_only {
+    display: none;
+  }
+  
+  svg {
+    transition: transform 0.3s ease;
+    
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  &:hover {
+    background: $bg-color;
+    
+    svg path,
+    svg rect {
+      stroke: $purple-1;
+    }
+  }
+}

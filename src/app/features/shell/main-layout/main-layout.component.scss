@@ -5,6 +5,7 @@
   height: 100vh;
   gap: 40px;
   padding: 0 20px;
+  position: relative;
 
   // Desktop: 3 Spalten (20% + 60% + 20%)
   @include main_desktop_up {
@@ -56,6 +57,8 @@
 
 .workspace-sidebar {
   padding: 0;
+  position: relative;
+  z-index: 100;
 }
 
 .chat-main {

@@ -1,6 +1,6 @@
-// src/app/features/shell/main-layout/main-layout.component.ts
 import { Component, inject } from "@angular/core"
 import { WorkspaceMenuComponent } from "../../../features/menu/workspace-menu/workspace-menu.component"
+import { WorkspaceMenuTogglerComponent } from "../workspace-menu-toggler/workspace-menu-toggler.component"
 import { ChatAreaComponent } from "../../chat/chat-area/chat-area.component"
 import { ThreadPanelComponent } from "../../chat/thread-panel/thread-panel.component"
 import { NgIf } from "@angular/common"
@@ -9,7 +9,7 @@ import { LogoStateService } from "../../../core/services/logo-state.service"
 
 @Component({
   selector: "app-main-layout",
-  imports: [WorkspaceMenuComponent, ChatAreaComponent, ThreadPanelComponent, NgIf],
+  imports: [WorkspaceMenuComponent, WorkspaceMenuTogglerComponent, ChatAreaComponent, ThreadPanelComponent, NgIf],
   templateUrl: "./main-layout.component.html",
   styleUrl: "./main-layout.component.scss",
 })
@@ -17,10 +17,19 @@ export class MainLayoutComponent {
   selectedChannelId: string | null = null
   selectedThread: any = null
   currentView: "workspace" | "chat" | "thread" = "workspace"
+  isWorkspaceMenuOpen = false
 
   private channelsFacade = inject(ChannelsFacadeService)
   private logoState = inject(LogoStateService)
   logo = inject(LogoStateService);
+
+  /**
+   * Toggles workspace menu visibility on desktop.
+   * Only affects desktop view above 768px.
+   */
+  onToggleWorkspaceMenu() {
+    this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen
+  }
 
   /**
    * Handles channel selection from workspace menu.
@@ -33,7 +42,6 @@ export class MainLayoutComponent {
       return
     }
 
-    console.log("Main layout received channel:", channelId)
     this.selectedChannelId = channelId
     this.currentView = "chat"
     this.logoState.setCurrentView("chat")
