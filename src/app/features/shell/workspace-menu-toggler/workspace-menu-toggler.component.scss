@@ -5,7 +5,7 @@
 .workspace-menu-toggler {
   position: fixed;
   left: 0;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   width: 56px;
   height: 310px;
@@ -16,14 +16,24 @@
   padding: 20px 12px;
   cursor: pointer;
   box-shadow: $box-shadow;
-  @include dFlexAllCenter();
+  @include dFlexAllCenter($fld: column, $g: 8px);
   z-index: 1000;
 
   @include main_mobile_only {
     display: none;
   }
+
+  .toggler-text {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
+    white-space: nowrap;
+  }
   
   svg {
+    width: $font-size-16;
+    height: $font-size-16;
     transition: transform 0.3s ease;
     
     &.rotated {
@@ -33,6 +43,10 @@
 
   &:hover {
     background: $bg-color;
+    
+    .toggler-text {
+      color: $purple-1;
+    }
     
     svg path,
     svg rect {
