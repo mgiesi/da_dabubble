@@ -81,14 +81,15 @@
         }
     }
 
-    .messages-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px 45px;
-        @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 45px;
+  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
 
-        @include main_mobile_only {
-            padding: 20px 15px;
-        }
-    }
+  @include main_mobile_only {
+    padding: 20px 15px;
+  }
+}
+
 }
