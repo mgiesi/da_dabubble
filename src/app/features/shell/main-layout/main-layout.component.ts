@@ -25,10 +25,17 @@ export class MainLayoutComponent {
 
   /**
    * Toggles workspace menu visibility on desktop.
-   * Only affects desktop view above 768px.
+   * Closes thread when workspace opens.
    */
   onToggleWorkspaceMenu() {
     this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen
+    
+    // Workspace öffnen schließt Thread
+    if (this.isWorkspaceMenuOpen && this.currentView === 'thread') {
+      this.currentView = 'chat'
+      this.selectedThread = null
+      this.logoState.setCurrentView('chat')
+    }
   }
 
   /**
