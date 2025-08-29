@@ -1,0 +1,15 @@
+<div *ngIf="isVisible" class="emoji-picker-container">
+  <emoji-mart 
+    (emojiClick)="addEmoji($event)" 
+    [style]="{
+      'position': 'absolute',
+      'top': '40px',
+      'right': '0',
+      'z-index': '1000'
+    }">
+  </emoji-mart>
+</div>
+
+<div class="selected-emoji-display" *ngIf="selectedEmoji">
+  <span class="selected-emoji-unicode">{{ selectedEmoji }}</span>
+</div>

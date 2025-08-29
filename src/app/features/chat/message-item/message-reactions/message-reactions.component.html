@@ -1,0 +1,11 @@
+<div class="message-reactions" *ngIf="reactions && reactions.length > 0">
+  <div class="emoji-grid">
+    <button 
+      *ngFor="let reaction of reactions; trackBy: trackByReaction" 
+      class="reaction-button"
+      (click)="onReactionClick(reaction)">
+      <span class="emoji">{{ reaction.emoji }}</span>
+      <span class="count" *ngIf="reaction.count > 1">{{ reaction.count }}</span>
+    </button>
+  </div>
+</div>

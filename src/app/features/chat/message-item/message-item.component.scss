@@ -1,6 +1,5 @@
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
-@use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 .message-wrapper {
   @include dFlexAllCenter($ai: flex-start, $jc: flex-start, $g: 12px);
@@ -9,15 +8,14 @@
   position: relative;
   margin: 0 -45px;
 
-  // Hover Effekte
   &:hover {
-    background-color: $bg-color; // Ganze Zeile wird grau
+    background-color: $bg-color;
 
-    .message-body {
-      background-color: $white; // Sprechblase wird weiß
+    ::ng-deep .message-body {
+      background-color: $white;
     }
 
-    .message-hover-actions {
+    ::ng-deep .message-hover-actions {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
@@ -31,10 +29,10 @@
       justify-content: flex-end;
     }
 
-    .message-hover-actions {
-      left: 0; // statt rechts
-      right: auto; // Rechtsecke aufheben
-      transform: translateY(5px); // gleiche Y-Position wie default
+    ::ng-deep .message-hover-actions {
+      left: 0;
+      right: auto;
+      transform: translateY(5px);
     }
 
     .message-content {
@@ -42,13 +40,22 @@
       text-align: right;
     }
 
-    .message-body {
+    ::ng-deep .message-body {
       background-color: $purple-2;
       color: $white;
       border-radius: 20px 0 20px 20px;
       margin-left: auto;
     }
 
+    .message-bubble-wrapper {
+      align-items: flex-start;
+      margin-left: auto;
+    }
+
+    ::ng-deep emoji-mart {
+      left: 0;
+      right: auto;
+    }
   }
 }
 
@@ -79,108 +86,6 @@
   @include fontSizeWeightColor($si: 12px, $we: 400, $co: $text-gray);
 }
 
-.message-body {
-  background-color: $bg-color;
-  padding: 15px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  width: fit-content; // Passt sich dem Text an
-  word-wrap: break-word;
-  transition: $transition-0-3-ease-in-out;
-  position: relative;
-}
-
-.message-text {
-  margin: 0;
-  line-height: 1.4;
-  @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
-}
-
-.message-hover-actions {
-  position: absolute;
-  top: -16px;
-  right: -150px;
-  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
-  background-color: $white;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 24px;
-  padding: 8px 12px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(5px);
-  transition: all 0.15s ease;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-  white-space: nowrap;
-}
-
-.quick-reaction-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 8px;
-  transition: $transition-0-3-ease-in-out;
-  line-height: 1;
-  @include dFlexAllCenter($ai: center, $jc: center);
-
-  &:hover {
-    background-color: $bg-color;
-    transform: scale(1.15);
-  }
-
-  img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-  }
-}
-
-.hover-action-btn {
-  @include dFlexAllCenter($ai: center, $jc: center);
-  background: none;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: $transition-0-3-ease-in-out;
-
-  &:hover {
-    background-color: $bg-color;
-  }
-
-  svg {
-    width: 24px;
-    height: 24px;
-    color: $text-gray;
-    fill: $black;
-  }
-
-  &:hover svg {
-    color: $black;
-  }
-}
-
-.thread-link {
-  margin-top: 4px;
-}
-
-.thread-replies-text {
-  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $purple-1);
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.message-reactions {
-  @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 4px);
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
-
 .message-bubble-wrapper {
   width: fit-content;
   max-width: 70%;
@@ -189,53 +94,18 @@
   align-items: flex-end;
 }
 
-.selected-emoji-display {
-  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
-  margin-top: 4px;
-  width: fit-content;
-}
-
-// Für eigene Nachrichten
-.own-message .message-bubble-wrapper {
-  align-items: flex-start; // Emoji linksbündig
-  margin-left: auto;
-}
-
-.selected-emoji-unicode {
-  font-size: 20px;
-  line-height: 1;
-  padding: 4px 8px;
-  border-radius: 16px;
-  cursor: pointer;
-  transition: $transition-0-3-ease-in-out;
-  user-select: none;
-
-  &:hover {
-    background-color: rgba(29, 28, 29, 0.08);
-  }
-}
-
-.reaction-item {
-  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
-  padding: 2px 8px;
-  background-color: rgba(29, 28, 29, 0.04);
-  border: 1px solid rgba(29, 28, 29, 0.13);
-  border-radius: 16px;
-  @include fontSizeWeightColor($si: 13px, $we: 400, $co: $black);
-  cursor: pointer;
-  transition: $transition-0-3-ease-in-out;
-
-  &:hover {
-    background-color: rgba(29, 28, 29, 0.08);
-  }
+.message-footer {
+  @include dFlexAllCenter($ai: flex-start, $jc: space-between);
+  margin-top: 8px;
+  width: 100%;
 }
 
 .message-wrapper.thread-view {
-  .message-body {
+  ::ng-deep .message-body {
     max-width: 85%;
   }
 
-  .message-hover-actions {
+  ::ng-deep .message-hover-actions {
     display: none;
   }
 }
@@ -247,7 +117,7 @@
     gap: 8px;
   }
 
-  .message-body {
+  ::ng-deep .message-body {
     max-width: 85%;
     padding: 10px 12px;
   }
@@ -259,98 +129,4 @@
       display: none;
     }
   }
-}
-
-::ng-deep emoji-mart {
-  position: absolute;
-  top: 40px;
-  right: -230px;
-  z-index: 1000;
-
-  .emoji-mart {
-    background: $white !important;
-    border: 1px solid rgba(0, 0, 0, 0.15) !important;
-    border-radius: 20px !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-    font-family: inherit !important;
-    max-height: 350px !important;
-    width: 320px !important;
-    z-index: 2000 !important;
-    padding: 16px !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-  }
-}
-
-/* Bei eigenen Messages: links statt rechts */
-.own-message {
-  ::ng-deep emoji-mart {
-    left: 0;
-    right: auto;
-  }
-
-  .message-hover-actions {
-    left: 0;
-    right: auto;
-  }
-}
-
-/* Scrollbarer Emoji-Grid-Bereich */
-::ng-deep .emoji-mart-scroll {
-  flex: 1 1 auto !important;
-  max-height: 100% !important;
-  overflow-y: auto !important;
-  padding: 0 8px !important;
-
-  &::-webkit-scrollbar {
-    width: 4px !important;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2) !important;
-    border-radius: 2px !important;
-  }
-}
-
-/* Suchfeld */
-::ng-deep .emoji-mart-search {
-  padding: 12px !important;
-
-  input {
-    border: 1px solid $bg-color !important;
-    border-radius: 12px !important;
-    padding: 8px 12px !important;
-    background: $bg-color !important;
-    font-size: 14px !important;
-
-    &:focus {
-      border-color: $purple-1 !important;
-      outline: none !important;
-    }
-  }
-}
-
-/* Kategorie-Labels */
-::ng-deep .emoji-mart-category-label {
-  background: transparent !important;
-  color: $text-gray !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  padding: 8px 16px 4px !important;
-}
-
-/* Hover-Effekt für Emojis */
-::ng-deep .emoji-mart-emoji:hover {
-  background: $bg-color !important;
-  border-radius: 6px !important;
-  transform: scale(1.05) !important;
-  transition: all 0.15s ease !important;
-}
-
-/* Tabs, Preview, Footer ausblenden */
-::ng-deep .emoji-mart-anchors,
-::ng-deep .emoji-mart-preview-emoji,
-::ng-deep .emoji-mart-bar {
-  display: none !important;
 }

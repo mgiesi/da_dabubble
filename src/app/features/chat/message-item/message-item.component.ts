@@ -1,14 +1,26 @@
-import { Component, EventEmitter, computed, inject, ChangeDetectorRef, HostListener, type OnInit } from "@angular/core"
+import { Component, EventEmitter, computed, inject, ChangeDetectorRef, type OnInit } from "@angular/core"
 import { Input, Output } from "@angular/core"
 import { NgClass, NgIf, NgFor } from "@angular/common"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
-import { PickerComponent } from "@ctrl/ngx-emoji-mart"
+import { MessageBubbleComponent } from "./message-bubble/message-bubble.component"
+import { MessageEmojiPickerComponent } from "./message-emoji-picker/message-emoji-picker.component"
+import { MessageReactionsComponent } from "./message-reactions/message-reactions.component"
+import { MessageThreadLinkComponent } from "./message-thread-link/message-thread-link.component"
 import { formatMessageTime } from "../../../shared/utils/timestamp"
 
 @Component({
   selector: "app-message-item",
-  imports: [NgClass, NgIf, NgFor, ProfileAvatarComponent, PickerComponent],
+  imports: [
+    NgClass,
+    NgIf,
+    NgFor,
+    ProfileAvatarComponent,
+    MessageBubbleComponent,
+    MessageEmojiPickerComponent,
+    MessageReactionsComponent,
+    MessageThreadLinkComponent,
+  ],
   templateUrl: "./message-item.component.html",
   styleUrl: "./message-item.component.scss",
 })
@@ -18,7 +30,6 @@ export class MessageItemComponent implements OnInit {
   @Output() replyClicked = new EventEmitter<any>()
 
   private usersFacade = inject(UsersFacadeService)
-  private emojiUsageCount: { [emoji: string]: number } = {}
   private cdr = inject(ChangeDetectorRef)
 
   viewEmojiPicker = false
@@ -36,16 +47,14 @@ export class MessageItemComponent implements OnInit {
       return null
     }
 
-    const user = allUsers.find((user) =>
-      user.id === this.message.senderId || user.uid === this.message.senderId
-    ) || null
+    const user =
+      allUsers.find((user) => user.id === this.message.senderId || user.uid === this.message.senderId) || null
 
     console.log("Found user for senderId", this.message.senderId, ":", user)
     return user
   })
 
   ngOnInit() {
-    this.loadEmojiUsage()
     console.log("Message item initialized with:", this.message)
   }
 
@@ -53,83 +62,36 @@ export class MessageItemComponent implements OnInit {
     this.replyClicked.emit(this.message)
   }
 
-  hasThreadReplies(): boolean {
-    return !!this.message?.threadCount && this.message.threadCount > 0
-  }
-
-  getThreadRepliesText(): string {
-    const count = this.message?.threadCount || 0
-    return count === 1 ? "1 Antwort" : `${count} Antworten`
-  }
-
-  addReaction(emoji: string) {
-    console.log("Reaction added:", emoji, "to message:", this.message.id)
-  }
-
-  showEmojiPicker(event: MouseEvent) {
+  onEmojiPickerToggle(event: MouseEvent) {
     event.stopPropagation()
     event.preventDefault()
-    console.log('Toggle emoji picker, current state:', this.viewEmojiPicker)
+    console.log("Toggle emoji picker, current state:", this.viewEmojiPicker)
     this.viewEmojiPicker = !this.viewEmojiPicker
-    console.log('New state:', this.viewEmojiPicker)
-
-    // Force change detection
+    console.log("New state:", this.viewEmojiPicker)
     this.cdr.detectChanges()
   }
 
-  addEmoji(event: any) {
-  const emoji = event.emoji.native
-  this.selectedEmoji = emoji
-
-  this.emojiUsageCount[emoji] = (this.emojiUsageCount[emoji] || 0) + 1
-  this.saveEmojiUsage()
-  console.log("Emoji selected:", emoji)
-  
-  // Close picker after selecting emoji
-  this.viewEmojiPicker = false
-}
-
-  private saveEmojiUsage() {
-    localStorage.setItem("emojiUsage", JSON.stringify(this.emojiUsageCount))
-  }
-
-  private loadEmojiUsage() {
-    const stored = localStorage.getItem("emojiUsage")
-    this.emojiUsageCount = stored ? JSON.parse(stored) : {}
-  }
-
-  getTopEmoji(index: number): string {
-    const sortedEmojis = Object.entries(this.emojiUsageCount)
-      .sort((a, b) => b[1] - a[1])
-      .map(([emoji]) => emoji)
-
-    return sortedEmojis[index] || ""
-  }
-
-  @HostListener("document:click", ["$event"])
-  closeEmojiPicker(event: Event) {
-    if (!this.viewEmojiPicker) return // Nur schließen wenn offen
-
-    const target = event.target as HTMLElement
-
-    // Don't close if clicking inside emoji picker or on emoji button
-    if (target.closest('emoji-mart') ||
-      target.closest('.hover-action-btn') ||
-      target.classList.contains('hover-action-btn')) {
-      return
-    }
-
-    console.log('Closing emoji picker - clicked outside')
+  onEmojiSelected(emoji: string) {
+    this.selectedEmoji = emoji
+    console.log("Emoji selected:", emoji)
     this.viewEmojiPicker = false
   }
 
-  trackByReaction(index: number, reaction: any): string {
-    return `${reaction.emoji}-${reaction.count}`
+  onEmojiPickerClosed() {
+    this.viewEmojiPicker = false
+  }
+
+  onReactionClicked(reaction: any) {
+    console.log("Reaction clicked:", reaction)
+  }
+
+  onThreadClicked(message: any) {
+    this.replyClicked.emit(message)
   }
 
   /**
- * Format message timestamp for display
- */
+   * Format message timestamp for display
+   */
   formatTime(timestamp: Date | null | undefined): string {
     return formatMessageTime(timestamp)
   }
