@@ -1,4 +1,4 @@
-import { Component, inject, Input, input, InputSignal, Signal } from '@angular/core';
+import { Component, inject, Injector, Input, input, InputSignal, Signal } from '@angular/core';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../shared/models/user';
@@ -10,10 +10,13 @@ import { User } from '../../../shared/models/user';
   styleUrl: './profile-avatar.component.scss'
 })
 export class ProfileAvatarComponent {
-  facade = inject(UsersFacadeService);
+  private injector = inject(Injector);
+  private facade = inject(UsersFacadeService);
 
   /** Input variable for the Firebase user object which should be used with this component */
   user: InputSignal<User | null> = input<User | null>(null);
+
+  isOnline = this.facade.isOnline(this.user, this.injector);
 
   @Input() imgSize = 70;
 }

@@ -23,8 +23,8 @@
                 <button (click)="editProfile()" *ngIf="isSelf()">Bearbeiten</button>
             </div>
             <div class="profile-state-content">
-                <div [ngClass]="u.status === 'online' ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
-                <div [ngClass]="u.status === 'online' ? 'state-text-online' : 'state-text-offline'" class="state-text">{{ u.status === 'online' ? 'Aktiv' : 'Inaktiv' }}</div>
+                <div [ngClass]="isOnline() ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
+                <div [ngClass]="isOnline() ? 'state-text-online' : 'state-text-offline'" class="state-text">{{ isOnline() ? 'Aktiv' : 'Inaktiv' }}</div>
             </div>
         </div>
         <div class="profile-email">

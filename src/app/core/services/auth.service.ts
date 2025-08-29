@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, take, shareReplay } from 'rxjs/operators';
 import {
@@ -29,6 +29,8 @@ export class AuthService {
   }
 
   private auth = inject(Auth);
+  private readonly injector = inject(EnvironmentInjector);
+  
   user$: Observable<any> = authState(this.auth);
   isAuthenticated$: Observable<boolean> = this.user$.pipe(
     map((user) => !!user),
@@ -49,11 +51,11 @@ export class AuthService {
   }
 
   async signIn(email: string, password: string): Promise<UserCredential> {
-    return await signInWithEmailAndPassword(this.auth, email, password);
+    return runInInjectionContext(this.injector, () => signInWithEmailAndPassword(this.auth, email, password));
   }
 
   async signOut(): Promise<void> {
-    return await firebaseSignOut(this.auth);
+    return runInInjectionContext(this.injector, () => firebaseSignOut(this.auth));
   }
 
   async signInWithGoogleOAuth(): Promise<UserCredential> {

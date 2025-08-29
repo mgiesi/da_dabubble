@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { provideAuth, getAuth, browserLocalPersistence, indexedDBLocalPersistence, initializeAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
 
 const firebaseConfig = environment.firebase;
 
@@ -17,5 +18,6 @@ export const firebaseProviders = [
     }
     return initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence]});
   }),
-  provideFirestore(() => getFirestore())
+  provideDatabase(() => getDatabase()),
+  provideFirestore(() => getFirestore()),
 ];

@@ -37,20 +37,8 @@ export interface User {
     imgUrl: string;
 
     /**
-     * Simple presence flag for the user.
-     * Consider updating via presence logic or Cloud Functions.
-     */
-    status: "online" | "offline";
-
-    /**
      * Creation timestamp for the user document.
      * Usually set to `serverTimestamp()` when the document is first written.
      */
     createdAt: Timestamp;
-
-    /**
-     * Timestamp of the user's most recent activity/heartbeat.
-     * Update on sign-in, tab focus, or periodic presence pings.
-     */
-    lastSeenAt: Timestamp;
 }

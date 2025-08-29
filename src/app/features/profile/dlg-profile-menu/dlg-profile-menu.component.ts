@@ -27,7 +27,7 @@ export class DlgProfileMenuComponent {
    */
   async signOut() {
     this.dialogRef.close(false);
-    await this.auth.signOut();
+    this.facade.signOut();
     await firstValueFrom(this.auth.user$.pipe(
       filter(u => !u),
       take(1)

@@ -7,6 +7,8 @@ import { SharedFunctionsService } from '../../src/app/core/services/shared-funct
 import { LogoStateService } from './core/services/logo-state.service';
 import { UsersService } from './core/repositories/users.service';
 import { firstValueFrom, filter } from 'rxjs';
+import { UserPresenceService } from './core/services/user-presence.service';
+import { setLogLevel } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,7 @@ export class AppComponent {
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
   private usersService: UsersService = inject(UsersService);
+  private userPresenceService: UserPresenceService = inject(UserPresenceService);
 
   isAuthenticated$ = this.auth.isAuthenticated$;
   showAnimation$ = this.sharedFunctions.showAnimation$;
@@ -47,7 +50,9 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
+    //setLogLevel('debug'); // am App-Start einmalig
     this.initRedirectAndAnimation();
+    this.userPresenceService.init();
   }
 
   private checkFirstVisitAndShowAnimation(): void {

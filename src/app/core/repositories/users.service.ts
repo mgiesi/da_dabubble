@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -23,6 +23,7 @@ import { AuthService } from '../services/auth.service';
 export class UsersService {
   private fs = inject(Firestore);
   private auth = inject(AuthService);
+  private env = inject(EnvironmentInjector);
 
   constructor() {}
 
@@ -67,11 +68,14 @@ export class UsersService {
         if (!firebaseUser) {
           return of(null);
         }
-        const ref = collection(this.fs, 'users');
-        const q = query(ref, where('uid', '==', firebaseUser.uid));
-        return collectionData(q, { idField: 'id' }).pipe(
-          map((users) => (users[0] as User) ?? null)
-        );
+
+        return runInInjectionContext(this.env, () => {
+          const ref = collection(this.fs, 'users');
+          const q = query(ref, where('uid', '==', firebaseUser.uid));
+          return collectionData(q, { idField: 'id' }).pipe(
+            map((users) => (users[0] as User) ?? null)
+          );
+        });
       })
     );
   }
@@ -101,7 +105,6 @@ export class UsersService {
       email,
       imgUrl,
       createdAt: serverTimestamp(),
-      lastSeenAt: serverTimestamp(),
     } as User);
   }
 

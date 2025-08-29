@@ -1,4 +1,4 @@
-import { Component, computed, Inject, inject, Input, Signal } from '@angular/core';
+import { Component, computed, Inject, inject, Injector, Input, Signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../shared/models/user';
@@ -14,13 +14,16 @@ import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.co
   styleUrl: './dlg-profile-details.component.scss'
 })
 export class DlgProfileDetailsComponent {
-  dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
-  facade = inject(UsersFacadeService);
-  dialog = inject(MatDialog);
+  private dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
+  private facade = inject(UsersFacadeService);
+  private injector = inject(Injector);
+  private dialog = inject(MatDialog);
 
   readonly user = inject<Signal<User | null>>(MAT_DIALOG_DATA);
 
   readonly isSelf = this.facade.isCurrentUser(this.user);
+
+  readonly isOnline = this.facade.isOnline(this.user, this.injector);
 
   closeDialog() {
     this.dialogRef.close(false);

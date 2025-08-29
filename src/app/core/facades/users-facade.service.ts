@@ -1,9 +1,12 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, InputSignal, Signal } from '@angular/core';
 import { UsersService } from '../repositories/users.service';
 import { Auth } from '@angular/fire/auth';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable, shareReplay } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { distinctUntilChanged, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { User } from '../../shared/models/user';
+import { UserPresence, UserPresenceService } from '../services/user-presence.service';
+
+const EMPTY: UserPresence = { isOnline: false, lastSeenAt: null };
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +19,8 @@ export class UsersFacadeService {
   private data = inject(UsersService);
   /** Firebase Auth instance used to determine the current user. */
   private auth = inject(Auth);
+  /** User presence service to determine the current state of an user */
+  private presence = inject(UserPresenceService);
 
   constructor() { }
 
@@ -29,6 +34,13 @@ export class UsersFacadeService {
   private readonly currentUser$ = this.currentUser();
   readonly currentUserSig = toSignal<User | null>(this.currentUser$, { initialValue: null });
   
+  /**
+   * Signs the user out.
+   */
+  signOut() {
+    this.presence.signOutWithPresence();
+  }
+
   /**
    * Returns the currently authenticated user as an observable of user.
    * This stream updates automatically when authentication state changes.
@@ -105,5 +117,49 @@ export class UsersFacadeService {
   isCurrentUserValue(user: User | null | undefined): boolean {
     const me = this.currentUserSig();
     return !!user && !!me && user.id === me.id;
+  }
+
+  /** 
+   * Returns the user presence as an Signal object.
+   * 
+   * @param userSig   Reactive auth state (`Signal<User | null>`).
+   * @param injector  Angular `Injector` used by `toSignal` for lifecycle and cleanup.
+   * @returns         A `Signal<UserPresence>` that updates with RTDB presence changes.
+   */
+  getUserPresence(userSig: Signal<User | null>, injector: Injector): Signal<UserPresence> {
+    const uid$ = toObservable(userSig).pipe(
+      map(u => u?.uid ?? null),
+      distinctUntilChanged()
+    );
+
+    const presence$ = uid$.pipe(
+      switchMap(uid => uid ? this.presence.watchUserPresence(uid) : of(EMPTY))
+    );
+
+    return toSignal(presence$, { initialValue: EMPTY, injector });
+  }
+
+  /**
+   * Derives an `isOnline` boolean signal from the presence signal.
+   *
+   * @param userSig   Reactive auth state (`Signal<User | null>`).
+   * @param injector  Angular `Injector` used by `toSignal` in `getUserPresence`.
+   * @returns         `Signal<boolean>` that is `true` when the user is online.
+   */
+  isOnline(userSig: Signal<User | null>, injector: Injector): Signal<boolean> {
+    const p = this.getUserPresence(userSig, injector);
+    return computed(() => p().isOnline);
+  }
+
+  /**
+   * Derives a `lastSeenAt` signal (epoch millis or `null`) from the presence signal.
+   *
+   * @param userSig   Reactive auth state (`Signal<User | null>`).
+   * @param injector  Angular `Injector` used by `toSignal` in `getUserPresence`.
+   * @returns         `Signal<number | null>` representing the last seen server timestamp.
+   */
+  lastSeenAt(userSig: Signal<User | null>, injector: Injector): Signal<number | null> {
+    const p = this.getUserPresence(userSig, injector);
+    return computed(() => p().lastSeenAt);
   }
 }

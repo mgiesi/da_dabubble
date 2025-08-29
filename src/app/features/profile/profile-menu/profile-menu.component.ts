@@ -28,7 +28,7 @@ export class ProfileMenuComponent {
    * Sign out the current user and navigate back to the login page.
    */
   async signOut() {
-    await this.auth.signOut();
+    this.facade.signOut();
     await firstValueFrom(this.auth.user$.pipe(
       filter(u => !u),
       take(1)
