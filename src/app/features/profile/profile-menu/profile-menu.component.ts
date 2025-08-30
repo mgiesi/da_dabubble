@@ -40,12 +40,18 @@ export class ProfileMenuComponent {
    * Opens the profile menu overlay.
    */
   openProfileMenu() {
-    this.dialog.open(DlgProfileMenuComponent, {
-      position: {
-        top: "120px",
-        right: "16px"
-      },
-      panelClass: 'no-top-right-radius-dialog'
-    });
+    const dlgRef = this.dialog.getDialogById('profileMenuDialog');
+    if (dlgRef) {
+      dlgRef.close();
+    } else {
+      this.dialog.open(DlgProfileMenuComponent, {
+        id: 'profileMenuDialog',
+        position: {
+          top: "120px",
+          right: "16px"
+        },
+        panelClass: 'no-top-right-radius-dialog'
+      });
+    }
   }
 }
