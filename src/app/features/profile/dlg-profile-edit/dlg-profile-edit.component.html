@@ -33,21 +33,16 @@
                 <h2>Vollständiger Name</h2>
             </div>
             <form #f="ngForm">
-                <label class="label-input-field-gray-without-img" for="profileName">
-                    <input id="profileName" [(ngModel)]="profileName" name="profileName" type="text" placeholder="{{ u.displayName }}"
-                        required
-                        #profileNameField="ngModel" [ngModelOptions]="{ updateOn: 'blur' }" />
+                <label class="label-input-field-gray-with-img" for="fullName">
+                    <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Name und Nachname"
+                        required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+" #fullNameField="ngModel"
+                        [ngModelOptions]="{ updateOn: 'change' }" (change)="validateNameLength()"
+                        [class.input-error-border]="fullNameField.invalid && (fullNameField.touched || fullNameField.dirty) && fullNameField.value !== ''" />
 
-                    @if (profileNameField.errors?.['required'] && (profileNameField.touched || profileNameField.dirty) && profileNameField.value !==
-                    '') {
-                    <p class="error-message">
-                        *Bitte geben Sie einen gültigen Namen ein
-                    </p>
-                    }
-                    @if (profileNameField.errors?.['pattern'] && !profileNameField.errors?.['required'] && (profileNameField.touched ||
-                    profileNameField.dirty)) {
-                    <p class="error-message">
-                        *Dieser Name ist leider ungültig
+                    @if (fullNameField.errors?.['pattern'] && (fullNameField.touched || fullNameField.dirty)&&
+                    fullNameField.value !== '') {
+                    <p class="error-message" @fadeInOut>
+                        *Bitte geben Sie Vor- und Nachnamen an.
                     </p>
                     }
                 </label>
@@ -57,7 +52,7 @@
             <button (click)="closeDialog()" class="btn-white btn-cancel">
                 Abbrechen
             </button>
-            <button (click)="saveProfile()" class="btn-blue btn-save">
+            <button [disabled]="!f.valid" (click)="saveProfile()" class="btn-blue btn-save">
                 Speichern
             </button>
         </div>
