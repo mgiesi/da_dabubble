@@ -79,7 +79,7 @@ export class AppComponent {
 
       setTimeout(() => {
         this.tryHideOverlay();
-      }, 700);
+      }, 200);
     }, 4200);
   }
 
