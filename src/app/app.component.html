@@ -17,13 +17,9 @@
 <div class="app-container">
 
   @if (!(showAnimation$ | async)) {
-  <!-- <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'"> -->
-  <div class="logo-text-box-logged-out">
-
-    <!-- Dynamic logo source based on current view and screen size -->
-    <img (load)="logoLoaded = true" [src]="logoSrc()" alt="Logo">
-
-    <!-- Show back arrow only on mobile in chat/thread view -->
+  <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'">
+    <!-- <div class="logo-text-box-logged-out"> -->
+    <img [src]="logoSrc()" alt="Logo">
     @if (showBackArrow()) {
     <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,9 +28,7 @@
       </svg>
     </button>
     }
-
-    <!-- Dynamic header title based on current view -->
-    <h1 *ngIf="logoLoaded">{{ headerTitle() }}</h1>
+    <h1>{{ headerTitle() }}</h1>
   </div>
   }
 

@@ -36,6 +36,7 @@ export class AppComponent {
   // Login/Animation State
   logoLoaded = false;
   overlayTimerDone = false;
+  showLogoBox = false;
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
   googleLoginInProgress = false;
@@ -72,12 +73,20 @@ export class AppComponent {
 
   onLogoLoad() {
     this.logoLoaded = true;
-    this.tryHideOverlay();
+
+    setTimeout(() => {
+      this.showLogoBox = true;
+
+      setTimeout(() => {
+        this.tryHideOverlay();
+      }, 700);
+    }, 4200);
   }
 
   private tryHideOverlay() {
     if (this.overlayTimerDone && this.logoLoaded) {
       this.sharedFunctions.setShowAnimation(false);
+      this.showLogoBox = false; // optional: zurücksetzen, falls nötig
     }
   }
 

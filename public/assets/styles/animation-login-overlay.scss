@@ -46,7 +46,7 @@
     }
 }
 
-@keyframes textColorAnimation {
+@keyframes h1ColorAnimation {
     0% {
         color: $white;
     }
@@ -79,6 +79,16 @@
     }
 }
 
+@keyframes textToLeftCornerAnimation {
+    0% {
+        left: 31%;
+    }
+
+    100% {
+        left: unset;
+    }
+}
+
 @keyframes overlayToLeftCornerAnimation {
     0% {
         top: 50%;
@@ -86,37 +96,44 @@
         width: 667px;
         height: 185px;
         transform: translate(-50%, -50%);
+        justify-content: center;
     }
 
     100% {
         left: 55px;
         top: 55px;
-        width: 242px;
-        height: 70px;
+        // width: 242px;
+        width: 203.05px;
+        justify-content: flex-end;
+        height: 71.5px;
         transform: translate(0%, 0%);
     }
 }
 
 @keyframes logoToLeftCornerAnimation {
     0% {
-        width: 187px;
+        width: 190px;
+        aspect-ratio: 1 / 1;
         justify-content: flex-end;
+        height: 100%;
     }
 
     100% {
         width: 71.5px;
+        aspect-ratio: 1 / 1;
         justify-content: flex-start;
+        height: unset;
     }
 }
 
-@keyframes textToLeftCornerAnimation {
+@keyframes h1ToLeftCornerAnimation {
     0% {
         font-size: 70px;
     }
 
     100% {
         font-size: 24px;
-        transform: translateX(12.5px);
+        transform: translateX(0px);
     }
 }
 

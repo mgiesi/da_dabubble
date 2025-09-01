@@ -97,15 +97,15 @@
     left: -41%;
     transform: translate(0%, -50%);
     background-color: transparent;
-    display: grid;
+    @include dFlexAllCenter($ai: center, $jc: center);
     z-index: 1;
-    place-items: center;
+
     height: 100%;
-    animation: textAnimation $animation-login-overlay-text;
+    animation: textAnimation $animation-login-overlay-text, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
     h1 {
         @include fontSizeWeightColor($si: 70px, $we: 700, $co: $white);
-        animation: textColorAnimation $textColorAnimation, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
+        animation: h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
     }
 }
 
@@ -117,7 +117,8 @@
     height: 71.5px;
 
     img {
-        width: 71.5px;
+        height: 71.5px;
+        aspect-ratio: 1 / 1;
     }
 
     .back-arrow {
