@@ -34,6 +34,8 @@ export class AppComponent {
   readonly showBackArrow = this.logoState.showBackArrow;
 
   // Login/Animation State
+  logoLoaded = false;
+  overlayTimerDone = false;
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
   googleLoginInProgress = false;
@@ -51,7 +53,7 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    //setLogLevel('debug'); // am App-Start einmalig
+    setLogLevel('debug'); // am App-Start einmalig
     this.initRedirectAndAnimation();
     this.userPresenceService.init();
   }
@@ -62,8 +64,20 @@ export class AppComponent {
       this.sharedFunctions.setShowAnimation(true);
       sessionStorage.setItem('firstPageVisit', 'true');
       setTimeout(() => {
-        this.sharedFunctions.setShowAnimation(false);
+        this.overlayTimerDone = true;
+        this.tryHideOverlay();
       }, 4100);
+    }
+  }
+
+  onLogoLoad() {
+    this.logoLoaded = true;
+    this.tryHideOverlay();
+  }
+
+  private tryHideOverlay() {
+    if (this.overlayTimerDone && this.logoLoaded) {
+      this.sharedFunctions.setShowAnimation(false);
     }
   }
 
