@@ -23,32 +23,32 @@ export class ChooseAvatarComponent {
   @Output() avatarsLoaded = new EventEmitter<void>();
   avatarIconsArray = [
     {
-      src: '/img/avatar/elias-neumann.png',
+      src: 'img/avatar/elias-neumann.png',
       alt: 'Profile bild Elias Neumann',
       loaded: false,
     },
     {
-      src: '/img/avatar/elise-roth.png',
+      src: 'img/avatar/elise-roth.png',
       alt: 'Profile bild Elise Roth',
       loaded: false,
     },
     {
-      src: '/img/avatar/frederik-beck.png',
+      src: 'img/avatar/frederik-beck.png',
       alt: 'Profile bild Frederik Beck',
       loaded: false,
     },
     {
-      src: '/img/avatar/noah-braun.png',
+      src: 'img/avatar/noah-braun.png',
       alt: 'Profile bild Noah Braun',
       loaded: false,
     },
     {
-      src: '/img/avatar/sofia-müller.png',
+      src: 'img/avatar/sofia-müller.png',
       alt: 'Profile bild Sofia Müller',
       loaded: false,
     },
     {
-      src: '/img/avatar/steffen-hoffmann.png',
+      src: 'img/avatar/steffen-hoffmann.png',
       alt: 'Profile bild Steffen Hoffmann',
       loaded: false,
     },

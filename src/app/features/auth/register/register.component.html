@@ -147,7 +147,7 @@
 
             <section (click)="toggleCheckbox()" class="checkbox-section" (mouseenter)="onMouseEnter()"
                 (mouseleave)="onMouseLeave()">
-                <img [src]="checked ? '/icons/checkbox-checked.svg' : (isHovered ? '/icons/checkbox-empty-hover.svg' : '/icons/checkbox-empty.svg')"
+                <img [src]="checked ? 'icons/checkbox-checked.svg' : (isHovered ? 'icons/checkbox-empty-hover.svg' : 'icons/checkbox-empty.svg')"
                     alt="Checkbox Icons">
 
                 <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu</span>
