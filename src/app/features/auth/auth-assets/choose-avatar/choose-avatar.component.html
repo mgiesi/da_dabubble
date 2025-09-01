@@ -1,7 +1,8 @@
 <div class="choose-avatar-container">
-    <div class="hero-icon-box">
+    <div class="hero-icon-box" (click)="fileInput.click()">
         <img src="img/avatar/unknown-image.png" alt="Leerer Avatar">
     </div>
+    <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)"/>
     <h1>Frederik Beck</h1>
     <div class="choose-avatar-text-box">
         <p>Aus der Liste wählen</p>

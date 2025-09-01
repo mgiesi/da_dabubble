@@ -1,14 +1,16 @@
 import { NgIf, CommonModule } from '@angular/common';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { Component, effect, inject, Signal, WritableSignal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { User } from '../../../shared/models/user';
 import { FormsModule } from '@angular/forms';
+import { DlgSelectAvatarComponent } from '../dlg-select-avatar/dlg-select-avatar.component';
+import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 
 @Component({
   selector: 'app-dlg-profile-edit',
-  imports: [MatDialogContent, NgIf, CommonModule, FormsModule],
+  imports: [MatDialogContent, NgIf, CommonModule, FormsModule, ProfileAvatarComponent],
   templateUrl: './dlg-profile-edit.component.html',
   styleUrl: './dlg-profile-edit.component.scss',
   animations: [fadeInOut],
@@ -16,7 +18,8 @@ import { FormsModule } from '@angular/forms';
 export class DlgProfileEditComponent {
   dialogRef = inject(MatDialogRef<DlgProfileEditComponent>);
   facade = inject(UsersFacadeService);
-
+  private dialog = inject(MatDialog);
+  
   readonly user = inject<WritableSignal<User | null>>(MAT_DIALOG_DATA);
 
   fullName: string = '';
@@ -31,6 +34,12 @@ export class DlgProfileEditComponent {
         this.hasInitializedFromuser = true;
       }
     })
+  }
+
+  editAvatar() {
+    this.dialog.open(DlgSelectAvatarComponent, {     
+      data: this.user
+    });
   }
 
   closeDialog() {

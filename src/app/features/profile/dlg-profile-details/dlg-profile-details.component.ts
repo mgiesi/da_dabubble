@@ -6,10 +6,11 @@ import { NgIf } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.component';
+import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 
 @Component({
   selector: 'app-dlg-profile-details',
-  imports: [MatDialogContent, NgIf, CommonModule],
+  imports: [MatDialogContent, NgIf, CommonModule, ProfileAvatarComponent],
   templateUrl: './dlg-profile-details.component.html',
   styleUrl: './dlg-profile-details.component.scss'
 })
