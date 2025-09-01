@@ -47,6 +47,14 @@
   }
 }
 
+// Positionierung für Owner Messages
+:host-context(.own-message) {
+  ::ng-deep emoji-mart {
+    left: -230px;
+    right: auto;
+  }
+}
+
 ::ng-deep .emoji-mart-scroll {
   flex: 1 1 auto !important;
   max-height: 100% !important;

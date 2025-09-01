@@ -37,6 +37,12 @@
   white-space: nowrap;
 }
 
+// Owner Messages: Hover-Aktionen nach links verschieben
+:host-context(.own-message) .message-hover-actions {
+  left: -150px;
+  right: auto;
+}
+
 .quick-reaction-btn {
   background: none;
   border: none;
@@ -72,10 +78,10 @@
   }
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     color: $text-gray;
-    fill: $black;
+    fill: currentColor;
   }
 
   &:hover svg {
