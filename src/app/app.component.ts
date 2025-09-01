@@ -73,13 +73,11 @@ export class AppComponent {
 
   onLogoLoad() {
     this.logoLoaded = true;
-
     setTimeout(() => {
       this.showLogoBox = true;
-
-      setTimeout(() => {
-        this.tryHideOverlay();
-      }, 200);
+    }, 200);
+    setTimeout(() => {
+      this.tryHideOverlay();
     }, 4200);
   }
 
