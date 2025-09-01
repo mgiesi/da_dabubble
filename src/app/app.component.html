@@ -17,8 +17,8 @@
 <div class="app-container">
 
   @if (!(showAnimation$ | async)) {
-  <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'">
-    <!-- <div class="logo-text-box-logged-out"> -->
+  <!-- <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'"> -->
+  <div class="logo-text-box-logged-out">
     <img [src]="logoSrc()" alt="Logo">
     @if (showBackArrow()) {
     <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">

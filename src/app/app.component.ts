@@ -54,7 +54,7 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    setLogLevel('debug'); // am App-Start einmalig
+    // setLogLevel('debug'); // am App-Start einmalig
     this.initRedirectAndAnimation();
     this.userPresenceService.init();
   }
@@ -84,7 +84,7 @@ export class AppComponent {
   private tryHideOverlay() {
     if (this.overlayTimerDone && this.logoLoaded) {
       this.sharedFunctions.setShowAnimation(false);
-      this.showLogoBox = false; // optional: zurücksetzen, falls nötig
+      this.showLogoBox = false;
     }
   }
 
