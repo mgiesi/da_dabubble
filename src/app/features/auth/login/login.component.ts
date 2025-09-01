@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { AppComponent } from '../../../app.component';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -25,6 +26,7 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
   animations: [fadeInOut],
 })
 export class LoginComponent {
+  constructor(private appComponent: AppComponent) {}
   auth = inject(AuthService);
   router = inject(Router);
   usersService = inject(UsersService);
@@ -88,7 +90,7 @@ export class LoginComponent {
   }
 
   private handleSignInError(e: any) {
-    this.errMsg = this.mapAuthError(e);
+    this.errMsg = this.appComponent.mapAuthError(e);
   }
 
   async triggerGoogleSignIn() {
@@ -154,7 +156,7 @@ export class LoginComponent {
       this.errMsg =
         'Firebase Konfigurationsfehler. Bitte Administrator kontaktieren.';
     } else {
-      this.errMsg = this.mapAuthError(error);
+      this.errMsg = this.appComponent.mapAuthError(error);
     }
   }
 
@@ -252,37 +254,5 @@ export class LoginComponent {
       )
     );
     await this.router.navigate(['/chat']);
-  }
-
-  private mapAuthError(err: unknown): string {
-    const fallback = 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.';
-    if (err && typeof err === 'object' && 'code' in err) {
-      const code = (err as FirebaseError).code;
-      switch (code) {
-        case 'auth/invalid-email':
-          return 'Ungültige E-Mail-Adresse.';
-        case 'auth/invalid-credential':
-        case 'auth/wrong-password':
-        case 'auth/user-not-found':
-          return 'E-Mail und Passwort stimmen nicht überein.';
-        case 'auth/user-disabled':
-          return 'Dieses Konto wurde deaktiviert.';
-        case 'auth/too-many-requests':
-          return 'Zu viele Versuche. Bitte später erneut versuchen.';
-        case 'auth/network-request-failed':
-          return 'Netzwerkfehler. Bitte Verbindung prüfen.';
-        case 'auth/popup-closed-by-user':
-          return 'Anmeldung wurde abgebrochen.';
-        case 'auth/popup-blocked':
-          return 'Popup wurde blockiert. Bitte Popup-Blocker deaktivieren.';
-        case 'auth/cancelled-popup-request':
-          return 'Mehrere Popup-Anfragen. Bitte warten Sie kurz.';
-        case 'auth/argument-error':
-          return 'Konfigurationsfehler. Bitte Administrator kontaktieren.';
-        default:
-          return fallback;
-      }
-    }
-    return fallback;
   }
 }

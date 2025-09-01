@@ -23,7 +23,8 @@ export class AppComponent {
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
   private usersService: UsersService = inject(UsersService);
-  private userPresenceService: UserPresenceService = inject(UserPresenceService);
+  private userPresenceService: UserPresenceService =
+    inject(UserPresenceService);
 
   isAuthenticated$ = this.auth.isAuthenticated$;
   showAnimation$ = this.sharedFunctions.showAnimation$;
@@ -182,7 +183,7 @@ export class AppComponent {
     await this.router.navigate(['/chat']);
   }
 
-  private mapAuthError(err: unknown): string {
+  public mapAuthError(err: unknown): string {
     const fallback = 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.';
     if (err && typeof err === 'object' && 'code' in err) {
       const code = (err as any).code;
