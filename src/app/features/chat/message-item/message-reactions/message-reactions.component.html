@@ -5,7 +5,7 @@
       class="reaction-button"
       (click)="onReactionClick(reaction)">
       <span class="emoji">{{ reaction.emoji }}</span>
-      <span class="count" *ngIf="reaction.count > 1">{{ reaction.count }}</span>
+      <span class="count">{{ reaction.count }}</span>
     </button>
   </div>
 </div>

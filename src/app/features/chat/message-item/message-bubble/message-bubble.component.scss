@@ -84,7 +84,7 @@
     fill: currentColor;
   }
 
-  &:hover svg {
-    color: $black;
+  &:hover svg path {
+    fill: $purple-3;
   }
 }
