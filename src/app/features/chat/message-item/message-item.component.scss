@@ -98,6 +98,14 @@
   @include dFlexAllCenter($ai: flex-start, $jc: space-between);
   margin-top: 8px;
   width: 100%;
+
+  &.message-footer-own {
+    justify-content: space-between; // Keep current behavior for owner
+  }
+
+  &.message-footer-other {
+    justify-content: flex-start; // Left align for other users
+  }
 }
 
 .message-wrapper.thread-view {

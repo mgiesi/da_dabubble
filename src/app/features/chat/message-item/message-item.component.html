@@ -27,7 +27,7 @@
       </app-message-emoji-picker>
     </div>
 
-    <div class="message-footer">
+    <div class="message-footer" [ngClass]="{'message-footer-own': message?.isOwnMessage, 'message-footer-other': !message?.isOwnMessage}">
       <app-message-thread-link
         [message]="message"
         [isThreadView]="isThreadView"
@@ -36,6 +36,7 @@
 
       <app-message-reactions
         [reactions]="message?.reactions"
+        [isOwnMessage]="message?.isOwnMessage"
         (reactionClicked)="onReactionClicked($event)">
       </app-message-reactions>
     </div>
