@@ -1,4 +1,5 @@
 import { Component, inject, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -46,6 +47,7 @@ export class RegisterComponent {
 
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
+  private router = inject(Router);
 
   validateNameLength() {
     const cleanedName = this.fullName.replace(/\s/g, '');
@@ -92,8 +94,7 @@ export class RegisterComponent {
           this.fullName,
           '' // imgUrl kann später gesetzt werden
         );
-        await this.authService.signOut();
-        window.location.href = '/login';
+        await this.router.navigate(['/chat']);
       } catch (error: any) {
         this.errMsg = error.message;
       } finally {

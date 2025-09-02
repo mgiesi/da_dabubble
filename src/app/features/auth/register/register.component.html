@@ -150,7 +150,7 @@
                     alt="Checkbox Icons">
                 <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu</span>
 
-                @if (!checked && f.valid) {
+                @if (!checked && f.valid && formSubmitted) {
                 <p class="error-message">
                     *Bitte akzeptiere die Datenschutzerklärung
                 </p>
