@@ -92,6 +92,8 @@ export class RegisterComponent {
           this.fullName,
           '' // imgUrl kann später gesetzt werden
         );
+        await this.authService.signOut();
+        window.location.href = '/login';
       } catch (error: any) {
         this.errMsg = error.message;
       } finally {

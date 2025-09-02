@@ -52,7 +52,8 @@ export class AuthService {
   async emailExists(email: string): Promise<boolean> {
     try {
       const methods = await fetchSignInMethodsForEmail(this.auth, email);
-      return methods && methods.length > 0;
+      // Nur true, wenn Passwort-Login für diese E-Mail existiert
+      return methods && methods.includes('password');
     } catch (e) {
       return false;
     }
