@@ -46,7 +46,7 @@
                 <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required #emailField="ngModel"
                     [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExists()"
-                    [class.input-error-border]="emailField.invalid && (emailField.touched || emailField.dirty) && emailField.value !== ''" />
+                    [class.input-error-border]="emailField.invalid && emailField.value !== '' || emailExists" />
 
                 <ng-container
                     *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
@@ -144,26 +144,28 @@
             </label>
 
 
-
             <section (click)="toggleCheckbox()" class="checkbox-section" (mouseenter)="onMouseEnter()"
                 (mouseleave)="onMouseLeave()">
                 <img [src]="checked ? 'icons/checkbox-checked.svg' : (isHovered ? 'icons/checkbox-empty-hover.svg' : 'icons/checkbox-empty.svg')"
                     alt="Checkbox Icons">
-
                 <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu</span>
 
-                <p class="error-message"
-                    *ngIf="!checked && fullNameField.valid && emailField.valid && pwdField.valid && confirmPwdField.valid">
+                @if (!checked && f.valid) {
+                <p class="error-message">
                     *Bitte akzeptiere die Datenschutzerklärung
                 </p>
+                }
             </section>
 
             <div class="next-btn-box">
                 <!-- <button routerLink="/avatar-selection" class="btn-blue"
-                [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked || emailExists">
-                Weiter
-            </button> -->
-                <button routerLink="/avatar-selection" class="btn-blue">Weiter</button>
+                    [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked || emailExists">
+                    Weiter
+                </button> -->
+                <button (click)="register()" class="btn-blue"
+                    [disabled]="!f.valid || inProgress || !checked || emailExists ">
+                    Weiter
+                </button>
             </div>
         </form>
     </div>

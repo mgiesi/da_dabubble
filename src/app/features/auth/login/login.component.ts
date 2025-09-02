@@ -48,11 +48,7 @@ export class LoginComponent {
     return AuthService.getEmailPatternHtml();
   }
 
-  async checkEmailExistsOnBlur() {
-    this.resetEmailCheckState();
-    if (!this.isEmailValid(this.email)) return;
-    await this.performEmailCheck();
-  }
+  // Die Prüfung erfolgt jetzt erst beim Login-Versuch, nicht mehr beim Blur des E-Mail-Felds
 
   private resetEmailCheckState() {
     this.emailExists = null;
@@ -63,11 +59,7 @@ export class LoginComponent {
     return !!email && AuthService.EMAIL_PATTERN.test(email);
   }
 
-  private async performEmailCheck() {
-    this.emailCheckInProgress = true;
-    this.emailExists = await this.auth.emailExists(this.email);
-    this.emailCheckInProgress = false;
-  }
+  // Die Prüfung erfolgt jetzt erst beim Login-Versuch
 
   async signInAsGuest() {
     this.prepareSignIn();
@@ -218,23 +210,28 @@ export class LoginComponent {
       if (!this.isSignInInputValid(inputEmail, inputPwd)) return;
       if (!this.isGuestLogin(inputEmail)) {
         if (!this.isEmailValid(inputEmail)) return;
-        await this.checkEmailExistsOrReturn(inputEmail);
       }
       await this.doSignIn(inputEmail, inputPwd);
       await this.waitForAuthAndNavigate();
     } catch (e) {
-      this.handleSignInError(e);
+      if (e && (e as any).code === 'auth/user-not-found') {
+        this.errMsg = 'EMAIL_NOT_FOUND';
+      } else if (e && (e as any).code === 'auth/wrong-password') {
+        this.errMsg = 'WRONG_PASSWORD';
+      } else {
+        this.handleSignInError(e);
+      }
     } finally {
       this.finishSignIn();
     }
   }
 
-  private isSignInInputValid(email: string, pwd: string): boolean {
-    return !!email && !!pwd;
-  }
-
   private isGuestLogin(email: string): boolean {
     return email === 'guest@guest.com';
+  }
+
+  private isSignInInputValid(email: string, pwd: string): boolean {
+    return !!email && !!pwd;
   }
 
   private async checkEmailExistsOrReturn(email: string) {

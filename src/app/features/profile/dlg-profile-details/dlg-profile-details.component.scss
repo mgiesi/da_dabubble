@@ -30,12 +30,6 @@ h2 {
     }
 }
 
-.profile-avater {
-    height: 200px;
-    width: auto;
-    border-radius: 100%;
-}
-
 .profile-name-state-content {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: flex-start, $g: 15px);
     width: 100%;

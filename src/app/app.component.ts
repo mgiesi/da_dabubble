@@ -65,22 +65,25 @@ export class AppComponent {
       this.sharedFunctions.setShowAnimation(true);
       sessionStorage.setItem('firstPageVisit', 'true');
       setTimeout(() => {
+        this.showLogoBox = true;
+      }, 3800);
+      setTimeout(() => {
         this.overlayTimerDone = true;
         this.tryHideOverlay();
       }, 4100);
+    } else {
+      this.showLogoBox = true;
     }
   }
 
   onLogoLoad() {
     this.logoLoaded = true;
-    this.showLogoBox = true;
     this.tryHideOverlay();
   }
 
   private tryHideOverlay() {
     if (this.overlayTimerDone && this.logoLoaded) {
       this.sharedFunctions.setShowAnimation(false);
-      this.showLogoBox = false;
     }
   }
 

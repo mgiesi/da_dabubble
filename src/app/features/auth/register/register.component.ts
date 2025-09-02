@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -27,11 +27,14 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
   animations: [fadeInOut],
 })
 export class RegisterComponent {
-  name: string = '';
+  @ViewChild('f') form!: NgForm;
+
   fullName: string = '';
   email: string = '';
   pwd: string = '';
   confirmPwd: string = '';
+
+  formSubmitted: boolean = false;
   errMsg: string = '';
   inProgress = false;
   checked: boolean = false;
@@ -71,5 +74,31 @@ export class RegisterComponent {
       this.email
     );
     this.emailExists = existsInAuth || existsInFirestore;
+  }
+
+  async register() {
+    this.formSubmitted = true;
+
+    if (this.form.valid && this.checked && !this.emailExists) {
+      this.inProgress = true;
+      try {
+        const userCredential = await this.authService.signUp(
+          this.email,
+          this.pwd
+        );
+        await this.usersService.createUser(
+          userCredential.user.uid,
+          this.email,
+          this.fullName,
+          '' // imgUrl kann später gesetzt werden
+        );
+        await this.authService.signOut();
+        window.location.href = '/login';
+      } catch (error: any) {
+        this.errMsg = error.message;
+      } finally {
+        this.inProgress = false;
+      }
+    }
   }
 }

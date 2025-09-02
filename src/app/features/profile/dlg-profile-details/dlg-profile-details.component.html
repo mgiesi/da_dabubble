@@ -16,7 +16,7 @@
                 </svg>
             </button>
         </div>
-        <img class="profile-avater" src="{{ u.imgUrl }}">
+        <app-profile-avatar [user]="u" [imgSize]="200" [showStatus]="false"></app-profile-avatar>
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>

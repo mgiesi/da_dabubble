@@ -1,4 +1,9 @@
-import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from '@angular/core';
+import {
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  runInInjectionContext,
+} from '@angular/core';
 import {
   Firestore,
   collection,
@@ -105,7 +110,10 @@ export class UsersService {
       email,
       imgUrl,
       createdAt: serverTimestamp(),
-    } as User);
+      lastSeenAt: '',
+      status: 'offline',
+      updatedAt: serverTimestamp(),
+    });
   }
 
   /**

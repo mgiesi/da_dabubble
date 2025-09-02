@@ -7,6 +7,7 @@ import {
 
 import { routes } from './app.routes';
 import { firebaseProviders } from './core/firebase/firebase.config';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withEnabledBlockingInitialNavigation()),
     ...firebaseProviders,
     provideAnimations(),
+    provideHttpClient(),
   ],
 };
