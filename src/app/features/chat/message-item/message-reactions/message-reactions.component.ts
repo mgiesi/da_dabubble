@@ -1,15 +1,15 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core"
-import { NgFor, NgIf } from "@angular/common"
+import { NgFor, NgIf, KeyValuePipe } from "@angular/common"
 
 @Component({
   selector: "app-message-reactions",
-  imports: [NgFor, NgIf ],
+  imports: [NgFor, NgIf, KeyValuePipe],
   templateUrl: "./message-reactions.component.html",
   styleUrl: "./message-reactions.component.scss",
 })
 export class MessageReactionsComponent {
   @Input() reactions: { [emoji: string]: { count: number; users: string[] } } = {}
-  @Input() isOwnMessage = false // Add isOwnMessage input for positioning
+  @Input() isOwnMessage = false
   @Output() reactionClicked = new EventEmitter<{ emoji: string; data: any }>()
 
   onReactionClick(emoji: string, reactionData: any) {
@@ -17,10 +17,17 @@ export class MessageReactionsComponent {
   }
 
   trackByReaction(index: number, item: any): string {
-    return item.key // emoji is the key
+    return item.key
   }
 
   hasReactions(): boolean {
-    return this.reactions && Object.keys(this.reactions).length > 0
+    return Object.keys(this.reactions).length > 0
+  }
+
+  ngOnInit(): void {
+    console.log('Full reactions object:', this.reactions)
+    Object.keys(this.reactions).forEach(key => {
+      console.log('Emoji key:', key, 'Unicode:', key.charCodeAt(0))
+    })
   }
 }

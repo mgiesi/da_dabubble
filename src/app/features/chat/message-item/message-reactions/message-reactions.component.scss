@@ -3,7 +3,11 @@
 
 .message-reactions {
   margin-top: 8px;
-  @include dFlexAllCenter($ai: flex-start, $jc: flex-end);
+  @include dFlexAllCenter($ai: flex-start, $jc: flex-start); // Links
+}
+
+:host-context(.own-message) .message-reactions {
+  @include dFlexAllCenter($ai: flex-start, $jc: flex-end); // Owner rechts
 }
 
 .emoji-grid {
