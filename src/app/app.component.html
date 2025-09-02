@@ -1,38 +1,25 @@
-<!-- @if (showAnimation$ | async) {
+@if (showAnimation$ | async) {
 <div class="animation-overlay">
   <div class="overlay-box">
     <div class="animation-overlay-content">
       <div class="logo">
         <img (load)="onLogoLoad()" src="img/logo/DABubble-logo-animation.png" alt="DABubble Logo">
       </div>
-      <div class="placeholder"></div>
       <div class="text">
         <h1>DABubble</h1>
       </div>
     </div>
   </div>
 </div>
-} -->
-
-<div class="animation-overlay">
-  <div class="overlay-box">
-    <div class="animation-overlay-content">
-      <div class="logo">
-        <img (load)="onLogoLoad()" src="img/logo/DABubble-logo-animation.png" alt="DABubble Logo">
-      </div>
-      <!-- <div class="placeholder"></div> -->
-      <div class="text">
-        <h1>DABubble</h1>
-      </div>
-    </div>
-  </div>
-</div>
+}
 
 <div class="app-container">
 
-  @if (!(showAnimation$ | async)) {
-  <!-- <div [ngClass]="(isAuthenticated$ | async) ? 'logo-text-box-logged-in' : 'logo-text-box-logged-out'"> -->
-  <div class="logo-text-box-logged-out">
+  <div [ngClass]="{
+      'logo-text-box-logged-in': isAuthenticated$ | async,
+      'logo-text-box-logged-out': !(isAuthenticated$ | async),
+      'visible': showLogoBox && !(isAuthenticated$ | async)
+    }">
     <img [src]="logoSrc()" alt="Logo">
     @if (showBackArrow()) {
     <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">
@@ -44,7 +31,6 @@
     }
     <h1>{{ headerTitle() }}</h1>
   </div>
-  }
 
   <div class="header-right" *ngIf="isAuthenticated$ | async">
     <app-profile-menu></app-profile-menu>

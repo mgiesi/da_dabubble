@@ -143,6 +143,14 @@
 .logo-text-box-logged-out {
     top: 55px;
     left: 55px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 
 .logo-text-box-logged-in {
