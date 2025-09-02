@@ -1,4 +1,11 @@
-import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
+// ...existing code...
+
+import {
+  EnvironmentInjector,
+  Injectable,
+  inject,
+  runInInjectionContext,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, take, shareReplay } from 'rxjs/operators';
 import {
@@ -14,6 +21,7 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   fetchSignInMethodsForEmail,
+  sendPasswordResetEmail,
 } from '@angular/fire/auth';
 @Injectable({
   providedIn: 'root',
@@ -30,7 +38,7 @@ export class AuthService {
 
   private auth = inject(Auth);
   private readonly injector = inject(EnvironmentInjector);
-  
+
   user$: Observable<any> = authState(this.auth);
   isAuthenticated$: Observable<boolean> = this.user$.pipe(
     map((user) => !!user),
@@ -50,12 +58,21 @@ export class AuthService {
     }
   }
 
+  async signUp(email: string, password: string) {
+    const { createUserWithEmailAndPassword } = await import('firebase/auth');
+    return createUserWithEmailAndPassword(this.auth, email, password);
+  }
+
   async signIn(email: string, password: string): Promise<UserCredential> {
-    return runInInjectionContext(this.injector, () => signInWithEmailAndPassword(this.auth, email, password));
+    return runInInjectionContext(this.injector, () =>
+      signInWithEmailAndPassword(this.auth, email, password)
+    );
   }
 
   async signOut(): Promise<void> {
-    return runInInjectionContext(this.injector, () => firebaseSignOut(this.auth));
+    return runInInjectionContext(this.injector, () =>
+      firebaseSignOut(this.auth)
+    );
   }
 
   async signInWithGoogleOAuth(): Promise<UserCredential> {
@@ -72,7 +89,6 @@ export class AuthService {
       console.log('Google Sign-in erfolgreich:', result.user.email);
       return result;
     } catch (error: any) {
-      // Kein Logging für Popup geschlossen
       if (error.code === 'auth/popup-blocked') {
         throw new Error(
           'Popup wurde blockiert. Bitte Popup-Blocker deaktivieren.'
@@ -92,8 +108,6 @@ export class AuthService {
           'Firebase Konfigurationsfehler. Bitte Administrator kontaktieren.'
         );
       }
-
-      // Nur für andere Fehler loggen
       console.error('Google OAuth Sign-In Error:', error);
       throw error;
     }
@@ -119,6 +133,21 @@ export class AuthService {
       return await signInWithCredential(this.auth, credential);
     } catch (error) {
       console.error('Firebase signInWithCredential error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Sendet eine Passwort-zurücksetzen-E-Mail an die angegebene Adresse
+   */
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+    } catch (error) {
+      console.error(
+        'Fehler beim Senden der Passwort-zurücksetzen-E-Mail:',
+        error
+      );
       throw error;
     }
   }

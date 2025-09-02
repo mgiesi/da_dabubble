@@ -31,13 +31,17 @@ export class ForgotPasswordComponent {
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
   errMsg: string = '';
+  infoMsg: string = '';
+  sending: boolean = false;
 
   authService = inject(AuthService);
   usersService = inject(UsersService);
 
   async checkEmailExists() {
+    this.resetEmail = this.resetEmail.trim().toLowerCase();
     this.emailExists = null;
     this.errMsg = '';
+    this.infoMsg = '';
     if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
       return;
     }
@@ -47,5 +51,28 @@ export class ForgotPasswordComponent {
       this.errMsg = 'Es existiert kein Benutzer mit dieser E-Mail-Adresse';
     }
     this.emailCheckInProgress = false;
+  }
+
+  async onSubmit() {
+    this.resetEmail = this.resetEmail.trim().toLowerCase();
+    this.errMsg = '';
+    this.infoMsg = '';
+    if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
+      this.errMsg = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
+      return;
+    }
+    if (this.emailExists === false) {
+      this.errMsg = 'Es existiert kein Benutzer mit dieser E-Mail-Adresse';
+      return;
+    }
+    this.sending = true;
+    try {
+      await this.authService.sendPasswordResetEmail(this.resetEmail);
+      this.infoMsg =
+        'Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.';
+    } catch (error: any) {
+      this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
+    }
+    this.sending = false;
   }
 }
