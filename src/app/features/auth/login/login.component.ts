@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
-import { FirebaseError } from '@angular/fire/app';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
@@ -48,12 +47,10 @@ export class LoginComponent {
     return AuthService.getEmailPatternHtml();
   }
 
-  // Die Prüfung erfolgt jetzt erst beim Login-Versuch, nicht mehr beim Blur des E-Mail-Felds
-
-  private resetEmailCheckState() {
-    this.emailExists = null;
-    this.errMsg = '';
-  }
+  // private resetEmailCheckState() {
+  //   this.emailExists = null;
+  //   this.errMsg = '';
+  // }
 
   private isEmailValid(email: string): boolean {
     return !!email && AuthService.EMAIL_PATTERN.test(email);
@@ -234,10 +231,10 @@ export class LoginComponent {
     return !!email && !!pwd;
   }
 
-  private async checkEmailExistsOrReturn(email: string) {
-    this.emailExists = await this.auth.emailExists(email);
-    if (!this.emailExists) return;
-  }
+  // private async checkEmailExistsOrReturn(email: string) {
+  //   this.emailExists = await this.auth.emailExists(email);
+  //   if (!this.emailExists) return;
+  // }
 
   private async doSignIn(email: string, pwd: string) {
     await this.auth.signIn(email, pwd);
