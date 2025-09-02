@@ -61,14 +61,16 @@ export class UserPresenceService {
     if (this.initialized) return;
     this.initialized = true;
 
-    onAuthStateChanged(this.auth, (user) => {
-      // Clean up previous `.info/connected` listener when auth state changes.
-      this.checkConnectedUnsubscription();
-      if (!user) return;
+    runInInjectionContext(this.env, () => {
+      onAuthStateChanged(this.auth, (user) => {
+        // Clean up previous `.info/connected` listener when auth state changes.
+        this.checkConnectedUnsubscription();
+        if (!user) return;
 
-      // Start monitoring connection status for the signed-in user.
-      runInInjectionContext(this.env, () => {
-        this.createConnectedUnsubscription(user);
+        // Start monitoring connection status for the signed-in user.
+        runInInjectionContext(this.env, () => {
+          this.createConnectedUnsubscription(user);
+        });
       });
     });
   }
@@ -159,20 +161,22 @@ export class UserPresenceService {
    * Signs the user out while cleanly recording "offline" presence.
    */
   async signOutWithPresence(): Promise<void> {
-    const user = this.auth.currentUser;
-    if (user) {
-      const statusRef = ref(this.rtdb, `status/${user.uid}`);
-      try {
-        await this.inCtx(() =>
-          set(statusRef, {
-            state: 'offline',
-            last_seen_at: serverTimestamp(),
-          })
-        );
-        await this.inCtx(() => onDisconnect(statusRef).cancel());
-      } catch {
+    await runInInjectionContext(this.env, async () => {
+      const user = this.auth.currentUser;
+      if (user) {
+        const statusRef = ref(this.rtdb, `status/${user.uid}`);
+        try {
+          await this.inCtx(() =>
+            set(statusRef, {
+              state: 'offline',
+              last_seen_at: serverTimestamp(),
+            })
+          );
+          await this.inCtx(() => onDisconnect(statusRef).cancel());
+        } catch {
+        }
       }
-    }
-    await this.auth.signOut();
+      await this.auth.signOut();
+    });    
   }
 }
