@@ -11,3 +11,10 @@
     top: 0;
     width: 90%;
 }
+
+
+.button-box {
+    width: 100%;
+    @include dFlexAllCenter($jc: flex-end);
+
+}
