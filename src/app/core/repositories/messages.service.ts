@@ -11,6 +11,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  getDocs
 } from "@angular/fire/firestore"
 import { Observable } from "rxjs"
 import type { Message, Topic } from "../facades/messages-facade.service"
@@ -138,5 +139,40 @@ export class MessagesService {
     }
 
     await updateDoc(messageRef, { reactions: currentReactions })
+  }
+
+  async migrateOldReactions(): Promise<void> {
+    const channelsRef = collection(this.fs, 'channels')
+    const channelsSnap = await getDocs(channelsRef)
+
+    for (const channelDoc of channelsSnap.docs) {
+      const topicsRef = collection(this.fs, `channels/${channelDoc.id}/topics`)
+      const topicsSnap = await getDocs(topicsRef)
+
+      for (const topicDoc of topicsSnap.docs) {
+        const messagesRef = collection(this.fs, `channels/${channelDoc.id}/topics/${topicDoc.id}/messages`)
+        const messagesSnap = await getDocs(messagesRef)
+
+        for (const messageDoc of messagesSnap.docs) {
+          const data = messageDoc.data()
+
+          if (Array.isArray(data['reactions']) && data['reactions'].length > 0) {
+            const newReactions: any = {}
+
+            data['reactions'].forEach((r: any) => {
+              if (!newReactions[r.emoji]) {
+                newReactions[r.emoji] = { count: 0, users: [] }
+              }
+              if (!newReactions[r.emoji].users.includes(r.userId)) {
+                newReactions[r.emoji].users.push(r.userId)
+                newReactions[r.emoji].count = newReactions[r.emoji].users.length
+              }
+            })
+
+            await updateDoc(messageDoc.ref, { reactions: newReactions })
+          }
+        }
+      }
+    }
   }
 }

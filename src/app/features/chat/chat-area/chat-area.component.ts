@@ -10,7 +10,7 @@ import type { Channel } from "../../../shared/models/channel"
 import { MessageItemComponent } from "../message-item/message-item.component"
 import { Router } from "@angular/router"
 import { LogoStateService } from "../../../core/services/logo-state.service"
-
+import { MessagesService } from '../../../core/repositories/messages.service'
 @Component({
   selector: "app-chat-area",
   imports: [MatCardModule, NgFor, NgIf, MessageInputComponent, MessageItemComponent],
@@ -27,6 +27,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   private usersFacade = inject(UsersFacadeService)
   private messagesFacade = inject(MessagesFacadeService)
   private cdr = inject(ChangeDetectorRef)
+  private messagesService = inject(MessagesService)
 
   currentChannel: Channel | null = null
   memberCount = 0
@@ -38,6 +39,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
 
   async ngOnInit() {
     if (this.channelId) {
+      await this.runMigration()
       await this.initializeChannel()
       this.logoState.setCurrentView("chat")
     }
@@ -144,6 +146,16 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.logoState.setCurrentView("thread")
     if (this.logoState.showBackArrow()) {
       this.router.navigate(["/m/thread", threadId])
+    }
+  }
+
+  // Beim Component Init oder Button-Click
+  async runMigration() {
+    try {
+      await this.messagesService.migrateOldReactions()
+      console.log('Migration completed')
+    } catch (error) {
+      console.error('Migration failed:', error)
     }
   }
 }
