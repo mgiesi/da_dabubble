@@ -11,18 +11,21 @@
         <p class="description-login">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.
         </p>
 
-        <form #f="ngForm">
+        <form #f="ngForm" (ngSubmit)="signIn()">
             <label class="label-input-field-gray-with-img" for="email">
                 <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
                 <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                     [disabled]="googleLoginInProgress" [pattern]="emailPattern" required #emailField="ngModel"
-                    [ngModelOptions]="{ updateOn: 'blur' }" [pattern]="emailPatternHtml"
-                    [class.input-error-border]="(emailField.invalid && (emailField.touched || emailField.dirty) && emailField.value !== '') || errMsg === 'EMAIL_NOT_FOUND'" />
+                    [ngModelOptions]="{ updateOn: 'blur' }" [pattern]="emailPatternHtml" [class.input-error-border]="
+                        (emailField.invalid && (emailField.touched || emailField.dirty) && emailField.value !== '') ||
+                        errMsg === 'EMAIL_NOT_FOUND' ||
+                        (f.submitted && emailField.value === '') ||
+                        (errMsg === 'E-Mail und Passwort stimmen nicht überein.' && emailField.value !== '' && pwdField.value !== '' && !(pwdField.errors?.['minlength']))
+                    " />
 
 
-                @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !==
-                '')
-                {
+                @if ((emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value
+                !== '') || (f.submitted && emailField.value === '')) {
                 <p class="error-message" @fadeInOut>
                     *Bitte geben Sie eine gültige E-Mail-Adresse ein
                 </p>
@@ -35,32 +38,33 @@
                 </p>
                 }
 
-                @if (
-                errMsg === 'E-Mail und Passwort stimmen nicht überein.' &&
-                pwdField.value !== '' &&
-                emailField.valid &&
-                pwdField.valid
-                ) {
+                @if (errMsg === 'E-Mail und Passwort stimmen nicht überein.' && emailField.value !== '' &&
+                pwdField.value !== '' && !(pwdField.errors?.['minlength'])) {
                 <p class="error-message" @fadeInOut>
                     *E-Mail und Passwort stimmen nicht überein
                 </p>
                 }
             </label>
 
+
             <label class="label-input-field-gray-with-img" for="password">
                 <img src="icons/lock.svg" alt="Bild vom Passwort-Eingabefeld">
                 <input pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" id="password"
                     [(ngModel)]="pwd" name="pwd" type="password" placeholder="Passwort"
                     [disabled]="googleLoginInProgress" minlength="8" required #pwdField="ngModel"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
-                    [class.input-error-border]="(pwdField.invalid && (pwdField.touched || pwdField.dirty) && pwdField.value !== '') || errMsg === 'WRONG_PASSWORD'" />
+                    [ngModelOptions]="{ updateOn: 'blur' }" [class.input-error-border]="
+                        (pwdField.invalid && (pwdField.touched || pwdField.dirty) && pwdField.value !== '') ||
+                        errMsg === 'WRONG_PASSWORD' ||
+                        (f.submitted && pwdField.value === '') ||
+                        (errMsg === 'E-Mail und Passwort stimmen nicht überein.' && emailField.value !== '' && pwdField.value !== '')
+                    " />
                 @if (errMsg === 'WRONG_PASSWORD') {
                 <p class="error-message" @fadeInOut>
                     *Das Passwort stimmt nicht.
                 </p>
                 }
-                @if (pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !==
-                '') {
+                @if ((pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !== '') ||
+                (f.submitted && pwdField.value === '')) {
                 <p class="error-message" @fadeInOut>
                     *Bitte geben Sie ein Passwort ein
                 </p>
@@ -82,7 +86,8 @@
             </div>
 
             <div class="google-btn-box">
-                <button (click)="triggerGoogleSignIn()" class="btn-google" [disabled]="googleLoginInProgress">
+                <button (click)="triggerGoogleSignIn()" class="btn-google"
+                    [disabled]="googleLoginInProgress || inProgress">
                     <img src="icons/google.svg" alt="Google icon" [class.spin]="googleLoginInProgress">
 
                     @if (!googleLoginInProgress) {
@@ -99,7 +104,7 @@
             </div>
 
             <div class="login-btns">
-                <button [disabled]="inProgress" class="btn-blue" (click)="signIn()">
+                <button [disabled]="inProgress" class="btn-blue" type="submit">
                     {{ inProgress ? 'Anmelden...' : 'Anmelden' }}
                 </button>
                 <button class="btn-white" (click)="signInAsGuest()"
