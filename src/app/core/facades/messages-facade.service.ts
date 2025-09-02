@@ -205,4 +205,16 @@ export class MessagesFacadeService {
       }
     })
   }
+
+  /**
+ * Adds emoji reaction to message
+ */
+  async addReaction(channelId: string, topicId: string, messageId: string, emoji: string): Promise<void> {
+    const currentUser = this.auth.currentUser
+    if (!currentUser) {
+      throw new Error("User must be logged in to react")
+    }
+
+    await this.messagesRepo.addReactionToMessage(channelId, topicId, messageId, emoji, currentUser.uid)
+  }
 }

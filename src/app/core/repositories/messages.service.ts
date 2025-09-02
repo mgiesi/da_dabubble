@@ -8,6 +8,9 @@ import {
   addDoc,
   serverTimestamp,
   where,
+  doc,
+  getDoc,
+  updateDoc,
 } from "@angular/fire/firestore"
 import { Observable } from "rxjs"
 import type { Message, Topic } from "../facades/messages-facade.service"
@@ -76,7 +79,7 @@ export class MessagesService {
    */
   async createMessage(channelId: string, topicId: string, messageData: Partial<Message>): Promise<void> {
     const messagesRef = collection(this.fs, `channels/${channelId}/topics/${topicId}/messages`)
-    
+
     await addDoc(messagesRef, {
       ...messageData,
       timestamp: serverTimestamp(),
@@ -99,5 +102,41 @@ export class MessagesService {
     })
 
     return topicDoc.id
+  }
+
+  /**
+   * Adds an emoji reaction to a message
+   */
+  async addReactionToMessage(
+    channelId: string,
+    topicId: string,
+    messageId: string,
+    emoji: string,
+    userId: string
+  ): Promise<void> {
+    const messageRef = doc(this.fs, `channels/${channelId}/topics/${topicId}/messages/${messageId}`)
+    const messageDoc = await getDoc(messageRef)
+
+    if (!messageDoc.exists()) return
+
+    const currentReactions = messageDoc.data()['reactions'] || {}
+
+    // Toggle-Logik: User schon da? → entfernen, sonst → hinzufügen
+    if (currentReactions[emoji]?.users?.includes(userId)) {
+      currentReactions[emoji].users = currentReactions[emoji].users.filter((id: string) => id !== userId)
+      currentReactions[emoji].count = currentReactions[emoji].users.length
+
+      if (currentReactions[emoji].count === 0) {
+        delete currentReactions[emoji]
+      }
+    } else {
+      if (!currentReactions[emoji]) {
+        currentReactions[emoji] = { count: 0, users: [] }
+      }
+      currentReactions[emoji].users.push(userId)
+      currentReactions[emoji].count = currentReactions[emoji].users.length
+    }
+
+    await updateDoc(messageRef, { reactions: currentReactions })
   }
 }

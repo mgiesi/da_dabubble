@@ -1,6 +1,6 @@
 import { Component, EventEmitter, computed, inject, ChangeDetectorRef, type OnInit } from "@angular/core"
 import { Input, Output } from "@angular/core"
-import { NgClass, NgIf, NgFor } from "@angular/common"
+import { NgClass } from "@angular/common"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { MessageBubbleComponent } from "./message-bubble/message-bubble.component"
@@ -8,13 +8,11 @@ import { MessageEmojiPickerComponent } from "./message-emoji-picker/message-emoj
 import { MessageReactionsComponent } from "./message-reactions/message-reactions.component"
 import { MessageThreadLinkComponent } from "./message-thread-link/message-thread-link.component"
 import { formatMessageTime } from "../../../shared/utils/timestamp"
-
+import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
 @Component({
   selector: "app-message-item",
   imports: [
     NgClass,
-    NgIf,
-    NgFor,
     ProfileAvatarComponent,
     MessageBubbleComponent,
     MessageEmojiPickerComponent,
@@ -31,6 +29,7 @@ export class MessageItemComponent implements OnInit {
 
   private usersFacade = inject(UsersFacadeService)
   private cdr = inject(ChangeDetectorRef)
+  private messagesFacade = inject(MessagesFacadeService)
 
   viewEmojiPicker = false
   selectedEmoji: string | null = null
@@ -58,6 +57,7 @@ export class MessageItemComponent implements OnInit {
     console.log("Message item initialized with:", this.message)
   }
 
+
   onReplyClick() {
     this.replyClicked.emit(this.message)
   }
@@ -75,6 +75,24 @@ export class MessageItemComponent implements OnInit {
     this.selectedEmoji = emoji
     console.log("Emoji selected:", emoji)
     this.viewEmojiPicker = false
+
+    // Add reaction to message
+    if (this.message?.id && this.message?.channelId && this.message?.topicId) {
+      this.addReactionToMessage(emoji)
+    }
+  }
+
+  private async addReactionToMessage(emoji: string) {
+    try {
+      await this.messagesFacade.addReaction(
+        this.message.channelId,
+        this.message.topicId,
+        this.message.id!,
+        emoji
+      )
+    } catch (error) {
+      console.error("Failed to add reaction:", error)
+    }
   }
 
   onEmojiPickerClosed() {
