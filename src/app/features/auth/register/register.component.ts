@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,7 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
   styleUrl: './register.component.scss',
   animations: [fadeInOut],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   @ViewChild('f') form!: NgForm;
 
   fullName: string = '';
@@ -45,9 +46,19 @@ export class RegisterComponent {
   customMinLengthError: boolean = false;
   emailExists: boolean = false;
 
-  private authService = inject(AuthService);
-  private usersService = inject(UsersService);
   private router = inject(Router);
+  registerData = inject(RegisterDataService);
+
+  ngOnInit(): void {
+    const name = this.registerData.displayName();
+    const mail = this.registerData.email();
+    const pw   = this.registerData.pwd();
+
+    if (name) this.fullName = name;
+    if (mail) this.email = mail;
+    if (pw)   this.pwd = pw;
+    if (pw)   this.confirmPwd = pw;
+  }
 
   validateNameLength() {
     const cleanedName = this.fullName.replace(/\s/g, '');
@@ -66,28 +77,11 @@ export class RegisterComponent {
     this.isHovered = false;
   }
 
-  async register() {
-    this.formSubmitted = true;
-
-    if (this.form.valid && this.checked && !this.emailExists) {
-      this.inProgress = true;
-      try {
-        const userCredential = await this.authService.signUp(
-          this.email,
-          this.pwd
-        );
-        await this.usersService.createUser(
-          userCredential.user.uid,
-          this.email,
-          this.fullName,
-          '' // imgUrl kann später gesetzt werden
-        );
-        await this.router.navigate(['/chat']);
-      } catch (error: any) {
-        this.errMsg = error.message;
-      } finally {
-        this.inProgress = false;
-      }
-    }
+  nextStep(form: NgForm) {
+    if (!this.form.valid) return;
+    this.registerData.displayName.set(this.fullName);
+    this.registerData.email.set(this.email);
+    this.registerData.pwd.set(this.pwd);
+    this.router.navigate(['/avatar-selection']);
   }
 }

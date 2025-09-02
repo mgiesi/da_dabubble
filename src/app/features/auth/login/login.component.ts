@@ -9,6 +9,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent {
   router = inject(Router);
   usersService = inject(UsersService);
   showAnimation$ = inject(SharedFunctionsService).showAnimation$;
+  registerData = inject(RegisterDataService);
 
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
@@ -229,6 +231,14 @@ export class LoginComponent {
 
   private isSignInInputValid(email: string, pwd: string): boolean {
     return !!email && !!pwd;
+  }
+
+  gotoRegisterUser() {  
+    // Always reset register parameters to start from scratch  
+    this.registerData.displayName.set('');
+    this.registerData.email.set('');
+    this.registerData.pwd.set('');
+    this.router.navigate(['/register']);
   }
 
   // private async checkEmailExistsOrReturn(email: string) {

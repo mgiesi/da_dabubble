@@ -6,7 +6,7 @@
 
 <app-auth-card>
     <div class="auth-card-container">
-        <mat-progress-bar class="progress-bar" *ngIf="avatarSectionInProgress" mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar class="progress-bar" *ngIf="inProgress" mode="indeterminate"></mat-progress-bar>
 
         <button class="btn-arrow-back" routerLink="/register">
             <svg viewBox="0 0 25 25" fill="" xmlns="http://www.w3.org/2000/svg">
@@ -18,10 +18,10 @@
 
         <h1>Wähle deinen Avatar</h1>
 
-        <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()"></app-choose-avatar>
+        <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar>
 
-        <div class="button-box">
-            <button disabled class="btn-blue ">Konto erstellen</button>
+        <div class="button-box" (click)="register()">
+            <button class="btn-blue ">Konto erstellen</button>
         </div>
 
     </div>

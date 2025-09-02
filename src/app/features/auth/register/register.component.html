@@ -14,7 +14,7 @@
         <p class="description-login">Mit deinem Namen und deiner E-Mail_Adresse hast du dein neues DABubble-Konto.
         </p>
 
-        <form #f="ngForm">
+        <form #f="ngForm" (ngSubmit)="nextStep(f)">
             <label class="label-input-field-gray-with-img" for="fullName">
                 <img src="icons/person_filled.svg" alt="Bild vom Namens-Eingabefeld">
                 <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Name und Nachname"
@@ -158,14 +158,14 @@
             </section>
 
             <div class="next-btn-box">
-                <!-- <button routerLink="/avatar-selection" class="btn-blue"
+                <button type="submit" class="btn-blue"
                     [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked || emailExists">
                     Weiter
-                </button> -->
-                <button (click)="register()" class="btn-blue"
+                </button>
+                <!-- <button (click)="register()" class="btn-blue"
                     [disabled]="!f.valid || inProgress || !checked || emailExists ">
                     Weiter
-                </button>
+                </button> -->
             </div>
         </form>
     </div>
