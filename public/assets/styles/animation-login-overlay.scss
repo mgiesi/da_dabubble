@@ -71,7 +71,7 @@
 
 @keyframes textAnimation {
     0% {
-        left: -41%;
+        left: -22%;
     }
 
     100% {
@@ -102,7 +102,6 @@
     100% {
         left: 55px;
         top: 55px;
-        // width: 242px;
         width: 203.05px;
         justify-content: flex-end;
         height: 71.5px;
@@ -115,14 +114,12 @@
         width: 190px;
         aspect-ratio: 1 / 1;
         justify-content: flex-end;
-        // height: 100%;
     }
 
     100% {
         width: 71.5px;
         aspect-ratio: 1 / 1;
         justify-content: flex-start;
-
     }
 }
 
@@ -140,5 +137,15 @@
 @keyframes placeholderAnimation {
     to {
         display: none;
+    }
+}
+
+@keyframes textSlideIn {
+    0% {
+        clip-path: inset(0 0 0 100%);
+    }
+
+    100% {
+        clip-path: inset(0 0 0 0%);
     }
 }

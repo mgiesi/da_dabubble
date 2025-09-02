@@ -26,19 +26,12 @@
     background: $bg-animation-logo;
     z-index: 2;
     position: absolute;
-    // top: 0;
-    // left: 0;
-    // right: 0;
     height: 100dvh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-
     animation: backgroundAnimation $backgroundAnimation;
-
-
-
 }
 
 .overlay-box {
@@ -56,11 +49,9 @@
     z-index: 4;
     top: 50%;
     left: 50%;
-
     transform: translate(-15%, -50%);
     @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
     animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
-
 }
 
 .logo {
@@ -69,10 +60,9 @@
     display: flex;
     align-items: center;
     justify-content: end;
-    background: linear-gradient(#5D63ED, #4D55EA);
+    background: transparent;
     z-index: 3;
     width: 190px;
-    // height: 100%;
     animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
     img {
@@ -81,32 +71,31 @@
     }
 }
 
-.placeholder {
-    z-index: 2;
-    position: absolute;
-
-    background: linear-gradient(#5D63ED, #4D55EA);
-    width: 667px;
-    height: 185px;
-    left: -477px;
-    animation: placeholderAnimation $animation-login-overlay;
-}
-
 .text {
     position: absolute;
     top: 50%;
-    left: -41%;
+    left: -22%;
     transform: translate(0%, -50%);
     background-color: transparent;
     @include dFlexAllCenter($ai: center, $jc: center);
     z-index: 1;
-
     height: 100%;
     animation: textAnimation $animation-login-overlay-text, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
     h1 {
-        @include fontSizeWeightColor($si: 70px, $we: 700, $co: $white);
-        animation: h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
+        @include fontSizeWeightColor($si: 70px, $we: 700, $co: transparent);
+        position: relative;
+        animation: h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
+
+        &::after {
+            content: 'DABubble';
+            position: absolute;
+            top: 0;
+            left: 0;
+            clip-path: inset(0 0 0 100%);
+            color: $white;
+            animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation;
+        }
     }
 }
 
@@ -162,6 +151,5 @@
 }
 
 .app-content {
-    // height: calc(100% - 150px);
     height: 100%;
 }
