@@ -37,21 +37,6 @@ export class ForgotPasswordComponent {
   authService = inject(AuthService);
   usersService = inject(UsersService);
 
-  async checkEmailExists() {
-    this.resetEmail = this.resetEmail.trim().toLowerCase();
-    this.emailExists = null;
-    this.errMsg = '';
-    this.infoMsg = '';
-    if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
-      return;
-    }
-    this.emailCheckInProgress = true;
-    this.emailExists = await this.authService.emailExists(this.resetEmail);
-    if (!this.emailExists) {
-      this.errMsg = 'Es existiert kein Benutzer mit dieser E-Mail-Adresse';
-    }
-    this.emailCheckInProgress = false;
-  }
 
   async onSubmit() {
     this.resetEmail = this.resetEmail.trim().toLowerCase();

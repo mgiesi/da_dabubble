@@ -66,18 +66,6 @@ export class RegisterComponent {
     this.isHovered = false;
   }
 
-  async checkEmailExists() {
-    if (!this.email || !AuthService.EMAIL_PATTERN.test(this.email)) {
-      this.emailExists = false;
-      return;
-    }
-    const existsInAuth = await this.authService.emailExists(this.email);
-    const existsInFirestore = await this.usersService.emailExistsInFirestore(
-      this.email
-    );
-    this.emailExists = existsInAuth || existsInFirestore;
-  }
-
   async register() {
     this.formSubmitted = true;
 

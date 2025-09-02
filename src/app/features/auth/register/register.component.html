@@ -45,7 +45,7 @@
                 <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
                 <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required #emailField="ngModel"
-                    [ngModelOptions]="{ updateOn: 'blur' }" (blur)="checkEmailExists()"
+                    [ngModelOptions]="{ updateOn: 'blur' }"
                     [class.input-error-border]="emailField.invalid && emailField.value !== '' || emailExists" />
 
                 <ng-container
