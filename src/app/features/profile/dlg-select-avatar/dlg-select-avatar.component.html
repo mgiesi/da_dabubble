@@ -1,5 +1,5 @@
 <mat-dialog-content class="dlg-select-avatar-container">
-    <ng-container *ngIf="user() as u; else loading">
+    <ng-container *ngIf="user() as user; else loading">
         <div class="header">
             <h2>Wählen ein Profilbild</h2>
             <button class="btn-close" (click)="closeDialog()">
@@ -16,7 +16,7 @@
                 </svg>
             </button>
         </div>
-        <app-choose-avatar #chooseAvatar></app-choose-avatar>
+        <app-choose-avatar #chooseAvatar [user]="user"></app-choose-avatar>
         <div class="btns-content">
             <button (click)="closeDialog()" class="btn-white btn-cancel">
                 Abbrechen

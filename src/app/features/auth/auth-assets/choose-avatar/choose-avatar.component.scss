@@ -11,16 +11,22 @@
 }
 
 .hero-icon-box {
-    background-color: aqua;
     border-radius: 50%;
     width: clamp(120px, 110.4px + 3vw, 168px);
     aspect-ratio: 1/1;
     @include dFlexAllCenter();
     overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
 
-    img {
-        width: 100%;
-    }
+.hero-add-icon-box {
+    position: absolute;
+    background-color: $white;
+    border-radius: 100%;
+    right: 10px;
+    bottom: 10px;
+
 }
 
 .choose-avatar-text-box {

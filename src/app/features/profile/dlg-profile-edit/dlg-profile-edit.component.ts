@@ -37,9 +37,15 @@ export class DlgProfileEditComponent {
   }
 
   editAvatar() {
+    const current = this.user();
     this.dialog.open(DlgSelectAvatarComponent, {     
-      data: this.user
+      data: structuredClone(current) as User | null
     });
+    /*this.dialog.open(DlgSelectAvatarComponent, {
+      data: this.user
+    });*/
+
+  
   }
 
   closeDialog() {

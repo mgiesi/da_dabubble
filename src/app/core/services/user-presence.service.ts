@@ -29,7 +29,7 @@ export type UserPresence = { isOnline: boolean; lastSeenAt: number | null };
 })
 export class UserPresenceService {
   private auth = inject(Auth);
-  private rtdb = inject(Database);;
+  private rtdb = inject(Database);
   private env = inject(EnvironmentInjector);
 
   /** Cache to store the user presence state */

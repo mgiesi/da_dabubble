@@ -124,10 +124,12 @@ export class UsersService {
    * @returns Promise that resolves when the update completes.
    */
   async updateDisplayName(userId: string, displayName: string) {
-    const ref = doc(this.fs, `users/${userId}`);
-    await updateDoc(ref, {
-      displayName: displayName,
-      updatedAt: serverTimestamp(),
+    return runInInjectionContext(this.env, async() => {
+      const ref = doc(this.fs, `users/${userId}`);
+      await updateDoc(ref, {
+        displayName: displayName,
+        updatedAt: serverTimestamp(),
+      });
     });
   }
 
@@ -139,7 +141,12 @@ export class UsersService {
    * @returns Promise that resolves when the update completes.
    */
   async updateImgUrl(userId: string, imgUrl: string) {
-    const ref = doc(this.fs, `users/${userId}`);
-    await updateDoc(ref, { imgUrl: imgUrl, updatedAt: serverTimestamp() });
+    return runInInjectionContext(this.env, async() => {
+      const ref = doc(this.fs, `users/${userId}`);
+      await updateDoc(ref, { 
+        imgUrl: imgUrl, 
+        updatedAt: serverTimestamp() 
+      });
+    });    
   }
 }

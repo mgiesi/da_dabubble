@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild, WritableSignal } from '@angular/core';
+import { Component, inject, signal, ViewChild, WritableSignal } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogContent } from '@angular/material/dialog';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.component';
@@ -17,7 +17,10 @@ export class DlgSelectAvatarComponent {
   facade = inject(UsersFacadeService);
 
   @ViewChild(ChooseAvatarComponent) private chooseAvatar?: ChooseAvatarComponent;
-  readonly user = inject<WritableSignal<User | null>>(MAT_DIALOG_DATA);
+  private data = inject<User | null>(MAT_DIALOG_DATA);
+  readonly user = signal<User | null>(this.data);
+
+
 
   closeDialog() {
     this.dialogRef.close(false);
@@ -26,8 +29,11 @@ export class DlgSelectAvatarComponent {
   saveProfile() {
     const u = this.user();
     if (u && this.chooseAvatar) {
-      this.facade.updateImgUrl(u.id ,this.chooseAvatar.avatarUrl);
-      this.dialogRef.close(false);
+      const localu = this.chooseAvatar.userLocal();
+      if (localu) {
+        this.facade.updateImgUrl(u.id, localu.imgUrl);
+        this.dialogRef.close(false);
+      }
     }
   }
 }

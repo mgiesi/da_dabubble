@@ -22,6 +22,7 @@ export class ProfileAvatarComponent implements OnDestroy {
 
   @Input() imgSize = 70;
   @Input() showStatus = true;
+  @Input() showAddAvatar = false;
 
   fallbackUrl: InputSignal<string> = input<string>('img/avatar/unknown-image.png');
   imgSrc = signal<string>(this.fallbackUrl());

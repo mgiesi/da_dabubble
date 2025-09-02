@@ -1,6 +1,6 @@
-import { Component, inject, input, InputSignal} from '@angular/core';
+import { afterNextRender, Component, DestroyRef, effect, ElementRef, EnvironmentInjector, inject, input, InputSignal, runInInjectionContext, signal, ViewChild} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,18 @@ import { Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ImageStorageService } from '../../../../core/services/image-storage.service';
+import { ProfileAvatarComponent } from '../../../profile/profile-avatar/profile-avatar.component';
+import { User } from '../../../../shared/models/user';
+import { Timestamp } from '@angular/fire/firestore';
+
+const defaultUser: User = {
+  id: '',
+  uid: '',
+  displayName: '',
+  email: '',
+  imgUrl: '',
+  createdAt: Timestamp.now()
+};
 
 @Component({
   selector: 'app-choose-avatar',
@@ -18,6 +30,8 @@ import { ImageStorageService } from '../../../../core/services/image-storage.ser
     MatProgressBarModule,
     MatCheckboxModule,
     MatIconModule,
+    ProfileAvatarComponent,
+    NgIf
   ],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.scss',
@@ -25,8 +39,23 @@ import { ImageStorageService } from '../../../../core/services/image-storage.ser
 export class ChooseAvatarComponent {
   private http = inject(HttpClient);
   private storage = inject(ImageStorageService);
+  private env = inject(EnvironmentInjector);
 
-  avatarUrl: string = '';
+  /** Input variable to set a user reference object */
+  user = input<User | null>(defaultUser);
+  /** Local user object as signal, to link it with the avatar component. */
+  userLocal = signal<User | null>(this.user());
+
+  constructor() {
+    afterNextRender(() => {
+      runInInjectionContext(this.env, () => {
+        effect(() => {
+          const u = this.user();
+          this.userLocal.set(u);
+        });
+      });
+    });    
+  }
 
   @Output() avatarsLoaded = new EventEmitter<void>();
   avatarIconsArray = [
@@ -68,23 +97,50 @@ export class ChooseAvatarComponent {
       this.avatarsLoaded.emit();
     }
   }
+
+  /**
+   * Writes the given url to the local user object.
+   * Url can be a link to a default avatar icon or a link to the
+   * uploaded file.
+   * 
+   * @param url url for the avatar image
+   */
+  selectAvatar(url: string) {
+    this.userLocal.update(u => {
+      if (!u) return null;
+      return { ...u, imgUrl: url };
+    });
+  }
   
-  async onFileSelected(event: Event) {
+  /**
+   * This method gets called when pressing the avatar image, to upload
+   * a new image.
+   * The function will try to do a upload by PHP script. If this fails,
+   * the image will be stored in the internal IndexedDB as blob.
+   * 
+   * @param event event
+   */
+  async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
 
     try {
       const url = await this.uploadAvatarPhoto(file);
-      this.avatarUrl = url;
-      
+      this.selectAvatar(url);      
     } catch (err: any) {
       console.log(err);      
     }
   }
 
-  async uploadAvatarPhoto(file: File | Blob): Promise<string> {
-    const uuid = crypto.randomUUID();
+  /**
+   * Uploads a file to the webspace (PHP) or IndexedDB.
+   * 
+   * @param file file or blob data
+   * @returns url to the uploaded file
+   */
+  private async uploadAvatarPhoto(file: File | Blob): Promise<string> {
+    const uuid = this.userLocal()?.email;
     const ext = this.guessExt(file);
     const filename = `${uuid}.${ext}`;
 
@@ -107,6 +163,12 @@ export class ChooseAvatarComponent {
     }
   }
 
+  /**
+   * Determine the extension of a file or blob element.
+   * 
+   * @param blob file or blob data
+   * @returns file extension to use
+   */
   private guessExt(blob: File | Blob): string {
     if (typeof (blob as File).name === 'string') {
       const name = (blob as File).name;

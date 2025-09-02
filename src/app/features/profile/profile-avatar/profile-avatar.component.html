@@ -2,5 +2,8 @@
     <div class="profile-avatar" [style.width.px]="imgSize" [style.height.px]="imgSize">
         <img [src]="imgSrc()" (error)="onImgError()">
         <div *ngIf="showStatus" [ngClass]="isOnline() ? 'profile-state-online' : 'profile-state-offline'"></div>
+        <div *ngIf="showAddAvatar" class="add-avatar">
+            <img src="icons/add_photo.svg">
+        </div> 
     </div>
 </ng-container>
