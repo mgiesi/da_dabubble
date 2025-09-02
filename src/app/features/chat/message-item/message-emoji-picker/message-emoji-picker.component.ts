@@ -50,7 +50,6 @@ export class MessageEmojiPickerComponent {
       return
     }
 
-    console.log("Closing emoji picker - clicked outside")
     this.closePicker()
   }
 

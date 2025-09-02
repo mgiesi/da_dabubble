@@ -27,10 +27,8 @@ export class EmojiPickerComponent {
   }
 
   ngOnInit() {
-    console.log('EmojiPicker isVisible:', this.isVisible);
   }
 
-ngOnChanges() {
-  console.log('EmojiPicker ngOnChanges - isVisible:', this.isVisible);
-}
+  ngOnChanges() {
+  }
 }

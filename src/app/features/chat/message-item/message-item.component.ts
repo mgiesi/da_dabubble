@@ -36,25 +36,21 @@ export class MessageItemComponent implements OnInit {
 
   messageUser = computed(() => {
     if (!this.message?.senderId) {
-      console.log("No senderId in message:", this.message)
-      return null
+    return null
     }
 
     const allUsers = this.usersFacade.users()
     if (!allUsers || allUsers.length === 0) {
-      console.log("No users available")
       return null
     }
 
     const user =
       allUsers.find((user) => user.id === this.message.senderId || user.uid === this.message.senderId) || null
-
-    console.log("Found user for senderId", this.message.senderId, ":", user)
     return user
+  
   })
 
   ngOnInit() {
-    console.log("Message item initialized with:", this.message)
   }
 
 
@@ -65,15 +61,12 @@ export class MessageItemComponent implements OnInit {
   onEmojiPickerToggle(event: MouseEvent) {
     event.stopPropagation()
     event.preventDefault()
-    console.log("Toggle emoji picker, current state:", this.viewEmojiPicker)
     this.viewEmojiPicker = !this.viewEmojiPicker
-    console.log("New state:", this.viewEmojiPicker)
     this.cdr.detectChanges()
   }
 
   onEmojiSelected(emoji: string) {
     this.selectedEmoji = emoji
-    console.log("Emoji selected:", emoji)
     this.viewEmojiPicker = false
 
     // Add reaction to message
@@ -100,7 +93,6 @@ export class MessageItemComponent implements OnInit {
   }
 
   onReactionClicked(reaction: any) {
-    console.log("Reaction clicked:", reaction)
   }
 
   onThreadClicked(message: any) {

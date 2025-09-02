@@ -77,12 +77,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   private async setupMessageSubscription() {
     if (!this.channelId) return
 
-    console.log(`[v2] Setting up subscription for channel: ${this.channelId}`)
-
     this.messageSubscription = this.messagesFacade.subscribeToChannelMessages(
       this.channelId,
       (messages) => {
-        console.log(`[v2] Callback received ${messages.length} messages:`, messages)
         this.messages = messages
         this.cdr.detectChanges() // Das hat gefehlt!
       }
@@ -94,7 +91,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
    */
   private cleanupSubscription() {
     if (this.messageSubscription) {
-      console.log("Cleaning up message subscription")
       this.messageSubscription()
       this.messageSubscription = null
     }
@@ -138,7 +134,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onReplyToMessage(message: Message) {
-    console.log("Reply to:", message)
     this.threadOpened.emit(message)
   }
 
@@ -153,7 +148,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   async runMigration() {
     try {
       await this.messagesService.migrateOldReactions()
-      console.log('Migration completed')
     } catch (error) {
       console.error('Migration failed:', error)
     }

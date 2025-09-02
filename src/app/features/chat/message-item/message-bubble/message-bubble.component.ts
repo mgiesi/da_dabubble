@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core"
-import { NgClass, NgIf } from "@angular/common"
+import { NgIf } from "@angular/common"
 
 @Component({
   selector: "app-message-bubble",
-  imports: [NgClass, NgIf],
+  imports: [NgIf],
   templateUrl: "./message-bubble.component.html",
   styleUrl: "./message-bubble.component.scss",
 })
@@ -34,6 +34,6 @@ export class MessageBubbleComponent {
   }
 
   addQuickReaction(emoji: string) {
-    console.log("Quick reaction added:", emoji, "to message:", this.message.id)
+
   }
 }

@@ -41,13 +41,10 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
   private setupThreadSubscription() {
     if (!this.selectedChannelId || !this.message?.id) return;
 
-    console.log(`[Thread] Setting up subscription for thread ${this.message.id}`);
-
     this.threadSubscription = this.messagesFacade.subscribeToThreadMessages(
       this.selectedChannelId,
       this.message.id,
       (messages) => {
-        console.log(`[Thread] Received ${messages.length} thread messages`);
         this.threadMessages = messages;
         this.cdr.detectChanges();
       }
@@ -59,7 +56,6 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
    */
   private cleanupSubscription() {
     if (this.threadSubscription) {
-      console.log("[Thread] Cleaning up thread subscription");
       this.threadSubscription();
       this.threadSubscription = null;
     }

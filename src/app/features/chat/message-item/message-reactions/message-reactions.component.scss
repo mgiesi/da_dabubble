@@ -13,14 +13,14 @@
 .emoji-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  gap: 16px;
   max-width: 200px;
   direction: rtl;
   justify-items: start;
 }
 
 .reaction-button {
-  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
+  @include dFlexAllCenter($ai: center, $jc: center);
   padding: 4px 8px;
   background-color: rgba(29, 28, 29, 0.04);
   border: 1px solid rgba(29, 28, 29, 0.13);

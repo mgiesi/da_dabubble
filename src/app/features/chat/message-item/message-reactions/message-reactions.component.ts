@@ -25,9 +25,7 @@ export class MessageReactionsComponent {
   }
 
   ngOnInit(): void {
-    console.log('Full reactions object:', this.reactions)
     Object.keys(this.reactions).forEach(key => {
-      console.log('Emoji key:', key, 'Unicode:', key.charCodeAt(0))
     })
   }
 }

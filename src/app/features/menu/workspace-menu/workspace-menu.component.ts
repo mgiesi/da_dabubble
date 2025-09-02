@@ -33,7 +33,6 @@ export class WorkspaceMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Channels loaded via signal:', this.channels);
   }
 
   toggleChannels() {
@@ -49,16 +48,13 @@ export class WorkspaceMenuComponent implements OnInit {
   }
 
   onChannelClick(channelId: string) {
-    console.log('Channel selected:', channelId);
     this.channelSelected.emit(channelId);
   }
 
   onDirectMessageClick(userId: string) {
-    console.log('DM clicked:', userId);
   }
 
   onEditWorkspace() {
-    console.log('Edit workspace clicked');
   }
 
   closeChannelForm() {
