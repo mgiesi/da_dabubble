@@ -39,7 +39,8 @@ export class AvatarSelectionComponent implements OnInit {
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
   private router = inject(Router);
-  @ViewChild(ChooseAvatarComponent) private chooseAvatar?: ChooseAvatarComponent;
+  @ViewChild(ChooseAvatarComponent)
+  private chooseAvatar?: ChooseAvatarComponent;
 
   user: User = {
     id: '',
@@ -47,7 +48,7 @@ export class AvatarSelectionComponent implements OnInit {
     displayName: '',
     email: '',
     imgUrl: '',
-    createdAt: Timestamp.now()
+    createdAt: Timestamp.now(),
   };
 
   errMsg: string = '';

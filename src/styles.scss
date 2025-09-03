@@ -90,14 +90,6 @@ input {
   transition: $transition-0-3-ease-in-out;
 }
 
-.account-created-successfully {
-  @include accountCreatedSuccessfully;
-  position: absolute;
-  bottom: 45px;
-  right: 45px;
-  transform: translateX(115%);
-}
-
 .error-marquee {
   overflow: hidden;
   white-space: nowrap;
