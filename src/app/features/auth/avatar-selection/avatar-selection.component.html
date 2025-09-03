@@ -18,7 +18,9 @@
 
         <h1>Wähle deinen Avatar</h1>
 
-        <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar>
+                <div [class.disable-interaction]="inProgress">
+                    <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar>
+                </div>
 
         <div class="button-box">
             <button [disabled]="inProgress || !chooseAvatar?.userLocal()?.imgUrl" (click)="register()"

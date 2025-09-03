@@ -57,8 +57,18 @@ export class AvatarSelectionComponent implements OnInit {
 
   ngOnInit(): void {
     const mail = this.registerData.email();
+    const name = this.registerData.displayName();
+    const pwd = this.registerData.pwd();
+    const checked = this.registerData.checked();
 
-    if (mail) this.user.email = mail;
+    if (!mail || !name || !pwd || !checked) {
+      this.router.navigate(['/register'], {
+        queryParams: { reason: 'missingdata' },
+      });
+      return;
+    }
+
+    this.user.email = mail;
   }
 
   onAvatarsLoaded() {
@@ -76,36 +86,28 @@ export class AvatarSelectionComponent implements OnInit {
     }
 
     try {
-      // 1. User in Firestore anlegen (ohne Auth)
       await this.usersService.createUser(
-        '', // UID ist noch nicht bekannt, da Auth noch nicht erfolgt ist
+        '',
         this.registerData.email(),
         this.registerData.displayName(),
         this.user.imgUrl
       );
 
-      // 2. Erfolgs-Flag setzen und 2 Sekunden anzeigen, dann erst Signup und Navigation
       this.accountCreatedSuccessfully = true;
       setTimeout(async () => {
-        // 3. Jetzt erst das eigentliche Signup (Auth)
         const userCredential = await this.authService.signUp(
           this.registerData.email(),
           this.registerData.pwd()
         );
-
-        // 4. UID im Firestore-User nachtragen
         if (userCredential && userCredential.user && userCredential.user.uid) {
           await this.userUtil.setUidByEmail(
             this.registerData.email(),
             userCredential.user.uid
           );
         }
-
-        // 5. Erfolgs-Flag zurücksetzen
         this.accountCreatedSuccessfully = false;
-
         await this.router.navigate(['/chat']);
-      }, 2000);
+      }, 1000);
     } catch (error: any) {
       this.errMsg = error.message;
       this.inProgress = false;

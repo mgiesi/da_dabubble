@@ -15,6 +15,9 @@
         </p>
 
         <form #f="ngForm" (ngSubmit)="nextStep(f)">
+            @if (infoMsg) {
+            <div class="error-message" @fadeInOut>{{ infoMsg }}</div>
+            }
             <label class="label-input-field-gray-with-img" for="fullName">
                 <img src="icons/person_filled.svg" alt="Bild vom Namens-Eingabefeld">
                 <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Name und Nachname"

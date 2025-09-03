@@ -64,6 +64,7 @@ input {
   form {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 30px);
     width: 100%;
+    position: relative;
   }
 }
 

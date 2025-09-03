@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -47,6 +47,8 @@ export class RegisterComponent implements OnInit {
   emailExists: boolean = false;
 
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  infoMsg: string = '';
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
   registerData = inject(RegisterDataService);
@@ -55,11 +57,21 @@ export class RegisterComponent implements OnInit {
     const name = this.registerData.displayName();
     const mail = this.registerData.email();
     const pw = this.registerData.pwd();
+    const checked = this.registerData.checked();
 
     if (name) this.fullName = name;
     if (mail) this.email = mail;
     if (pw) this.pwd = pw;
     if (pw) this.confirmPwd = pw;
+
+    this.route.queryParams.subscribe((params) => {
+      if (params['reason'] === 'missingdata') {
+        this.infoMsg = '*Bitte gib zuerst deine Registrierungsdaten ein.';
+        setTimeout(() => {
+          this.infoMsg = '';
+        }, 8000);
+      }
+    });
   }
 
   validateNameLength() {
@@ -98,6 +110,7 @@ export class RegisterComponent implements OnInit {
       this.registerData.displayName.set(this.fullName);
       this.registerData.email.set(this.email);
       this.registerData.pwd.set(this.pwd);
+      this.registerData.checked.set(this.checked);
       this.router.navigate(['/avatar-selection']);
     } finally {
       this.inProgress = false;
