@@ -11,34 +11,25 @@
     </div>
 
     <div class="message-bubble-wrapper">
-      <app-message-bubble
-        [message]="message"
-        [messageUser]="messageUser()"
-        [isOwnMessage]="message?.isOwnMessage"
-        (replyClicked)="onReplyClick()"
-        (emojiPickerToggled)="onEmojiPickerToggle($event)">
+      <app-message-bubble [message]="message" [messageUser]="messageUser()" [isOwnMessage]="message?.isOwnMessage"
+        (replyClicked)="onReplyClick()" (emojiPickerToggled)="onEmojiPickerToggle($event)">
       </app-message-bubble>
 
-      <app-message-emoji-picker
-        [isVisible]="viewEmojiPicker"
-        [selectedEmoji]="selectedEmoji"
-        (emojiSelected)="onEmojiSelected($event)"
-        (pickerClosed)="onEmojiPickerClosed()">
+      <app-message-emoji-picker [isVisible]="viewEmojiPicker" [selectedEmoji]="selectedEmoji"
+        (emojiSelected)="onEmojiSelected($event)" (pickerClosed)="onEmojiPickerClosed()">
       </app-message-emoji-picker>
     </div>
 
-    <div class="message-footer" [ngClass]="{'message-footer-own': message?.isOwnMessage, 'message-footer-other': !message?.isOwnMessage}">
-      <app-message-thread-link
-        [message]="message"
-        [isThreadView]="isThreadView"
+    <div class="message-footer"
+      [ngClass]="{'message-footer-own': message?.isOwnMessage, 'message-footer-other': !message?.isOwnMessage}">
+      <app-message-thread-link [message]="message" [isThreadView]="isThreadView"
         (threadClicked)="onThreadClicked($event)">
       </app-message-thread-link>
 
-      <app-message-reactions
-        [reactions]="message?.reactions"
-        [isOwnMessage]="message?.isOwnMessage"
-        (reactionClicked)="onReactionClicked($event)">
+      <app-message-reactions [reactions]="message?.reactions" [isOwnMessage]="message?.isOwnMessage"
+        [currentUserId]="currentUserId" (reactionClicked)="onReactionClicked($event)">
       </app-message-reactions>
+
     </div>
   </div>
 </div>

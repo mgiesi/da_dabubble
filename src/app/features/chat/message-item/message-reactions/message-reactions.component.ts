@@ -11,6 +11,20 @@ export class MessageReactionsComponent {
   @Input() reactions: { [emoji: string]: { count: number; users: string[] } } = {}
   @Input() isOwnMessage = false
   @Output() reactionClicked = new EventEmitter<{ emoji: string; data: any }>()
+  @Input() currentUserId!: string;
+
+  isActive(val: { count: number; users: string[] }): boolean {
+    return Array.isArray(val?.users) && val.users.includes(this.currentUserId);
+  }
+
+  // Optional: Slack-ähnliche Sortierung (Count ⬇︎, dann Emoji)
+  sortByCountDesc = (a: any, b: any) => {
+    const ac = a.value?.count ?? 0, bc = b.value?.count ?? 0;
+    if (bc !== ac) return bc - ac;
+    return a.key.localeCompare(b.key);
+  };
+
+  originalOrder = () => 0;
 
   onReactionClick(emoji: string, reactionData: any) {
     this.reactionClicked.emit({ emoji, data: reactionData })
