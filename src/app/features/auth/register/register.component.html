@@ -45,7 +45,7 @@
                 <img src="icons/mail.svg" alt="Bild vom E-Mail-Eingabefeld">
                 <input id="email" [(ngModel)]="email" name="email" type="text" placeholder="beispielname@email.com"
                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" required #emailField="ngModel"
-                    [ngModelOptions]="{ updateOn: 'blur' }"
+                    [ngModelOptions]="{ updateOn: 'blur' }" (ngModelChange)="emailExists = false"
                     [class.input-error-border]="emailField.invalid && emailField.value !== '' || emailExists" />
 
                 <ng-container
@@ -56,7 +56,7 @@
                 </ng-container>
 
 
-                <ng-container *ngIf="emailExists && emailField.valid && emailField.value">
+                <ng-container *ngIf="emailExists && formSubmitted">
                     <p class="error-message" @fadeInOut>
                         *Diese E-Mail ist schon vorhanden
                     </p>
@@ -159,7 +159,7 @@
 
             <div class="next-btn-box">
                 <button type="submit" class="btn-blue"
-                    [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked || emailExists">
+                    [disabled]="!f.valid || inProgress || errMsg === 'E-Mail und Passwort stimmen nicht überein.' || !checked">
                     Weiter
                 </button>
                 <!-- <button (click)="register()" class="btn-blue"

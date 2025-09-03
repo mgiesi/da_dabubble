@@ -47,17 +47,19 @@ export class RegisterComponent implements OnInit {
   emailExists: boolean = false;
 
   private router = inject(Router);
+  private authService = inject(AuthService);
+  private usersService = inject(UsersService);
   registerData = inject(RegisterDataService);
 
   ngOnInit(): void {
     const name = this.registerData.displayName();
     const mail = this.registerData.email();
-    const pw   = this.registerData.pwd();
+    const pw = this.registerData.pwd();
 
     if (name) this.fullName = name;
     if (mail) this.email = mail;
-    if (pw)   this.pwd = pw;
-    if (pw)   this.confirmPwd = pw;
+    if (pw) this.pwd = pw;
+    if (pw) this.confirmPwd = pw;
   }
 
   validateNameLength() {
@@ -77,11 +79,28 @@ export class RegisterComponent implements OnInit {
     this.isHovered = false;
   }
 
-  nextStep(form: NgForm) {
+  async nextStep(form: NgForm) {
+    this.formSubmitted = true;
     if (!this.form.valid) return;
-    this.registerData.displayName.set(this.fullName);
-    this.registerData.email.set(this.email);
-    this.registerData.pwd.set(this.pwd);
-    this.router.navigate(['/avatar-selection']);
+
+    this.inProgress = true;
+    try {
+      // Prüfe, ob die E-Mail schon existiert (in Auth und Firestore)
+      const existsInAuth = await this.authService.emailExists(this.email);
+      const existsInFirestore = await this.usersService.emailExistsInFirestore(
+        this.email
+      );
+      this.emailExists = existsInAuth || existsInFirestore;
+      if (this.emailExists) {
+        return; // Registrierung stoppen, Fehlermeldung wird angezeigt
+      }
+
+      this.registerData.displayName.set(this.fullName);
+      this.registerData.email.set(this.email);
+      this.registerData.pwd.set(this.pwd);
+      this.router.navigate(['/avatar-selection']);
+    } finally {
+      this.inProgress = false;
+    }
   }
 }
