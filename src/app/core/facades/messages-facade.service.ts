@@ -10,7 +10,7 @@ export interface Message {
   timestamp: Date
   topicId: string
   channelId: string
-  reactions?: any[]
+  reactions?: any
   threadId?: string
   parentMessageId?: string
   threadCount?: number
@@ -33,29 +33,14 @@ export class MessagesFacadeService {
   private auth = inject(Auth)
 
   /**
-   * Sends a new message to a channel/topic
+   * Sends message to channel/topic
    */
   async sendMessage(channelId: string, topicId: string, messageText: string, parentMessageId?: string): Promise<void> {
+    const currentUser = this.getCurrentUser()
+    const messageData = this.createMessageData(messageText, currentUser.uid, parentMessageId)
+    
     try {
-      const currentUser = this.auth.currentUser
-      if (!currentUser) {
-        throw new Error("User must be logged in to send messages")
-      }
-
-      const messageData: Partial<Message> = {
-        text: messageText,
-        senderId: currentUser.uid,
-        reactions: [],
-      }
-
-      // Add parentMessageId if this is a thread reply
-      if (parentMessageId) {
-        messageData.parentMessageId = parentMessageId
-        console.log(`[Facade] Sending thread reply to parent ${parentMessageId}`)
-      }
-
       await this.messagesRepo.createMessage(channelId, topicId, messageData)
-      console.log("Message sent successfully")
     } catch (error) {
       console.error("Error sending message:", error)
       throw error
@@ -63,7 +48,7 @@ export class MessagesFacadeService {
   }
 
   /**
-   * Creates a default topic for a channel if none exists
+   * Creates default topic for channel
    */
   async createDefaultTopic(channelId: string): Promise<string> {
     try {
@@ -75,146 +60,164 @@ export class MessagesFacadeService {
   }
 
   /**
-   * Subscribe to real-time updates for channel messages
-   * Returns all messages from all topics in a channel with thread counts
+   * Subscribes to channel messages with thread counts
    */
   subscribeToChannelMessages(channelId: string, callback: (messages: Message[]) => void): () => void {
-    console.log(`[v3] Starting subscription for channel ${channelId}`)
-
     const subscription = this.messagesRepo.getTopicsForChannel$(channelId)
       .pipe(
-        switchMap((topics: Topic[]) => {
-          console.log(`[v3] Found ${topics.length} topics`)
-
-          if (topics.length === 0) {
-            return new Observable<Message[]>(observer => observer.next([]))
-          }
-
-          const messageStreams: Observable<Message[]>[] = topics
-            .filter(topic => topic.id)
-            .map((topic) => this.messagesRepo.getMessagesForTopic$(channelId, topic.id!))
-
-          if (messageStreams.length === 0) {
-            return new Observable<Message[]>(observer => observer.next([]))
-          }
-
-          return combineLatest(messageStreams).pipe(
-            map((topicMessages: Message[][]) => {
-              const allMessages: Message[] = []
-              topicMessages.forEach((messages: Message[]) => {
-                allMessages.push(...messages)
-              })
-
-              // 🔧 FILTER: Nur Haupt-Messages (keine Thread-Replies)
-              const mainMessages = allMessages.filter(message => !message.parentMessageId)
-
-              const sortedMessages = mainMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-
-              // Add thread counts to each message
-              return this.addThreadCounts(allMessages, sortedMessages) // Pass allMessages for counting
-            })
-          )
-        })
+        switchMap(topics => this.getMainMessagesStream(channelId, topics))
       )
-      .subscribe((messages: Message[]) => {
-        console.log(`[v3] Received ${messages.length} messages`)
-
-        const currentUserId = this.auth.currentUser?.uid
-        const messagesWithOwnership = messages.map(message => ({
-          ...message,
-          isOwnMessage: message.senderId === currentUserId
-        }))
-
+      .subscribe(messages => {
+        const messagesWithOwnership = this.addOwnershipToMessages(messages)
         callback(messagesWithOwnership)
       })
 
-    return () => {
-      console.log(`[v3] Cleaning up subscription`)
-      subscription.unsubscribe()
-    }
+    return () => subscription.unsubscribe()
   }
 
   /**
-   * Subscribe to thread messages for a specific parent message
-   * Returns all messages that are replies to the parent message
+   * Subscribes to thread messages for parent
    */
   subscribeToThreadMessages(channelId: string, parentMessageId: string, callback: (messages: Message[]) => void): () => void {
-    console.log(`[Thread] Starting thread subscription for parent ${parentMessageId}`)
-
     const subscription = this.messagesRepo.getTopicsForChannel$(channelId)
       .pipe(
-        switchMap((topics: Topic[]) => {
-          if (topics.length === 0) {
-            return new Observable<Message[]>(observer => observer.next([]))
-          }
-
-          const messageStreams: Observable<Message[]>[] = topics
-            .filter(topic => topic.id)
-            .map((topic) => this.messagesRepo.getMessagesForTopic$(channelId, topic.id!))
-
-          if (messageStreams.length === 0) {
-            return new Observable<Message[]>(observer => observer.next([]))
-          }
-
-          return combineLatest(messageStreams).pipe(
-            map((topicMessages: Message[][]) => {
-              const allMessages: Message[] = []
-              topicMessages.forEach((messages: Message[]) => {
-                allMessages.push(...messages)
-              })
-
-              // Filter for thread replies
-              const threadMessages = allMessages.filter(message =>
-                message.parentMessageId === parentMessageId
-              )
-
-              return threadMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-            })
-          )
-        })
+        switchMap(topics => this.getThreadMessagesStream(channelId, topics, parentMessageId))
       )
-      .subscribe((threadMessages: Message[]) => {
-        console.log(`[Thread] Received ${threadMessages.length} thread messages`)
-
-        const currentUserId = this.auth.currentUser?.uid
-        const messagesWithOwnership = threadMessages.map(message => ({
-          ...message,
-          isOwnMessage: message.senderId === currentUserId
-        }))
-
+      .subscribe(messages => {
+        const messagesWithOwnership = this.addOwnershipToMessages(messages)
         callback(messagesWithOwnership)
       })
 
-    return () => {
-      console.log(`[Thread] Cleaning up thread subscription`)
-      subscription.unsubscribe()
+    return () => subscription.unsubscribe()
+  }
+
+  /**
+   * Adds emoji reaction with single-emoji-per-user logic
+   */
+  async addReaction(channelId: string, topicId: string, messageId: string, emoji: string): Promise<void> {
+    const currentUser = this.getCurrentUser()
+    
+    try {
+      await this.messagesRepo.addReactionToMessage(
+        channelId, 
+        topicId, 
+        messageId, 
+        emoji, 
+        currentUser.uid
+      )
+    } catch (error) {
+      console.error("Failed to add reaction:", error)
+      throw error
     }
   }
 
   /**
-  * Adds thread counts to messages by counting replies for each message
-  * @param allMessages - All messages including thread replies for counting
-  * @param mainMessages - Only main messages to add counts to
-  */
-  private addThreadCounts(allMessages: Message[], mainMessages: Message[]): Message[] {
-    return mainMessages.map(message => {
-      const threadCount = allMessages.filter(m => m.parentMessageId === message.id).length
-      return {
-        ...message,
-        threadCount
-      }
-    })
-  }
-
-  /**
- * Adds emoji reaction to message
- */
-  async addReaction(channelId: string, topicId: string, messageId: string, emoji: string): Promise<void> {
+   * Gets current authenticated user
+   */
+  private getCurrentUser() {
     const currentUser = this.auth.currentUser
     if (!currentUser) {
-      throw new Error("User must be logged in to react")
+      throw new Error("User must be logged in")
+    }
+    return currentUser
+  }
+
+  /**
+   * Creates message data object
+   */
+  private createMessageData(text: string, senderId: string, parentMessageId?: string): Partial<Message> {
+    const messageData: Partial<Message> = {
+      text,
+      senderId,
+      reactions: {},
+    }
+    
+    if (parentMessageId) {
+      messageData.parentMessageId = parentMessageId
+    }
+    
+    return messageData
+  }
+
+  /**
+   * Gets main messages stream with thread counts
+   */
+  private getMainMessagesStream(channelId: string, topics: Topic[]): Observable<Message[]> {
+    if (topics.length === 0) {
+      return new Observable<Message[]>(observer => observer.next([]))
     }
 
-    await this.messagesRepo.addReactionToMessage(channelId, topicId, messageId, emoji, currentUser.uid)
+    const messageStreams = topics
+      .filter(topic => topic.id)
+      .map(topic => this.messagesRepo.getMessagesForTopic$(channelId, topic.id!))
+
+    return combineLatest(messageStreams).pipe(
+      map(topicMessages => this.processMainMessages(topicMessages))
+    )
+  }
+
+  /**
+   * Gets thread messages stream for parent
+   */
+  private getThreadMessagesStream(channelId: string, topics: Topic[], parentMessageId: string): Observable<Message[]> {
+    if (topics.length === 0) {
+      return new Observable<Message[]>(observer => observer.next([]))
+    }
+
+    const messageStreams = topics
+      .filter(topic => topic.id)
+      .map(topic => this.messagesRepo.getMessagesForTopic$(channelId, topic.id!))
+
+    return combineLatest(messageStreams).pipe(
+      map(topicMessages => this.processThreadMessages(topicMessages, parentMessageId))
+    )
+  }
+
+  /**
+   * Processes main messages and adds thread counts
+   */
+  private processMainMessages(topicMessages: Message[][]): Message[] {
+    const allMessages: Message[] = []
+    topicMessages.forEach(messages => allMessages.push(...messages))
+    
+    const mainMessages = allMessages
+      .filter(message => !message.parentMessageId)
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+    
+    return this.addThreadCounts(allMessages, mainMessages)
+  }
+
+  /**
+   * Processes thread messages for parent
+   */
+  private processThreadMessages(topicMessages: Message[][], parentMessageId: string): Message[] {
+    const allMessages: Message[] = []
+    topicMessages.forEach(messages => allMessages.push(...messages))
+    
+    return allMessages
+      .filter(message => message.parentMessageId === parentMessageId)
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+  }
+
+  /**
+   * Adds thread counts to messages
+   */
+  private addThreadCounts(allMessages: Message[], mainMessages: Message[]): Message[] {
+    return mainMessages.map(message => ({
+      ...message,
+      threadCount: allMessages.filter(m => m.parentMessageId === message.id).length
+    }))
+  }
+
+  /**
+   * Adds ownership flag to messages
+   */
+  private addOwnershipToMessages(messages: Message[]): Message[] {
+    const currentUserId = this.auth.currentUser?.uid
+    
+    return messages.map(message => ({
+      ...message,
+      isOwnMessage: message.senderId === currentUserId
+    }))
   }
 }
