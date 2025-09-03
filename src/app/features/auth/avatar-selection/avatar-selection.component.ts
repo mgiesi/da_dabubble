@@ -14,6 +14,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { set } from 'idb-keyval';
+import { UserUtilService } from '../../../core/services/user-util.service';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -39,6 +40,7 @@ export class AvatarSelectionComponent implements OnInit {
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
   private router = inject(Router);
+  private userUtil = inject(UserUtilService);
   @ViewChild(ChooseAvatarComponent)
   private chooseAvatar?: ChooseAvatarComponent;
 
@@ -74,17 +76,36 @@ export class AvatarSelectionComponent implements OnInit {
     }
 
     try {
-      const userCredential = await this.authService.signUp(
-        this.registerData.email(),
-        this.registerData.pwd()
-      );
+      // 1. User in Firestore anlegen (ohne Auth)
       await this.usersService.createUser(
-        userCredential.user.uid,
+        '', // UID ist noch nicht bekannt, da Auth noch nicht erfolgt ist
         this.registerData.email(),
         this.registerData.displayName(),
         this.user.imgUrl
       );
-      await this.router.navigate(['/chat']);
+
+      // 2. Erfolgs-Flag setzen und 2 Sekunden anzeigen, dann erst Signup und Navigation
+      this.accountCreatedSuccessfully = true;
+      setTimeout(async () => {
+        // 3. Jetzt erst das eigentliche Signup (Auth)
+        const userCredential = await this.authService.signUp(
+          this.registerData.email(),
+          this.registerData.pwd()
+        );
+
+        // 4. UID im Firestore-User nachtragen
+        if (userCredential && userCredential.user && userCredential.user.uid) {
+          await this.userUtil.setUidByEmail(
+            this.registerData.email(),
+            userCredential.user.uid
+          );
+        }
+
+        // 5. Erfolgs-Flag zurücksetzen
+        this.accountCreatedSuccessfully = false;
+
+        await this.router.navigate(['/chat']);
+      }, 2000);
     } catch (error: any) {
       this.errMsg = error.message;
       this.inProgress = false;
