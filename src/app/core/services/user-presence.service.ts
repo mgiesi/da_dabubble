@@ -1,8 +1,20 @@
-import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from '@angular/core';
+import {
+  EnvironmentInjector,
+  inject,
+  Injectable,
+  runInInjectionContext,
+} from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Database } from '@angular/fire/database';
-import { onValue, serverTimestamp, onDisconnect, ref, set, get } from '@angular/fire/database';
-import { onAuthStateChanged, User} from 'firebase/auth';
+import {
+  onValue,
+  serverTimestamp,
+  onDisconnect,
+  ref,
+  set,
+  get,
+} from '@angular/fire/database';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { Observable, shareReplay } from 'rxjs';
 
 export type UserPresence = { isOnline: boolean; lastSeenAt: number | null };
@@ -25,7 +37,7 @@ export type UserPresence = { isOnline: boolean; lastSeenAt: number | null };
  *   cancels the `onDisconnect` hook *before* signing out.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserPresenceService {
   private auth = inject(Auth);
@@ -39,8 +51,8 @@ export class UserPresenceService {
   /** Unsubscribe function for `.info/connected` listener when user changes. */
   private connectedUnsub: (() => void) | null = null;
 
-  constructor() { }
-  
+  constructor() {}
+
   /**
    * Runs an async function inside Angular's injection context.
    * Helpful for Firebase callbacks where DI context may not be active.
@@ -81,8 +93,8 @@ export class UserPresenceService {
    */
   private checkConnectedUnsubscription() {
     if (this.connectedUnsub) {
-        this.connectedUnsub();
-        this.connectedUnsub = null;
+      this.connectedUnsub();
+      this.connectedUnsub = null;
     }
   }
 
@@ -102,20 +114,22 @@ export class UserPresenceService {
           state: 'offline',
           last_seen_at: serverTimestamp(),
         })
-      ).then(() => {
-        return this.inCtx(() =>
-          set(statusRef, {
-            state: 'online',
-            last_seen_at: serverTimestamp(),
-          })
-        );
-      }).catch((e) => {
-        console.error('[Presence] failed to set presence:', e);
-      });
+      )
+        .then(() => {
+          return this.inCtx(() =>
+            set(statusRef, {
+              state: 'online',
+              last_seen_at: serverTimestamp(),
+            })
+          );
+        })
+        .catch((e) => {
+          console.error('[Presence] failed to set presence:', e);
+        });
     });
   }
 
-  /** 
+  /**
    * Returns an observable for the user presence.
    *
    * @param uid The Firebase Auth UID of the user to observe.
@@ -139,7 +153,8 @@ export class UserPresenceService {
             const v = snap.val();
             subscriber.next({
               isOnline: v?.state === 'online',
-              lastSeenAt: typeof v?.last_seen_at === 'number' ? v.last_seen_at : null,
+              lastSeenAt:
+                typeof v?.last_seen_at === 'number' ? v.last_seen_at : null,
             });
           },
           (err) => subscriber.error(err)
@@ -149,9 +164,7 @@ export class UserPresenceService {
       return () => {
         if (unsubscribe) unsubscribe();
       };
-    }).pipe(
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
     this.userPresenceCache.set(uid, obs);
     return obs;
@@ -173,10 +186,9 @@ export class UserPresenceService {
             })
           );
           await this.inCtx(() => onDisconnect(statusRef).cancel());
-        } catch {
-        }
+        } catch {}
       }
       await this.auth.signOut();
-    });    
+    });
   }
 }

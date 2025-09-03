@@ -10,10 +10,10 @@ import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
 import { ChooseAvatarComponent } from '../auth-assets/choose-avatar/choose-avatar.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 import { User } from '../../../shared/models/user';
-import { signOut } from 'firebase/auth';
 import { Timestamp } from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
+import { set } from 'idb-keyval';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -87,7 +87,6 @@ export class AvatarSelectionComponent implements OnInit {
       await this.router.navigate(['/chat']);
     } catch (error: any) {
       this.errMsg = error.message;
-    } finally {
       this.inProgress = false;
     }
   }
