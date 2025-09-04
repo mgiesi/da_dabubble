@@ -59,6 +59,18 @@
         @include fontSizeWeightColor($si: $font-size-18, $we: 700, $co: $purple-2);
         background-color: $bg-color;
     }
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: $text-gray;
+        color: $white;
+        border: 1px solid transparent;
+
+        &:hover {
+            border: 1px solid transparent;
+            @include fontSizeWeightColor($si: 18px, $we: 400, $co: $white);
+        }
+    }
 }
 
 .google-btn-box {
