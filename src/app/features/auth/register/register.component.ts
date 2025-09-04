@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+  EnvironmentInjector,
+  runInInjectionContext,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -48,16 +55,16 @@ export class RegisterComponent implements OnInit {
 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  infoMsg: string = '';
+  private env = inject(EnvironmentInjector);
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
+  infoMsg: string = '';
   registerData = inject(RegisterDataService);
 
   ngOnInit(): void {
     const name = this.registerData.displayName();
     const mail = this.registerData.email();
     const pw = this.registerData.pwd();
-    const checked = this.registerData.checked();
 
     if (name) this.fullName = name;
     if (mail) this.email = mail;
@@ -93,27 +100,34 @@ export class RegisterComponent implements OnInit {
 
   async nextStep(form: NgForm) {
     this.formSubmitted = true;
-    if (!this.form.valid) return;
-
+    if (!this.isFormValid()) return;
     this.inProgress = true;
     try {
-      // Prüfe, ob die E-Mail schon existiert (in Auth und Firestore)
-      const existsInAuth = await this.authService.emailExists(this.email);
-      const existsInFirestore = await this.usersService.emailExistsInFirestore(
-        this.email
-      );
-      this.emailExists = existsInAuth || existsInFirestore;
-      if (this.emailExists) {
-        return; // Registrierung stoppen, Fehlermeldung wird angezeigt
-      }
-
-      this.registerData.displayName.set(this.fullName);
-      this.registerData.email.set(this.email);
-      this.registerData.pwd.set(this.pwd);
-      this.registerData.checked.set(this.checked);
-      this.router.navigate(['/avatar-selection']);
+      await this.checkIfEmailExists();
+      if (this.emailExists) return;
+      this.saveRegisterData();
+      await this.router.navigate(['/avatar-selection']);
     } finally {
       this.inProgress = false;
     }
+  }
+
+  isFormValid(): boolean {
+    return !!(this.form && this.form.valid);
+  }
+
+  async checkIfEmailExists() {
+    const existsInAuth = await this.authService.emailExists(this.email);
+    const existsInFirestore = await runInInjectionContext(this.env, () =>
+      this.usersService.emailExistsInFirestore(this.email)
+    );
+    this.emailExists = existsInAuth || existsInFirestore;
+  }
+
+  saveRegisterData() {
+    this.registerData.displayName.set(this.fullName);
+    this.registerData.email.set(this.email);
+    this.registerData.pwd.set(this.pwd);
+    this.registerData.checked.set(this.checked);
   }
 }
