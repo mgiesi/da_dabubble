@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
-import { CustomPasswordResetService } from '../reset-password/custom-password-reset.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -38,7 +37,6 @@ export class ForgotPasswordComponent {
 
   authService = inject(AuthService);
   usersService = inject(UsersService);
-  customResetService = inject(CustomPasswordResetService);
 
   async checkEmailExists() {
     this.emailCheckInProgress = true;
@@ -64,8 +62,17 @@ export class ForgotPasswordComponent {
     if (!this.isEmailValid()) return;
     await this.checkEmailExistsAndSetFlag();
     if (this.emailExists === false) return;
-    await this.sendResetMail();
-    this.resetEmail = '';
+
+    try {
+      await this.authService.sendPasswordResetEmail(this.resetEmail);
+      this.infoMsg =
+        'Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.';
+      this.resetEmail = '';
+      this.errMsg = '';
+      this.emailExists = null;
+    } catch (error: any) {
+      this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
+    }
   }
 
   clearMessages() {
@@ -87,23 +94,5 @@ export class ForgotPasswordComponent {
       this.emailExists = null;
     }
     this.emailCheckInProgress = false;
-  }
-
-  async sendResetMail() {
-    this.sending = true;
-    try {
-      await this.customResetService.sendCustomPasswordResetEmail(this.resetEmail);
-      this.infoMsg = `
-        📧 Eine personalisierte E-Mail zum Zurücksetzen des Passworts wurde an ${this.resetEmail} gesendet.
-        \n📋 Bitte beachten Sie:
-        • Überprüfen Sie auch Ihren Spam-Ordner
-        • Der Link ist nur 60 Minuten gültig  
-        • Sie haben maximal 3 Versuche
-        • Der Link kann nur einmal verwendet werden
-      `;
-    } catch (error: any) {
-      this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
-    }
-    this.sending = false;
   }
 }
