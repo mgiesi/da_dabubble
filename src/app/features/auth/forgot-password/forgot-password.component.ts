@@ -62,6 +62,7 @@ export class ForgotPasswordComponent {
     await this.checkEmailExistsAndSetFlag();
     if (this.emailExists === false) return;
     await this.sendResetMail();
+    this.resetEmail = '';
   }
 
   clearMessages() {
