@@ -21,7 +21,6 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
   fetchSignInMethodsForEmail,
-  sendPasswordResetEmail,
 } from '@angular/fire/auth';
 @Injectable({
   providedIn: 'root',
@@ -141,15 +140,15 @@ export class AuthService {
   /**
    * Sendet eine Passwort-zurücksetzen-E-Mail an die angegebene Adresse
    */
-  async sendPasswordResetEmail(email: string): Promise<void> {
-    try {
-      await sendPasswordResetEmail(this.auth, email);
-    } catch (error) {
-      console.error(
-        'Fehler beim Senden der Passwort-zurücksetzen-E-Mail:',
-        error
-      );
-      throw error;
-    }
-  }
+  // async sendPasswordResetEmail(email: string): Promise<void> {
+  //   try {
+  //     await sendPasswordResetEmail(this.auth, email);
+  //   } catch (error) {
+  //     console.error(
+  //       'Fehler beim Senden der Passwort-zurücksetzen-E-Mail:',
+  //       error
+  //     );
+  //     throw error;
+  //   }
+  // }
 }
