@@ -37,6 +37,23 @@ export class ForgotPasswordComponent {
   authService = inject(AuthService);
   usersService = inject(UsersService);
 
+  async checkEmailExists() {
+    this.emailCheckInProgress = true;
+    this.emailExists = null;
+    if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
+      this.emailExists = null;
+      this.emailCheckInProgress = false;
+      return;
+    }
+    try {
+      this.emailExists = await this.usersService.emailExistsInFirestore(
+        this.resetEmail
+      );
+    } catch {
+      this.emailExists = null;
+    }
+    this.emailCheckInProgress = false;
+  }
 
   async onSubmit() {
     this.resetEmail = this.resetEmail.trim().toLowerCase();
