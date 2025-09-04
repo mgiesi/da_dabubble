@@ -233,18 +233,13 @@ export class LoginComponent {
     return !!email && !!pwd;
   }
 
-  gotoRegisterUser() {  
-    // Always reset register parameters to start from scratch  
+  gotoRegisterUser() {
+    // Always reset register parameters to start from scratch
     this.registerData.displayName.set('');
     this.registerData.email.set('');
     this.registerData.pwd.set('');
     this.router.navigate(['/register']);
   }
-
-  // private async checkEmailExistsOrReturn(email: string) {
-  //   this.emailExists = await this.auth.emailExists(email);
-  //   if (!this.emailExists) return;
-  // }
 
   private async doSignIn(email: string, pwd: string) {
     await this.auth.signIn(email, pwd);
