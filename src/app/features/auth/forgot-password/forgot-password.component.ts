@@ -67,9 +67,6 @@ export class ForgotPasswordComponent {
       await this.authService.sendPasswordResetEmail(this.resetEmail);
       this.infoMsg =
         'Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.';
-      this.resetEmail = '';
-      this.errMsg = '';
-      this.emailExists = null;
     } catch (error: any) {
       this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
     }
