@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+  NgZone,
+} from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -41,6 +48,7 @@ export class AvatarSelectionComponent implements OnInit {
   private usersService = inject(UsersService);
   private router = inject(Router);
   private userUtil = inject(UserUtilService);
+  private ngZone = inject(NgZone);
   @ViewChild(ChooseAvatarComponent)
   private chooseAvatar?: ChooseAvatarComponent;
 
@@ -94,19 +102,25 @@ export class AvatarSelectionComponent implements OnInit {
       );
 
       this.accountCreatedSuccessfully = true;
-      setTimeout(async () => {
-        const userCredential = await this.authService.signUp(
-          this.registerData.email(),
-          this.registerData.pwd()
-        );
-        if (userCredential && userCredential.user && userCredential.user.uid) {
-          await this.userUtil.setUidByEmail(
+      setTimeout(() => {
+        this.ngZone.run(async () => {
+          const userCredential = await this.authService.signUp(
             this.registerData.email(),
-            userCredential.user.uid
+            this.registerData.pwd()
           );
-        }
-        this.accountCreatedSuccessfully = false;
-        await this.router.navigate(['/chat']);
+          if (
+            userCredential &&
+            userCredential.user &&
+            userCredential.user.uid
+          ) {
+            await this.userUtil.setUidByEmail(
+              this.registerData.email(),
+              userCredential.user.uid
+            );
+          }
+          this.accountCreatedSuccessfully = false;
+          await this.router.navigate(['/chat']);
+        });
       }, 1000);
     } catch (error: any) {
       this.errMsg = error.message;
