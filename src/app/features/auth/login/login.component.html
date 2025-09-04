@@ -1,6 +1,6 @@
 <div class="create-account-box">
     <p>Neu bei DABubble?</p>
-    <button class="btn-white-without-border" (click)="gotoRegisterUser()" >Konto erstellen</button>
+    <button class="btn-white-without-border" (click)="gotoRegisterUser()">Konto erstellen</button>
 </div>
 
 <app-auth-card>
@@ -107,7 +107,7 @@
                 <button [disabled]="inProgress" class="btn-blue" type="submit">
                     {{ inProgress ? 'Anmelden...' : 'Anmelden' }}
                 </button>
-                <button class="btn-white" (click)="signInAsGuest()"
+                <button class="btn-white" type="button" (click)="signInAsGuest()"
                     [disabled]="inProgress || googleLoginInProgress">Gäste-Login</button>
             </div>
 
