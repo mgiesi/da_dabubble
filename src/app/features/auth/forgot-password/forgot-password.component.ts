@@ -57,16 +57,35 @@ export class ForgotPasswordComponent {
 
   async onSubmit() {
     this.resetEmail = this.resetEmail.trim().toLowerCase();
+    this.clearMessages();
+    if (!this.isEmailValid()) return;
+    await this.checkEmailExistsAndSetFlag();
+    if (this.emailExists === false) return;
+    await this.sendResetMail();
+  }
+
+  clearMessages() {
     this.errMsg = '';
     this.infoMsg = '';
-    if (!this.resetEmail || !AuthService.EMAIL_PATTERN.test(this.resetEmail)) {
-      this.errMsg = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-      return;
+  }
+
+  isEmailValid(): boolean {
+    return !!this.resetEmail && AuthService.EMAIL_PATTERN.test(this.resetEmail);
+  }
+
+  async checkEmailExistsAndSetFlag() {
+    this.emailCheckInProgress = true;
+    try {
+      this.emailExists = await this.usersService.emailExistsInFirestore(
+        this.resetEmail
+      );
+    } catch {
+      this.emailExists = null;
     }
-    if (this.emailExists === false) {
-      this.errMsg = 'Es existiert kein Benutzer mit dieser E-Mail-Adresse';
-      return;
-    }
+    this.emailCheckInProgress = false;
+  }
+
+  async sendResetMail() {
     this.sending = true;
     try {
       await this.authService.sendPasswordResetEmail(this.resetEmail);
