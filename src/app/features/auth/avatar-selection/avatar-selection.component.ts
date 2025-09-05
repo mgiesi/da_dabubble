@@ -43,15 +43,15 @@ import { UserUtilService } from '../../../core/services/user-util.service';
 export class AvatarSelectionComponent implements OnInit {
   inProgress: boolean = true;
   accountCreatedSuccessfully: boolean = false;
+  messageHide: boolean = false;
+
   private registerData = inject(RegisterDataService);
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
   private router = inject(Router);
   private userUtil = inject(UserUtilService);
   private ngZone = inject(NgZone);
-  @ViewChild(ChooseAvatarComponent)
-  private chooseAvatar?: ChooseAvatarComponent;
-
+  @ViewChild(ChooseAvatarComponent) chooseAvatar!: ChooseAvatarComponent;
   user: User = {
     id: '',
     uid: '',
@@ -85,46 +85,63 @@ export class AvatarSelectionComponent implements OnInit {
 
   async register() {
     this.inProgress = true;
+    this.setAvatarImgUrl();
+    try {
+      await this.createUserInDb();
+      this.showSuccessMessageAndContinue();
+    } catch (error: any) {
+      this.handleRegisterError(error);
+    }
+  }
 
+  private setAvatarImgUrl() {
     if (this.chooseAvatar) {
       const localu = this.chooseAvatar.userLocal();
       if (localu) {
         this.user.imgUrl = localu.imgUrl;
       }
     }
+  }
 
-    try {
-      await this.usersService.createUser(
-        '',
-        this.registerData.email(),
-        this.registerData.displayName(),
-        this.user.imgUrl
-      );
+  private async createUserInDb() {
+    await this.usersService.createUser(
+      '',
+      this.registerData.email(),
+      this.registerData.displayName(),
+      this.user.imgUrl
+    );
+  }
 
-      this.accountCreatedSuccessfully = true;
+  private showSuccessMessageAndContinue() {
+    this.accountCreatedSuccessfully = true;
+    this.messageHide = false;
+    setTimeout(() => {
+      this.messageHide = true;
       setTimeout(() => {
-        this.ngZone.run(async () => {
-          const userCredential = await this.authService.signUp(
-            this.registerData.email(),
-            this.registerData.pwd()
-          );
-          if (
-            userCredential &&
-            userCredential.user &&
-            userCredential.user.uid
-          ) {
-            await this.userUtil.setUidByEmail(
-              this.registerData.email(),
-              userCredential.user.uid
-            );
-          }
-          this.accountCreatedSuccessfully = false;
-          await this.router.navigate(['/chat']);
-        });
-      }, 1000);
-    } catch (error: any) {
-      this.errMsg = error.message;
-      this.inProgress = false;
-    }
+        this.accountCreatedSuccessfully = false;
+        this.finishRegistrationAndNavigate();
+      }, 500);
+    }, 3500);
+  }
+
+  private async finishRegistrationAndNavigate() {
+    this.ngZone.run(async () => {
+      const userCredential = await this.authService.signUp(
+        this.registerData.email(),
+        this.registerData.pwd()
+      );
+      if (userCredential && userCredential.user && userCredential.user.uid) {
+        await this.userUtil.setUidByEmail(
+          this.registerData.email(),
+          userCredential.user.uid
+        );
+      }
+      await this.router.navigate(['/chat']);
+    });
+  }
+
+  private handleRegisterError(error: any) {
+    this.errMsg = error.message;
+    this.inProgress = false;
   }
 }

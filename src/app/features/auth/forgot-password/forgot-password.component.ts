@@ -34,7 +34,9 @@ export class ForgotPasswordComponent {
   errMsg: string = '';
   infoMsg: string = '';
   sending: boolean = false;
-  resetPasswordEmailSuccessfully: boolean = true;
+  resetPasswordEmailSuccessfully: boolean = false;
+  resetPasswordEmailSuccessfullyMessage: boolean = false;
+  messageHide: boolean = false;
 
   @ViewChild('f') form!: NgForm;
 
@@ -60,19 +62,39 @@ export class ForgotPasswordComponent {
   }
 
   async onSubmit() {
-    this.resetEmail = this.resetEmail.trim().toLowerCase();
-    this.clearMessages();
+    this.prepareEmailAndClearMessages();
     if (!this.isEmailValid()) return;
     await this.checkEmailExistsAndSetFlag();
     if (this.emailExists === false) return;
+    await this.trySendPasswordReset();
+  }
 
+  private prepareEmailAndClearMessages() {
+    this.resetEmail = this.resetEmail.trim().toLowerCase();
+    this.clearMessages();
+  }
+
+  private async trySendPasswordReset() {
     try {
       await this.authService.sendPasswordResetEmail(this.resetEmail);
-      if (this.form) {
-        this.form.resetForm();
-      }
+      this.handlePasswordResetSuccess();
     } catch (error: any) {
       this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
+    }
+  }
+
+  private handlePasswordResetSuccess() {
+    if (this.form) {
+      this.form.resetForm();
+      this.resetPasswordEmailSuccessfully = true;
+      this.resetPasswordEmailSuccessfullyMessage = true;
+      this.messageHide = false;
+      setTimeout(() => {
+        this.messageHide = true;
+        setTimeout(() => {
+          this.resetPasswordEmailSuccessfullyMessage = false;
+        }, 500);
+      }, 3000);
     }
   }
 
@@ -95,5 +117,9 @@ export class ForgotPasswordComponent {
       this.emailExists = null;
     }
     this.emailCheckInProgress = false;
+  }
+
+  resetFlag() {
+    this.resetPasswordEmailSuccessfully = false;
   }
 }

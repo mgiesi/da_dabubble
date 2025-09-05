@@ -79,8 +79,12 @@ input {
   bottom: 45px;
   right: 45px;
   transform: translateX(115%);
-  animation: fadeInSuccessfully 0.5s ease forwards;
+  animation: fadeInSuccessfully 0.5s ease-in-out forwards;
   opacity: 0;
+
+  &.hide {
+    animation: fadeOutSuccessfully 0.5s ease-in-out forwards;
+  }
 }
 
 @keyframes fadeInSuccessfully {
@@ -96,6 +100,22 @@ input {
   100% {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes fadeOutSuccessfully {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateX(115%);
+    opacity: 0;
   }
 }
 
