@@ -56,41 +56,66 @@ export class ResetPasswordComponent implements OnInit {
 
   async onSubmit(form: any, pwdField: any, confirmPwdInput: any) {
     this.errMsg = '';
-    if (form.invalid || this.newPassword !== this.confirmNewPassword) {
-      if (pwdField && pwdField.control) pwdField.control.markAsTouched();
-      if (confirmPwdInput && confirmPwdInput.control)
-        confirmPwdInput.control.markAsTouched();
-      form.form.markAsSubmitted && form.form.markAsSubmitted();
-      return;
-    }
+    if (this.isFormInvalid(form, pwdField, confirmPwdInput)) return;
+    if (this.isOobCodeMissing()) return;
+    await this.tryPasswordReset();
+  }
 
+  private isFormInvalid(
+    form: any,
+    pwdField: any,
+    confirmPwdInput: any
+  ): boolean {
+    if (form.invalid || this.newPassword !== this.confirmNewPassword) {
+      this.markFieldsAsTouched(pwdField, confirmPwdInput, form);
+      return true;
+    }
+    return false;
+  }
+
+  private markFieldsAsTouched(
+    pwdField: any,
+    confirmPwdInput: any,
+    form: any
+  ): void {
+    if (pwdField && pwdField.control) pwdField.control.markAsTouched();
+    if (confirmPwdInput && confirmPwdInput.control)
+      confirmPwdInput.control.markAsTouched();
+    form.form.markAsSubmitted && form.form.markAsSubmitted();
+  }
+
+  private isOobCodeMissing(): boolean {
     if (!this.oobCode) {
       this.errMsg = 'Interner Fehler: Code zum Zurücksetzen fehlt.';
-      return;
+      return true;
     }
+    return false;
+  }
 
+  private async tryPasswordReset() {
     this.setNewPasswordInProgress = true;
     const auth = this.authService.firebaseAuth;
+    const timeoutPromise = this.createTimeoutPromise();
+    try {
+      await Promise.race([
+        confirmPasswordReset(auth, this.oobCode!, this.newPassword),
+        timeoutPromise,
+      ]);
+      this.setNewPasswordInProgress = false;
+      this.passwordResetSuccessful = true;
+    } catch (error: any) {
+      this.setNewPasswordInProgress = false;
+      this.handleError(error.code || error.message);
+    }
+  }
 
-    // Timeout-Logik: Wenn Firebase nicht antwortet, Fehler anzeigen
-    const timeoutPromise = new Promise((_, reject) =>
+  private createTimeoutPromise(): Promise<never> {
+    return new Promise((_, reject) =>
       setTimeout(
         () => reject(new Error('Timeout beim Zurücksetzen des Passworts')),
         15000
       )
     );
-    try {
-      await Promise.race([
-        confirmPasswordReset(auth, this.oobCode, this.newPassword),
-        timeoutPromise,
-      ]);
-      this.setNewPasswordInProgress = false;
-
-      this.router.navigate(['/login']);
-    } catch (error: any) {
-      this.setNewPasswordInProgress = false;
-      this.handleError(error.code || error.message);
-    }
   }
 
   private handleError(errorCode: string): void {
