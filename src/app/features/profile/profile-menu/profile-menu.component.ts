@@ -8,6 +8,7 @@ import { filter, firstValueFrom, take } from 'rxjs';
 import { DlgProfileMenuComponent } from '../dlg-profile-menu/dlg-profile-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-profile-menu',
@@ -20,6 +21,7 @@ export class ProfileMenuComponent {
   auth = inject(AuthService);
   router = inject(Router);
   dialog = inject(MatDialog);
+  breakpointObserver = inject(BreakpointObserver);
 
   /** Firebase User Object for the current logged in user */
   readonly user = toSignal(this.facade.currentUser(), { initialValue: null });
@@ -44,13 +46,16 @@ export class ProfileMenuComponent {
     if (dlgRef) {
       dlgRef.close();
     } else {
+      const isMobile = this.breakpointObserver.isMatched([Breakpoints.Handset]);
       this.dialog.open(DlgProfileMenuComponent, {
         id: 'profileMenuDialog',
-        position: {
+        position: isMobile ? undefined : {
           top: "120px",
           right: "16px"
         },
-        panelClass: 'no-top-right-radius-dialog'
+        panelClass: isMobile ? 'mobile-slideup-dialog' : 'no-top-right-radius-dialog',
+        enterAnimationDuration: '0ms',
+        exitAnimationDuration: '0ms',
       });
     }
   }

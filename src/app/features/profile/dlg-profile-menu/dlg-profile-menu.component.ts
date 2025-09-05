@@ -6,12 +6,25 @@ import { MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dia
 import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-details.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-dlg-profile-menu',
   imports: [MatDialogContent],
   templateUrl: './dlg-profile-menu.component.html',
-  styleUrl: './dlg-profile-menu.component.scss'
+  styleUrl: './dlg-profile-menu.component.scss',
+  animations: [
+    trigger('slideUp', [
+      transition(':enter', [
+        style({ transform: 'translateY(100%' }),
+        animate('250ms ease-out', style({ transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ transform: 'translateY(100%)' })),
+      ]),
+    ]),
+  ],
+  host: { '[@slideUp]': '' },
 })
 export class DlgProfileMenuComponent {
   auth = inject(AuthService);

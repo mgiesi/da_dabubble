@@ -1,6 +1,7 @@
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
 .profile-menu-container {
@@ -26,6 +27,10 @@ h1 {
     @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $black);
     margin: 0;
     transition: $transition-0-3-ease-in-out;
+
+    @include mobile_sm {
+        display: none;
+    }
 }
 
 svg {
@@ -34,5 +39,9 @@ svg {
 
     path {
         transition: $transition-0-3-ease-in-out;
+    }
+
+    @include mobile_sm {
+        display: none;
     }
 }
