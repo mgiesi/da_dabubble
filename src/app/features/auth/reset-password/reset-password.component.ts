@@ -2,12 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added imports
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
-import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
 import { confirmPasswordReset } from 'firebase/auth';
 
@@ -21,6 +20,7 @@ import { confirmPasswordReset } from 'firebase/auth';
     MatCheckboxModule,
     MatIconModule,
     AuthCardComponent,
+    RouterLink,
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
@@ -36,6 +36,7 @@ export class ResetPasswordComponent implements OnInit {
   errMsg: string = '';
   infoMsg: string = '';
   oobCode: string | null = null;
+  passwordResetSuccessful: boolean = false;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -84,9 +85,7 @@ export class ResetPasswordComponent implements OnInit {
         timeoutPromise,
       ]);
       this.setNewPasswordInProgress = false;
-      alert(
-        'Ihr Passwort wurde erfolgreich zurückgesetzt! Sie können sich jetzt anmelden.'
-      );
+
       this.router.navigate(['/login']);
     } catch (error: any) {
       this.setNewPasswordInProgress = false;
