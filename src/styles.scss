@@ -68,6 +68,57 @@ input {
   }
 }
 
+.disable-interaction {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.account-created-successfully {
+  @include accountCreatedSuccessfully;
+  position: absolute;
+  bottom: 45px;
+  right: 45px;
+  transform: translateX(115%);
+  animation: fadeInSuccessfully 0.5s ease-in-out forwards;
+  opacity: 0;
+
+  &.hide {
+    animation: fadeOutSuccessfully 0.5s ease-in-out forwards;
+  }
+}
+
+@keyframes fadeInSuccessfully {
+  0% {
+    transform: translateX(115%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutSuccessfully {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateX(115%);
+    opacity: 0;
+  }
+}
+
 
 .error-message {
   position: absolute;

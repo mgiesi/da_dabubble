@@ -17,9 +17,9 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     MatProgressBarModule,
     AuthCardComponent,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -49,16 +49,9 @@ export class LoginComponent {
     return AuthService.getEmailPatternHtml();
   }
 
-  // private resetEmailCheckState() {
-  //   this.emailExists = null;
-  //   this.errMsg = '';
-  // }
-
   private isEmailValid(email: string): boolean {
     return !!email && AuthService.EMAIL_PATTERN.test(email);
   }
-
-  // Die Prüfung erfolgt jetzt erst beim Login-Versuch
 
   async signInAsGuest() {
     this.prepareSignIn();
@@ -234,7 +227,6 @@ export class LoginComponent {
   }
 
   gotoRegisterUser() {
-    // Always reset register parameters to start from scratch
     this.registerData.displayName.set('');
     this.registerData.email.set('');
     this.registerData.pwd.set('');

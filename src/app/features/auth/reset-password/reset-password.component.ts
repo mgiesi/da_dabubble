@@ -2,14 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added imports
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
-import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
-import { getAuth, confirmPasswordReset } from 'firebase/auth';
+import { confirmPasswordReset } from 'firebase/auth';
 
 @Component({
   selector: 'app-reset-password',
@@ -28,6 +27,7 @@ import { getAuth, confirmPasswordReset } from 'firebase/auth';
   animations: [fadeInOut],
 })
 export class ResetPasswordComponent implements OnInit {
+  private authService = inject(AuthService);
   newPassword: string = '';
   confirmNewPassword: string = '';
   setNewPasswordInProgress: boolean = false;
@@ -35,8 +35,9 @@ export class ResetPasswordComponent implements OnInit {
   showConfirmPwd: boolean = false;
   errMsg: string = '';
   infoMsg: string = '';
-
   oobCode: string | null = null;
+  passwordResetSuccessful: boolean = false;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -45,41 +46,76 @@ export class ResetPasswordComponent implements OnInit {
       this.oobCode = params['oobCode'] || null;
       if (!this.oobCode) {
         this.errMsg =
-          'Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
+          '*Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
+        setTimeout(() => {
+          this.errMsg = '';
+        }, 8000);
       }
     });
   }
 
-  async onSubmit() {
+  async onSubmit(form: any, pwdField: any, confirmPwdInput: any) {
     this.errMsg = '';
+    if (this.isFormInvalid(form, pwdField, confirmPwdInput)) return;
+    if (this.isOobCodeMissing()) return;
+    await this.tryPasswordReset();
+  }
 
-    // Validate passwords
-    if (this.newPassword !== this.confirmNewPassword) {
-      this.errMsg = 'Die Passwörter stimmen nicht überein.';
-      return;
+  private isFormInvalid(
+    form: any,
+    pwdField: any,
+    confirmPwdInput: any
+  ): boolean {
+    if (form.invalid || this.newPassword !== this.confirmNewPassword) {
+      this.markFieldsAsTouched(pwdField, confirmPwdInput, form);
+      return true;
     }
+    return false;
+  }
 
+  private markFieldsAsTouched(
+    pwdField: any,
+    confirmPwdInput: any,
+    form: any
+  ): void {
+    if (pwdField && pwdField.control) pwdField.control.markAsTouched();
+    if (confirmPwdInput && confirmPwdInput.control)
+      confirmPwdInput.control.markAsTouched();
+    form.form.markAsSubmitted && form.form.markAsSubmitted();
+  }
+
+  private isOobCodeMissing(): boolean {
     if (!this.oobCode) {
       this.errMsg = 'Interner Fehler: Code zum Zurücksetzen fehlt.';
-      return;
+      return true;
     }
+    return false;
+  }
 
+  private async tryPasswordReset() {
     this.setNewPasswordInProgress = true;
-    const auth = getAuth();
-
+    const auth = this.authService.firebaseAuth;
+    const timeoutPromise = this.createTimeoutPromise();
     try {
-      await confirmPasswordReset(auth, this.oobCode, this.newPassword);
-      // Password was reset successfully
+      await Promise.race([
+        confirmPasswordReset(auth, this.oobCode!, this.newPassword),
+        timeoutPromise,
+      ]);
       this.setNewPasswordInProgress = false;
-      alert(
-        'Ihr Passwort wurde erfolgreich zurückgesetzt! Sie können sich jetzt anmelden.'
-      );
-      this.router.navigate(['/login']);
+      this.passwordResetSuccessful = true;
     } catch (error: any) {
-      // Handle password reset errors from Firebase
       this.setNewPasswordInProgress = false;
-      this.handleError(error.code);
+      this.handleError(error.code || error.message);
     }
+  }
+
+  private createTimeoutPromise(): Promise<never> {
+    return new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error('Timeout beim Zurücksetzen des Passworts')),
+        15000
+      )
+    );
   }
 
   private handleError(errorCode: string): void {

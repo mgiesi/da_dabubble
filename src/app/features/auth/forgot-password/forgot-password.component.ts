@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -34,6 +34,11 @@ export class ForgotPasswordComponent {
   errMsg: string = '';
   infoMsg: string = '';
   sending: boolean = false;
+  resetPasswordEmailSuccessfully: boolean = false;
+  resetPasswordEmailSuccessfullyMessage: boolean = false;
+  messageHide: boolean = false;
+
+  @ViewChild('f') form!: NgForm;
 
   authService = inject(AuthService);
   usersService = inject(UsersService);
@@ -57,18 +62,39 @@ export class ForgotPasswordComponent {
   }
 
   async onSubmit() {
-    this.resetEmail = this.resetEmail.trim().toLowerCase();
-    this.clearMessages();
+    this.prepareEmailAndClearMessages();
     if (!this.isEmailValid()) return;
     await this.checkEmailExistsAndSetFlag();
     if (this.emailExists === false) return;
+    await this.trySendPasswordReset();
+  }
 
+  private prepareEmailAndClearMessages() {
+    this.resetEmail = this.resetEmail.trim().toLowerCase();
+    this.clearMessages();
+  }
+
+  private async trySendPasswordReset() {
     try {
       await this.authService.sendPasswordResetEmail(this.resetEmail);
-      this.infoMsg =
-        'Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.';
+      this.handlePasswordResetSuccess();
     } catch (error: any) {
       this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
+    }
+  }
+
+  private handlePasswordResetSuccess() {
+    if (this.form) {
+      this.form.resetForm();
+      this.resetPasswordEmailSuccessfully = true;
+      this.resetPasswordEmailSuccessfullyMessage = true;
+      this.messageHide = false;
+      setTimeout(() => {
+        this.messageHide = true;
+        setTimeout(() => {
+          this.resetPasswordEmailSuccessfullyMessage = false;
+        }, 500);
+      }, 3000);
     }
   }
 
@@ -91,5 +117,9 @@ export class ForgotPasswordComponent {
       this.emailExists = null;
     }
     this.emailCheckInProgress = false;
+  }
+
+  resetFlag() {
+    this.resetPasswordEmailSuccessfully = false;
   }
 }

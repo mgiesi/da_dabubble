@@ -1,8 +1,6 @@
-@if(accountCreatedSuccessfully){
-<div class="account-created-successfully">
+<div *ngIf="accountCreatedSuccessfully" class="account-created-successfully" [class.hide]="messageHide">
     <p>Konto erfolgreich erstellt!</p>
 </div>
-}
 
 <app-auth-card>
     <div class="auth-card-container">

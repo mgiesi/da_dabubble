@@ -13,38 +13,6 @@
 }
 
 
-.disable-interaction {
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-.account-created-successfully {
-    @include accountCreatedSuccessfully;
-    position: absolute;
-    bottom: 45px;
-    right: 45px;
-    transform: translateX(115%);
-    animation: fadeInSuccessfully 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInSuccessfully {
-    0% {
-        transform: translateX(115%);
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-
 .button-box {
     width: 100%;
     @include dFlexAllCenter($jc: flex-end);
