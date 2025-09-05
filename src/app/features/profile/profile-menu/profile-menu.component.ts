@@ -6,13 +6,14 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { filter, firstValueFrom, take } from 'rxjs';
 import { DlgProfileMenuComponent } from '../dlg-profile-menu/dlg-profile-menu.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-profile-menu',
-  imports: [CommonModule, ProfileAvatarComponent],
+  imports: [CommonModule, ProfileAvatarComponent, MatBottomSheetModule],
   templateUrl: './profile-menu.component.html',
   styleUrl: './profile-menu.component.scss'
 })
@@ -20,8 +21,10 @@ export class ProfileMenuComponent {
   facade = inject(UsersFacadeService);
   auth = inject(AuthService);
   router = inject(Router);
-  dialog = inject(MatDialog);
+  desktopDialog = inject(MatDialog);
   breakpointObserver = inject(BreakpointObserver);
+  mobileDialog = inject(MatBottomSheet);
+  mobileDialogRef: MatBottomSheetRef | undefined = undefined;
 
   /** Firebase User Object for the current logged in user */
   readonly user = toSignal(this.facade.currentUser(), { initialValue: null });
@@ -42,21 +45,36 @@ export class ProfileMenuComponent {
    * Opens the profile menu overlay.
    */
   openProfileMenu() {
-    const dlgRef = this.dialog.getDialogById('profileMenuDialog');
-    if (dlgRef) {
-      dlgRef.close();
+    const desktopDialogRef = this.desktopDialog.getDialogById('profileMenuDialog');
+    if (desktopDialogRef) {
+      desktopDialogRef.close();
+    } else if (this.mobileDialogRef) {
+      this.mobileDialogRef.dismiss();
+      this.mobileDialogRef = undefined;
     } else {
       const isMobile = this.breakpointObserver.isMatched([Breakpoints.Handset]);
-      this.dialog.open(DlgProfileMenuComponent, {
-        id: 'profileMenuDialog',
-        position: isMobile ? undefined : {
-          top: "120px",
-          right: "16px"
-        },
-        panelClass: isMobile ? 'mobile-slideup-dialog' : 'no-top-right-radius-dialog',
-        enterAnimationDuration: '0ms',
-        exitAnimationDuration: '0ms',
-      });
+      if (isMobile) {
+        this.openMobileMenu();
+      } else {
+        this.openDesktopMenu();
+      }
     }
+  }
+
+  openMobileMenu() {
+    this.mobileDialogRef = this.mobileDialog.open(DlgProfileMenuComponent);
+  }
+
+  openDesktopMenu() {
+    this.desktopDialog.open(DlgProfileMenuComponent, {
+      id: 'profileMenuDialog',
+      position: {
+        top: "120px",
+        right: "16px"
+      },
+      panelClass: 'no-top-right-radius-dialog',
+      enterAnimationDuration: '0ms',
+      exitAnimationDuration: '0ms',
+    });
   }
 }

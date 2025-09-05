@@ -7,6 +7,7 @@ import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-d
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-dlg-profile-menu',
@@ -31,7 +32,8 @@ export class DlgProfileMenuComponent {
   facade = inject(UsersFacadeService);
   router = inject(Router); 
   dialog = inject(MatDialog);
-  dialogRef = inject(MatDialogRef<DlgProfileMenuComponent>);
+  dialogRef = inject(MatDialogRef<DlgProfileMenuComponent>, { optional: true });
+  dialogMobileRef = inject(MatBottomSheetRef<DlgProfileMenuComponent>, { optional: true });
 
   readonly currentUserSig = toSignal(this.facade.currentUser(), { initialValue: null });
   
@@ -39,7 +41,8 @@ export class DlgProfileMenuComponent {
    * Sign out the current user and navigate back to the login page.
    */
   async signOut() {
-    this.dialogRef.close(false);
+    this.dialogRef?.close(false);
+    this.dialogMobileRef?.dismiss(false);
     this.facade.signOut();
     await firstValueFrom(this.auth.user$.pipe(
       filter(u => !u),

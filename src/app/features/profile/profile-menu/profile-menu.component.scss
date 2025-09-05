@@ -28,7 +28,7 @@ h1 {
     margin: 0;
     transition: $transition-0-3-ease-in-out;
 
-    @include mobile_sm {
+    @include main_mobile_only {
         display: none;
     }
 }
@@ -41,7 +41,7 @@ svg {
         transition: $transition-0-3-ease-in-out;
     }
 
-    @include mobile_sm {
+    @include main_mobile_only {
         display: none;
     }
 }
