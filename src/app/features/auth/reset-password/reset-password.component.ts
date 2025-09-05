@@ -34,8 +34,9 @@ export class ResetPasswordComponent implements OnInit {
   showConfirmPwd: boolean = false;
   errMsg: string = '';
   infoMsg: string = '';
-
+  createPasswordInProgress: boolean = false;
   oobCode: string | null = null;
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
