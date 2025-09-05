@@ -6,8 +6,10 @@ import { AuthService } from './core/services/auth.service';
 import { SharedFunctionsService } from '../../src/app/core/services/shared-functions.service';
 import { LogoStateService } from './core/services/logo-state.service';
 import { UsersService } from './core/repositories/users.service';
-import { firstValueFrom, filter } from 'rxjs';
+import { firstValueFrom, filter, Observable, combineLatest } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
+
+import { map, startWith } from 'rxjs/operators';
 import { setLogLevel } from '@angular/fire/firestore';
 
 @Component({
@@ -18,7 +20,6 @@ import { setLogLevel } from '@angular/fire/firestore';
 })
 export class AppComponent {
   private router = inject(Router);
-  title = 'DABubble';
   private auth = inject(AuthService);
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
@@ -26,6 +27,7 @@ export class AppComponent {
   private userPresenceService: UserPresenceService =
     inject(UserPresenceService);
 
+  title = 'DABubble';
   isAuthenticated$ = this.auth.isAuthenticated$;
   showAnimation$ = this.sharedFunctions.showAnimation$;
 
@@ -44,6 +46,14 @@ export class AppComponent {
   errMsg: string = '';
   email: string = '';
   pwd: string = '';
+
+  shouldShowAnimation$: Observable<boolean> = combineLatest([
+    this.showAnimation$,
+    this.router.events.pipe(
+      startWith(null),
+      map(() => !this.router.url.includes('reset-password'))
+    ),
+  ]).pipe(map(([show, notReset]) => show && notReset));
 
   get emailPattern(): string {
     return AuthService.EMAIL_PATTERN.source;
