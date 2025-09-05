@@ -53,7 +53,6 @@ export class ResetPasswordComponent implements OnInit {
   async onSubmit() {
     this.errMsg = '';
 
-    // Validate passwords
     if (this.newPassword !== this.confirmNewPassword) {
       this.errMsg = 'Die Passwörter stimmen nicht überein.';
       return;
@@ -69,14 +68,12 @@ export class ResetPasswordComponent implements OnInit {
 
     try {
       await confirmPasswordReset(auth, this.oobCode, this.newPassword);
-      // Password was reset successfully
       this.setNewPasswordInProgress = false;
       alert(
         'Ihr Passwort wurde erfolgreich zurückgesetzt! Sie können sich jetzt anmelden.'
       );
       this.router.navigate(['/login']);
     } catch (error: any) {
-      // Handle password reset errors from Firebase
       this.setNewPasswordInProgress = false;
       this.handleError(error.code);
     }

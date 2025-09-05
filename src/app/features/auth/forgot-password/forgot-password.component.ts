@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -35,6 +35,8 @@ export class ForgotPasswordComponent {
   infoMsg: string = '';
   sending: boolean = false;
 
+  @ViewChild('f') form!: NgForm;
+
   authService = inject(AuthService);
   usersService = inject(UsersService);
 
@@ -65,8 +67,9 @@ export class ForgotPasswordComponent {
 
     try {
       await this.authService.sendPasswordResetEmail(this.resetEmail);
-      this.infoMsg =
-        'Eine E-Mail zum Zurücksetzen des Passworts wurde gesendet.';
+      if (this.form) {
+        this.form.resetForm();
+      }
     } catch (error: any) {
       this.errMsg = error?.message || 'Fehler beim Senden der E-Mail.';
     }
