@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
-import { getAuth, confirmPasswordReset } from 'firebase/auth';
+import { confirmPasswordReset } from 'firebase/auth';
 
 @Component({
   selector: 'app-reset-password',
@@ -27,6 +27,7 @@ import { getAuth, confirmPasswordReset } from 'firebase/auth';
   animations: [fadeInOut],
 })
 export class ResetPasswordComponent implements OnInit {
+  private authService = inject(AuthService);
   newPassword: string = '';
   confirmNewPassword: string = '';
   setNewPasswordInProgress: boolean = false;
@@ -34,7 +35,6 @@ export class ResetPasswordComponent implements OnInit {
   showConfirmPwd: boolean = false;
   errMsg: string = '';
   infoMsg: string = '';
-  createPasswordInProgress: boolean = false;
   oobCode: string | null = null;
 
   private route = inject(ActivatedRoute);
@@ -45,15 +45,16 @@ export class ResetPasswordComponent implements OnInit {
       this.oobCode = params['oobCode'] || null;
       if (!this.oobCode) {
         this.errMsg =
-          'Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
+          '*Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
+        setTimeout(() => {
+          this.errMsg = '';
+        }, 8000);
       }
     });
   }
 
   async onSubmit(form: any, pwdField: any, confirmPwdInput: any) {
     this.errMsg = '';
-
-    // Wenn Felder ungültig oder Passwörter unterschiedlich, Felder auf touched setzen und abbrechen
     if (form.invalid || this.newPassword !== this.confirmNewPassword) {
       if (pwdField && pwdField.control) pwdField.control.markAsTouched();
       if (confirmPwdInput && confirmPwdInput.control)
@@ -68,10 +69,20 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.setNewPasswordInProgress = true;
-    const auth = getAuth();
+    const auth = this.authService.firebaseAuth;
 
+    // Timeout-Logik: Wenn Firebase nicht antwortet, Fehler anzeigen
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error('Timeout beim Zurücksetzen des Passworts')),
+        15000
+      )
+    );
     try {
-      await confirmPasswordReset(auth, this.oobCode, this.newPassword);
+      await Promise.race([
+        confirmPasswordReset(auth, this.oobCode, this.newPassword),
+        timeoutPromise,
+      ]);
       this.setNewPasswordInProgress = false;
       alert(
         'Ihr Passwort wurde erfolgreich zurückgesetzt! Sie können sich jetzt anmelden.'
@@ -79,7 +90,7 @@ export class ResetPasswordComponent implements OnInit {
       this.router.navigate(['/login']);
     } catch (error: any) {
       this.setNewPasswordInProgress = false;
-      this.handleError(error.code);
+      this.handleError(error.code || error.message);
     }
   }
 
