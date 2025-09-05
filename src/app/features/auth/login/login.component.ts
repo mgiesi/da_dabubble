@@ -14,13 +14,7 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    MatProgressBarModule,
-    AuthCardComponent,
-  ],
+  imports: [CommonModule, FormsModule, MatProgressBarModule, AuthCardComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   animations: [fadeInOut],

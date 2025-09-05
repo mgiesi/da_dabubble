@@ -21,7 +21,6 @@ import { getAuth, confirmPasswordReset } from 'firebase/auth';
     MatCheckboxModule,
     MatIconModule,
     AuthCardComponent,
-    RouterLink,
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
