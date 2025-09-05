@@ -50,11 +50,15 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
-  async onSubmit() {
+  async onSubmit(form: any, pwdField: any, confirmPwdInput: any) {
     this.errMsg = '';
 
-    if (this.newPassword !== this.confirmNewPassword) {
-      this.errMsg = 'Die Passwörter stimmen nicht überein.';
+    // Wenn Felder ungültig oder Passwörter unterschiedlich, Felder auf touched setzen und abbrechen
+    if (form.invalid || this.newPassword !== this.confirmNewPassword) {
+      if (pwdField && pwdField.control) pwdField.control.markAsTouched();
+      if (confirmPwdInput && confirmPwdInput.control)
+        confirmPwdInput.control.markAsTouched();
+      form.form.markAsSubmitted && form.form.markAsSubmitted();
       return;
     }
 
