@@ -34,6 +34,7 @@ export class ForgotPasswordComponent {
   errMsg: string = '';
   infoMsg: string = '';
   sending: boolean = false;
+  resetPasswordEmailSuccessfully: boolean = true;
 
   @ViewChild('f') form!: NgForm;
 
