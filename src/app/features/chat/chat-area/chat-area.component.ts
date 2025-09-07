@@ -11,6 +11,7 @@ import { MessageItemComponent } from "../message-item/message-item.component"
 import { Router } from "@angular/router"
 import { LogoStateService } from "../../../core/services/logo-state.service"
 import { MessagesService } from '../../../core/repositories/messages.service'
+
 @Component({
   selector: "app-chat-area",
   imports: [MatCardModule, NgFor, NgIf, MessageInputComponent, MessageItemComponent],
@@ -56,9 +57,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.cleanupSubscription()
   }
 
-  /**
-   * Initialize channel data and subscriptions
-   */
   private async initializeChannel() {
     if (!this.channelId) return
 
@@ -71,9 +69,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoadingMessages = false
   }
 
-  /**
-   * Setup real-time message subscription
-   */
   private async setupMessageSubscription() {
     if (!this.channelId) return
 
@@ -81,14 +76,11 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
       this.channelId,
       (messages) => {
         this.messages = messages
-        this.cdr.detectChanges() // Das hat gefehlt!
+        this.cdr.detectChanges()
       }
     )
   }
 
-  /**
-   * Clean up message subscription
-   */
   private cleanupSubscription() {
     if (this.messageSubscription) {
       this.messageSubscription()
@@ -96,17 +88,11 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /**
-   * Load channel data
-   */
   private async loadChannelData() {
     const channels = this.channelsFacade.channels()
     this.currentChannel = channels.find((c) => c.id === this.channelId) || null
   }
 
-  /**
-   * Load channel members
-   */
   private async loadChannelMembers() {
     if (!this.channelId) return
 
@@ -137,6 +123,12 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.threadOpened.emit(message)
   }
 
+  onAddMember() {
+    console.log("Add member to channel:", this.channelId)
+    // TODO: Implement add member dialog/functionality
+    // This will be User Story 2 from Management von Channels
+  }
+
   openThread(threadId: string) {
     this.logoState.setCurrentView("thread")
     if (this.logoState.showBackArrow()) {
@@ -144,7 +136,6 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // Beim Component Init oder Button-Click
   async runMigration() {
     try {
       await this.messagesService.migrateOldReactions()

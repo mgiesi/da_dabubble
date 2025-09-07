@@ -37,46 +37,43 @@
             border-radius: 0;
         }
 
-        .chat-title {
-            @include dFlexAllCenter($jc: start, $g: 15px, $ai: center);
-
-            svg {
-                width: 24px;
-                height: 24px;
-
-                path {
-                    fill: $black;
-                }
-            }
+        .chat-info {
+            @include dFlexAllCenter($fld: column, $ai: flex-start, $g: 4px);
 
             h2 {
                 margin: 0;
                 @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
             }
 
-            .btn-arrow-down {
-                position: relative;
-                top: 0;
-                left: 0;
+            .member-count {
+                @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
             }
         }
 
-        .chat-members {
-            @include dFlexAllCenter($jc: end, $g: 12px);
+        .header-actions {
+            @include dFlexAllCenter($g: 12px);
 
-            .member-count {
-                @include fontSizeWeightColor($si: $font-size-20, $we: 400, $co: $black);
-            }
+            .btn-members {
+                @include dFlexAllCenter($ai: center, $jc: center);
+                background: none;
+                border: none;
+                padding: 6px 8px;
+                border-radius: 50px;
+                cursor: pointer;
 
-            .member-avatars {
-                @include dFlexAllCenter($g: -8px);
+                &:hover {
+                    background-color: $bg-color;
+                }
 
-                .member-avatar {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    border: 2px solid $white;
-                    background: $light-purple;
+                svg {
+                    width: 18px;
+                    height: 18px;
+                    color: $text-gray;
+                    fill: currentColor;
+                }
+
+                &:hover svg path {
+                    fill: $purple-3;
                 }
             }
         }
@@ -91,6 +88,22 @@
         @include main_mobile_only {
             padding: 20px 15px;
         }
+
+        .no-messages {
+            text-align: center;
+            padding: 40px 20px;
+            color: $text-gray;
+        }
     }
 
+    .loading-state {
+        @include dFlexAllCenter($jc: center, $ai: center);
+        flex: 1;
+        color: $text-gray;
+    }
+
+    .message-input-container {
+        flex-shrink: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
 }
