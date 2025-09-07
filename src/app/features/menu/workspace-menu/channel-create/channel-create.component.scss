@@ -1,0 +1,86 @@
+@use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../../public/assets/styles/btn-style.scss" as *;
+
+.channel-create-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  @include dFlexAllCenter($jc: center, $ai: center);
+  z-index: 1000;
+
+  .form-content {
+    background-color: $white;
+    border-radius: 30px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: $box-shadow;
+    @include dFlexAllCenter($fld: column, $ai: stretch, $g: 32px);
+
+    .form-header {
+      @include dFlexAllCenter($jc: space-between, $ai: center);
+
+      h2 {
+        margin: 0;
+        @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        @include dFlexAllCenter($jc: center, $ai: center);
+        transition: $transition-0-3-ease-in-out;
+
+        &:hover {
+          background-color: $bg-color;
+        }
+
+        svg {
+          width: 24px;
+          height: 24px;
+
+          path {
+            fill: $black;
+            transition: $transition-0-3-ease-in-out;
+          }
+        }
+
+        &:hover svg path {
+          fill: $purple-3;
+        }
+      }
+    }
+
+    .form-info {
+      p {
+        margin: 0;
+        @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+        line-height: 1.5;
+      }
+    }
+
+    .input-group {
+      width: 100%;
+    }
+
+    .form-actions {
+      @include dFlexAllCenter($jc: flex-end);
+
+      .btn-blue {
+        min-width: 120px;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
-import { ChannelFormComponent } from '../../channels/channel-form/channel-form.component';
+import { ChannelCreateComponent } from './channel-create/channel-create.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
 import { Router } from '@angular/router';
@@ -10,12 +10,13 @@ import { User } from '../../../shared/models/user';
 
 @Component({
   selector: 'app-workspace-menu',
-  imports: [NgFor, ChannelFormComponent, ProfileBadgeComponent],
+  imports: [NgFor, ChannelCreateComponent, ProfileBadgeComponent],
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
 })
 export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
+  
   private router = inject(Router);
   private logoState = inject(LogoStateService);
   private channelsFacade = inject(ChannelsFacadeService);
@@ -51,13 +52,21 @@ export class WorkspaceMenuComponent implements OnInit {
     this.channelSelected.emit(channelId);
   }
 
+  onChannelCreated(event: string) {
+    this.showChannelForm = false;
+    // Channel was created successfully - channels() will automatically update
+    // No need to emit specific channelId since we don't get it back from the facade
+  }
+
+  onCloseChannelForm() {
+    this.showChannelForm = false;
+  }
+
   onDirectMessageClick(userId: string) {
+    // TODO: Implement direct message functionality
   }
 
   onEditWorkspace() {
-  }
-
-  closeChannelForm() {
-    this.showChannelForm = false;
+    // TODO: Implement workspace edit functionality
   }
 }
