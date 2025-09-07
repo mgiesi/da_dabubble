@@ -6,7 +6,7 @@
       <div class="title">
         <h3 id="cs-title"># {{ channelName || 'channel-name' }}</h3>
       </div>
-      <button class="close-btn" aria-label="Schließen">
+      <button class="close-btn" (click)="onClose()" aria-label="Schließen">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/>
         </svg>
@@ -40,13 +40,15 @@
     <!-- Erstellt von -->
     <section class="block">
       <div class="label">Erstellt von</div>
-      <a class="creator">{{ createdByName || 'Musterperson' }}</a>
+      <a class="creator">{{ createdByName || 'Unbekannt' }}</a>
     </section>
 
     <!-- Actions -->
     <div class="actions">
-      <button class="btn-secondary" type="button">Channel verlassen</button>
-      <button class="btn-primary" type="button" disabled>Speichern</button>
+      <button class="btn-secondary" type="button" (click)="onLeaveChannel()">Channel verlassen</button>
+      <button class="btn-primary" type="button" [disabled]="isUpdating" (click)="onUpdateChannel()">
+        {{ isUpdating ? 'Speichere...' : 'Speichern' }}
+      </button>
     </div>
   </div>
 </div>
