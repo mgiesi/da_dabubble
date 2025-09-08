@@ -1,0 +1,84 @@
+@use "../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../public/assets/styles/mixins.scss" as *;
+
+.rotate-device-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    background-color: $bg-color;
+    color: $black;
+    @include dFlexAllCenter();
+    z-index: 10;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    h2 {
+        font-size: 28px;
+        margin: 0;
+        word-break: break-word;
+    }
+
+    p {
+        font-size: 18px;
+        margin: 0;
+        word-break: break-word;
+    }
+}
+
+.img-box {
+    width: fit-content;
+    height: 140px;
+    position: relative;
+    overflow: hidden;
+
+    >img {
+        height: 100%;
+        object-fit: contain;
+        transform-origin: center center;
+    }
+
+    >img:nth-child(2) {
+        position: absolute;
+        top: 0;
+        right: 8px;
+        height: 40%;
+        aspect-ratio: 1 / 1;
+        animation: rotateCool 1s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes rotateCool {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-5deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@media screen and (orientation: landscape) and (pointer: coarse) and (max-width: 920px) {
+    .rotate-device-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
+    }
+}

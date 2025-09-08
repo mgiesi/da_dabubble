@@ -8,13 +8,18 @@ import { LogoStateService } from './core/services/logo-state.service';
 import { UsersService } from './core/repositories/users.service';
 import { firstValueFrom, filter, Observable, combineLatest } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
-
+import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-landscape.component';
 import { map, startWith } from 'rxjs/operators';
 import { setLogLevel } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, ProfileMenuComponent],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    ProfileMenuComponent,
+    OverlayLandscapeComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -23,6 +28,7 @@ export class AppComponent {
   private auth = inject(AuthService);
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
+
   private usersService: UsersService = inject(UsersService);
   private userPresenceService: UserPresenceService =
     inject(UserPresenceService);
@@ -35,7 +41,6 @@ export class AppComponent {
   readonly headerTitle = this.logoState.headerTitle;
   readonly showBackArrow = this.logoState.showBackArrow;
 
-  // Login/Animation State
   logoLoaded = false;
   overlayTimerDone = false;
   showLogoBox = false;
