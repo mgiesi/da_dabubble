@@ -1,8 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { firstValueFrom, filter, take } from 'rxjs';
-import { Router } from '@angular/router';
-import { MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { Router, RouterLink } from '@angular/router';
+import {
+  MatDialog,
+  MatDialogContent,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-details.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -11,7 +15,7 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-dlg-profile-menu',
-  imports: [MatDialogContent],
+  imports: [MatDialogContent, RouterLink],
   templateUrl: './dlg-profile-menu.component.html',
   styleUrl: './dlg-profile-menu.component.scss',
   animations: [
@@ -30,13 +34,17 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 export class DlgProfileMenuComponent {
   auth = inject(AuthService);
   facade = inject(UsersFacadeService);
-  router = inject(Router); 
+  router = inject(Router);
   dialog = inject(MatDialog);
   dialogRef = inject(MatDialogRef<DlgProfileMenuComponent>, { optional: true });
-  dialogMobileRef = inject(MatBottomSheetRef<DlgProfileMenuComponent>, { optional: true });
+  dialogMobileRef = inject(MatBottomSheetRef<DlgProfileMenuComponent>, {
+    optional: true,
+  });
 
-  readonly currentUserSig = toSignal(this.facade.currentUser(), { initialValue: null });
-  
+  readonly currentUserSig = toSignal(this.facade.currentUser(), {
+    initialValue: null,
+  });
+
   /**
    * Sign out the current user and navigate back to the login page.
    */
@@ -44,10 +52,12 @@ export class DlgProfileMenuComponent {
     this.dialogRef?.close(false);
     this.dialogMobileRef?.dismiss(false);
     this.facade.signOut();
-    await firstValueFrom(this.auth.user$.pipe(
-      filter(u => !u),
-      take(1)
-    ));
+    await firstValueFrom(
+      this.auth.user$.pipe(
+        filter((u) => !u),
+        take(1)
+      )
+    );
     await this.router.navigate(['/login']);
   }
 
@@ -57,11 +67,11 @@ export class DlgProfileMenuComponent {
   openProfileDetails() {
     this.dialog.open(DlgProfileDetailsComponent, {
       position: {
-        top: "120px",
-        right: "16px"
+        top: '120px',
+        right: '16px',
       },
-      panelClass: 'no-top-right-radius-dialog',      
-      data: this.currentUserSig
+      panelClass: 'no-top-right-radius-dialog',
+      data: this.currentUserSig,
     });
   }
 }

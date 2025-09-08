@@ -11,6 +11,16 @@
     padding: 30px;
 }
 
+.menu-item.hide-mobile-only {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .menu-item.hide-mobile-only {
+        display: block;
+    }
+}
+
 .menu-item {
     @include fontSizeWeightColor($si: $font-size-24, $we: 600, $co: $black);
     width: 222px;
