@@ -7,6 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-dlg-profile-details',
@@ -18,6 +19,7 @@ export class DlgProfileDetailsComponent {
   private dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
   private facade = inject(UsersFacadeService);
   private injector = inject(Injector);
+  private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
 
   readonly user = inject<Signal<User | null>>(MAT_DIALOG_DATA);
@@ -29,18 +31,39 @@ export class DlgProfileDetailsComponent {
   closeDialog() {
     this.dialogRef.close(false);
   }
-  
 
   /**
    * Opens the profile menu overlay.
    */
-  editProfile() {
+  openEditProfile() {
+    const dialogRef = this.dialog.getDialogById('profileEditsDialog');
+    if (dialogRef) {
+      dialogRef.close();
+    } else {
+      const isMobile = this.breakpointObserver.isMatched(['(max-width: 768px)']);
+      if (isMobile) {
+        this.openMobileDialog();
+      } else {
+        this.openDesktopDialog();
+      }
+    }
+  }
+
+  openDesktopDialog() {
     this.dialog.open(DlgProfileEditComponent, {
+      id: 'profileEditsDialog',
       position: {
         top: "120px",
         right: "16px"
       },
       panelClass: 'no-top-right-radius-dialog',      
+      data: this.user
+    });
+  }
+
+  openMobileDialog() {
+    this.dialog.open(DlgProfileEditComponent, {
+      id: 'profileEditsDialog',     
       data: this.user
     });
   }

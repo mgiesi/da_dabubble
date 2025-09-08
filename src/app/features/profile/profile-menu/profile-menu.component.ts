@@ -21,8 +21,8 @@ export class ProfileMenuComponent {
   facade = inject(UsersFacadeService);
   auth = inject(AuthService);
   router = inject(Router);
-  desktopDialog = inject(MatDialog);
   breakpointObserver = inject(BreakpointObserver);
+  desktopDialog = inject(MatDialog);
   mobileDialog = inject(MatBottomSheet);
   mobileDialogRef: MatBottomSheetRef | undefined = undefined;
 
