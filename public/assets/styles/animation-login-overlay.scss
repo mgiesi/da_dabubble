@@ -134,12 +134,6 @@
     }
 }
 
-@keyframes placeholderAnimation {
-    to {
-        display: none;
-    }
-}
-
 @keyframes textSlideIn {
     0% {
         clip-path: inset(0 0 0 100%);

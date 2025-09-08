@@ -34,10 +34,10 @@ $font-size-26-46: clamp(26px, 22px + 1.25vw, 46px);
 $font-size-48: 48px;
 
 
-
 //width
 $input-field-width-300-500: clamp(300px, 260px + 12.5vw, 500px);
 $input-field-width-300-400: clamp(300px, 280px + 6.25vw, 400px);
+$input-field-width-18-24: clamp(18px, 16.8px + 0.375vw, 24px);
 
 
 //max content width
@@ -64,3 +64,4 @@ $box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 //breakpoints responsive
 $breakpoint-700: 700px;
+$breakpoint-450: 450px;

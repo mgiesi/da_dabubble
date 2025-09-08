@@ -156,6 +156,12 @@
 .logo-text-box-logged-in {
     top: 20px;
     left: 45px;
+
+    @media screen and (max-width: $breakpoint-450) {
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 .app-content {

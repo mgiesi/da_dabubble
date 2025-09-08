@@ -13,7 +13,7 @@
 }
 
 
-.create-account-box {
+.create-account-box-desktop {
     position: absolute;
     top: 55px;
     right: 55px;
@@ -22,6 +22,31 @@
 
     p {
         padding-right: 15px;
+    }
+
+    @media screen and (max-width: 800px) {
+        @include dFlexAllCenter($dFlex: none);
+
+    }
+}
+
+.create-account-box-mobile {
+    @include dFlexAllCenter($dFlex: none, $fld: column, $ai: center, $jc: center, $g: 10px);
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+
+    p {
+        white-space: nowrap;
+    }
+
+
+
+    @media screen and (max-width: 800px) {
+        @include dFlexAllCenter($dFlex: flex, $fld: column, $ai: center, $jc: center, $g: 10px);
+
     }
 }
 
@@ -33,6 +58,10 @@
     position: relative;
     height: 35px;
     @include dFlexAllCenter();
+
+    img {
+        width: 100%;
+    }
 
     .p-box {
         position: absolute;
@@ -46,7 +75,7 @@
 }
 
 .login-btns {
-    @include dFlexAllCenter($g: 30px);
+    @include dFlexAllCenter($g: clamp(20px, 18px + 0.625vw, 30px));
 }
 
 .btn-forgot-password {

@@ -10,12 +10,18 @@
         @include inputFieldWhiteStyle();
         padding-left: 35px;
         padding-right: 15px;
+
+        &::placeholder {
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
     }
 
     svg,
     img {
         position: absolute;
-        right: 35px;
+        right: clamp(25px, 23px + 0.625vw, 35px);
+        width: $input-field-width-18-24;
+        aspect-ratio: 1 / 1;
     }
 }
 
@@ -28,14 +34,20 @@
 
     input {
         @include inputFieldWhiteStyle();
-        padding-left: 70px;
+        padding-left: clamp(50px, 46px + 1.25vw, 70px);
         padding-right: 15px;
+
+        &::placeholder {
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
     }
 
     svg,
     img {
         position: absolute;
-        left: 35px;
+        left: clamp(25px, 23px + 0.625vw, 35px);
+        width: $input-field-width-18-24;
+        aspect-ratio: 1 / 1;
     }
 }
 
@@ -50,7 +62,12 @@
         @include inputFieldWhiteStyle();
         padding-left: 35px;
         padding-right: 15px;
+
+        &::placeholder {
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
     }
+
 }
 
 
@@ -63,13 +80,19 @@
     input {
         @include inputFieldGrayStyle($width: 100%);
         padding-right: 15px;
-        padding-left: 70px;
+        padding-left: clamp(50px, 46px + 1.25vw, 70px);
+
+        &::placeholder {
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
     }
 
     svg,
     img {
         position: absolute;
-        left: 35px;
+        left: clamp(25px, 23px + 0.625vw, 35px);
+        width: $input-field-width-18-24;
+        aspect-ratio: 1 / 1;
     }
 }
 
@@ -83,6 +106,10 @@
         @include inputFieldGrayStyle();
         padding-right: 12px;
         padding-left: 35px;
+
+        &::placeholder {
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
     }
 }
 
@@ -100,6 +127,7 @@
 
         &::placeholder {
             color: $text-gray;
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
         }
 
         &:hover {
@@ -125,13 +153,14 @@
 
     input {
         @include inputFieldWhiteStyle();
-        padding-left: 70px;
+        padding-left: clamp(50px, 46px + 1.25vw, 70px);
         padding-right: 15px;
         border: 1px solid $light-purple;
         cursor: pointer;
 
         &::placeholder {
             color: $text-gray;
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
         }
 
         &:hover {
@@ -152,8 +181,8 @@
     svg,
     img {
         position: absolute;
-        left: 35px;
-        width: 24px;
+        left: clamp(25px, 23px + 0.625vw, 35px);
+        width: $input-field-width-18-24;
         aspect-ratio: 1 / 1;
     }
 }

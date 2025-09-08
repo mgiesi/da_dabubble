@@ -29,6 +29,14 @@
     }
 }
 
+mat-icon {
+    width: $input-field-width-18-24;
+    height: $input-field-width-18-24;
+    font-size: $font-size-18-24;
+    position: absolute;
+    right: clamp(-10px, -12px + 0.625vw, 0px);
+}
+
 .progress-bar {
     position: absolute;
     top: 0;

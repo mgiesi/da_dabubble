@@ -7,6 +7,7 @@
         $hover-bg-color: $purple-3,
         $text-color: $purple-1,
         $border: $purple-1 );
+    white-space: nowrap;
 }
 
 .btn-white-without-border {
@@ -40,6 +41,8 @@
 
 .btn-google {
     @include btnGoogleStyle();
+    white-space: nowrap;
+
 }
 
 .btn-transparent {
@@ -51,7 +54,7 @@
 
 .btn-arrow-back {
     @include btn-back-close-style($top: clamp(10px, 3px + 2.1875vw, 45px),
-        $left: 40px,
+        $left: clamp(0px, -8px + 2.5vw, 40px),
         $width-container: 40px,
         $width-svg: 24px);
 }

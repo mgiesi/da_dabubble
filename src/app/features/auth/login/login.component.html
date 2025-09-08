@@ -1,4 +1,4 @@
-<div class="create-account-box">
+<div class="create-account-box-desktop">
     <p>Neu bei DABubble?</p>
     <button [disabled]="inProgress || googleLoginInProgress" class="btn-white-without-border"
         (click)="gotoRegisterUser()">Konto erstellen</button>
@@ -114,5 +114,12 @@
             </div>
 
         </form>
+    </div>
+
+
+    <div class="create-account-box-mobile">
+        <p>Neu bei DABubble?</p>
+        <button [disabled]="inProgress || googleLoginInProgress" class="btn-white-without-border"
+            (click)="gotoRegisterUser()">Konto erstellen</button>
     </div>
 </app-auth-card>

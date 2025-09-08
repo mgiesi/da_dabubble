@@ -2,17 +2,17 @@
 
 @mixin authCardHost {
   @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
-  overflow-y: auto;
+  // overflow-y: auto;
   position: absolute;
   top: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
   max-width: $max-content-width-1920;
 }
 
-@mixin dFlexAllCenter($ai: center, $jc: center, $fld: unset, $g: 0) {
-  display: flex;
+@mixin dFlexAllCenter($dFlex: flex, $ai: center, $jc: center, $fld: unset, $g: 0) {
+  display: $dFlex;
   flex-direction: $fld;
   align-items: $ai;
   justify-content: $jc;
@@ -30,7 +30,8 @@
   border: 1px solid $border;
   border-radius: 25px;
   cursor: pointer;
-  padding: 12px 25px;
+  // padding: 12px 25px;
+  padding: 12px clamp(15px, 15px + 0vw, 15px);
   text-align: center;
   text-decoration: none;
   display: inline-flex;

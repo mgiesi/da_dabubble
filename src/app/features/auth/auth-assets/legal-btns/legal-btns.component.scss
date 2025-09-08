@@ -2,6 +2,12 @@
 @use "../../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../../public/assets/styles/btn-style.scss" as *;
 
+:host {
+    @media screen and (max-width: 800px) {
+        display: none;
+    }
+}
+
 
 .links-to-legal-box {
     @include dFlexAllCenter($ai: center, $jc: center, $g: 20px);
