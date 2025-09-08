@@ -75,6 +75,7 @@
 
   span {
     @include dFlexAllCenter($jc: start, $g: 8px);
+    transition: $transition-0-3-ease-in-out;
 
     &:hover {
       cursor: pointer;
@@ -84,10 +85,6 @@
     &:hover .close-icon svg path {
       fill: $purple-1;
     }
-
-    &:hover .close-icon svg {
-      transform: scale(1.1);
-    }
   }
 
   .close-icon {
@@ -95,6 +92,17 @@
 
     &.closed {
       transform: rotate(-90deg);
+    }
+  }
+
+  svg path {
+    fill: $black;
+    transition: $transition-0-3-ease-in-out;
+  }
+
+  &:hover {
+    svg path {
+      fill: $purple-3;
     }
   }
 
@@ -136,15 +144,15 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  
+
   &::-webkit-scrollbar {
     width: 0px;
   }
-  
+
   &:hover::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &:hover::-webkit-scrollbar-thumb {
     background-color: $purple-1;
     border-radius: 2px;
