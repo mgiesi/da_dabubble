@@ -1,28 +1,59 @@
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .dlg-profile-menu-container {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 15px);
     background-color: white;
     border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-top-right-radius: 30px;
     padding: 30px;
-}
 
-.menu-item.hide-mobile-only {
-    display: none;
-}
-
-@media (max-width: 600px) {
-    .menu-item.hide-mobile-only {
-        display: block;
+    > div:first-child {
+        margin: 0 auto;
     }
+}
+
+.hide-mobile-only {
+    display: none;
 }
 
 .menu-item {
     @include fontSizeWeightColor($si: $font-size-24, $we: 600, $co: $black);
     width: 222px;
     height: 53px;
+
+    svg path {
+        transition: $transition-0-3-ease-in-out;
+    }
+
+    &:hover {
+        svg path {
+            fill: $purple-3;
+        }
+    }
+}
+
+.menu-close-btn {
+    width: 62px;
+    height: 6px;
+    border-radius: 23px;
+    background-color: $bg-dlg-close;
+    cursor: pointer;
+}
+
+@media (max-width: $breakpoint_md) {
+    .hide-mobile-only {
+        display: block;
+    }
+
+    .dlg-profile-menu-container {
+        @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: flex-start, $g: 15px);
+    }
+
+    .btn-transparent {
+        justify-content: flex-start;
+        gap: 15px;
+    }
 }

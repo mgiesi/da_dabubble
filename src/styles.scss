@@ -195,6 +195,11 @@ input {
   border-top-right-radius: 0 !important;
 }
 
+.empty-dialog .mat-bottom-sheet-container {
+  background: unset;
+  box-shadow: unset;
+  padding: 0px 16px;
+}
 
 
 .mobile-slideup-dialog .mat-mdc-dialog-container {

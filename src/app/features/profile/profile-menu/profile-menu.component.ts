@@ -50,9 +50,8 @@ export class ProfileMenuComponent {
       desktopDialogRef.close();
     } else if (this.mobileDialogRef) {
       this.mobileDialogRef.dismiss();
-      this.mobileDialogRef = undefined;
     } else {
-      const isMobile = this.breakpointObserver.isMatched([Breakpoints.Handset]);
+      const isMobile = this.breakpointObserver.isMatched(['(max-width: 768px)']);
       if (isMobile) {
         this.openMobileMenu();
       } else {
@@ -62,7 +61,12 @@ export class ProfileMenuComponent {
   }
 
   openMobileMenu() {
-    this.mobileDialogRef = this.mobileDialog.open(DlgProfileMenuComponent);
+    this.mobileDialogRef = this.mobileDialog.open(DlgProfileMenuComponent, {
+      panelClass: 'empty-dialog'
+    });
+    this.mobileDialogRef.afterDismissed().subscribe(() => {
+      this.mobileDialogRef = undefined;
+    });
   }
 
   openDesktopMenu() {
@@ -72,9 +76,7 @@ export class ProfileMenuComponent {
         top: "120px",
         right: "16px"
       },
-      panelClass: 'no-top-right-radius-dialog',
-      enterAnimationDuration: '0ms',
-      exitAnimationDuration: '0ms',
+      panelClass: 'no-top-right-radius-dialog'
     });
   }
 }

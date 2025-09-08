@@ -74,4 +74,12 @@ export class DlgProfileMenuComponent {
       data: this.currentUserSig,
     });
   }
+
+  /**
+   * Close the open menu dialog.
+   */
+  closeDialog() {
+    this.dialogRef?.close(false);
+    this.dialogMobileRef?.dismiss(false);
+  }
 }
