@@ -6,7 +6,6 @@
 
 :host {
     @include authCardHost();
-
 }
 
 .progress-bar {
@@ -27,19 +26,15 @@
         padding-right: 15px;
     }
 
-    @media screen and (max-width: 800px) {
+    @media screen and (max-width: $breakpoint-915) {
         @include dFlexAllCenter($dFlex: none);
-
     }
 }
 
 .create-account-box-mobile {
     @include dFlexAllCenter($dFlex: none, $fld: column, $ai: center, $jc: center, $g: 10px);
     @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    position: absolute;
-    bottom: -10%;
-    left: 50%;
-    transform: translate(-50%, 50%);
+    padding-block: 20px;
 
     p {
         white-space: nowrap;
@@ -47,7 +42,7 @@
 
 
 
-    @media screen and (max-width: 800px) {
+    @media screen and (max-width: $breakpoint-915) {
         @include dFlexAllCenter($dFlex: flex, $fld: column, $ai: center, $jc: center, $g: 10px);
 
     }

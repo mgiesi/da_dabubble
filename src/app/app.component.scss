@@ -13,6 +13,14 @@
     height: 100dvh;
 }
 
+.app-content {
+    height: 100%;
+
+    @media screen and (max-width: $breakpoint-915) {
+        @include dFlexAllCenter($ai: flex-start, $jc: center);
+    }
+}
+
 .app-container {
     height: 100%;
     width: 100%;
@@ -115,7 +123,7 @@
     }
 }
 
-.logo-text-box-logged-out,
+.logo-text-box-desktop,
 .logo-text-box-logged-in {
     position: absolute;
     @include dFlexAllCenter($g: 16px);
@@ -156,17 +164,43 @@
     }
 }
 
-.logo-text-box-logged-out {
+.logo-text-box-desktop {
     top: 55px;
     left: 55px;
-    opacity: 0;
+    opacity: 1;
     pointer-events: none;
     transition: opacity 0.3s ease;
 
     &.visible {
         opacity: 1;
-        pointer-events: auto;
     }
+
+    @media screen and (max-width: $breakpoint-915) {
+        display: none;
+    }
+}
+
+.logo-text-box-mobile {
+
+    margin-top: 20px;
+    @include dFlexAllCenter($dFlex: none, $g: 16px);
+    width: 203.05px;
+    height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-20-24, $we: 700, $co: $black);
+        margin: 0;
+    }
+
+    @media screen and (max-width: $breakpoint-915) {
+        display: flex;
+    }
+
+    img {
+        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+        aspect-ratio: 1 / 1;
+    }
+
 }
 
 .logo-text-box-logged-in {
@@ -178,8 +212,4 @@
         left: 50%;
         transform: translateX(-50%);
     }
-}
-
-.app-content {
-    height: 100%;
 }

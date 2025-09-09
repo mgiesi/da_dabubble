@@ -33,14 +33,12 @@
 
 .hero-add-icon-btn {
     position: absolute;
-    right: 68%;
-    top: 25%;
-    transform: translate(50%, 50%);
+    transform: translate(clamp(50px, 48px + 0.625vw, 60px), clamp(30px, 27px + 0.9375vw, 45px));
     background: $white;
     border: 2px solid $black;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: clamp(32px, 29.6px + 0.75vw, 44px);
+    aspect-ratio: 1/1;
     display: grid;
     place-items: center;
     cursor: pointer;
@@ -48,7 +46,6 @@
     &:hover,
     &:focus {
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-        // background: gray;
     }
 
     mat-icon {
@@ -63,7 +60,6 @@
     border-radius: 100%;
     right: 10px;
     bottom: 10px;
-
 }
 
 .choose-avatar-text-box {
@@ -85,7 +81,6 @@
     @include dFlexAllCenter();
     cursor: pointer;
     border: 4px solid transparent;
-
 
     img {
         width: 100%;

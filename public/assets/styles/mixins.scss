@@ -2,7 +2,6 @@
 
 @mixin authCardHost {
   @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
-  // overflow-y: auto;
   position: absolute;
   top: 0;
   height: 100%;
@@ -10,6 +9,13 @@
   overflow-x: hidden;
   overflow-y: auto;
   max-width: $max-content-width-1920;
+
+  @media screen and (max-width: $breakpoint-915) {
+    @include dFlexAllCenter($ai: flex-start, $jc: center);
+    overflow-y: hidden;
+    margin-top: 100px;
+    height: unset;
+  }
 }
 
 @mixin dFlexAllCenter($dFlex: flex, $ai: center, $jc: center, $fld: unset, $g: 0) {

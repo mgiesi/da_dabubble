@@ -5,6 +5,7 @@
 
 :host {
     @include authCardHost();
+    padding-bottom: 35px;
 }
 
 
@@ -28,6 +29,10 @@
     h1 {
         @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
     }
+}
+
+.h1-box {
+    width: 75%;
 }
 
 mat-icon {
@@ -61,6 +66,7 @@ form {
 .checkbox-section {
     position: relative;
     @include dFlexAllCenter($g: 10px);
+    width: clamp(220px, 205.6px + 4.5vw, 292px);
 
     &:hover {
         cursor: pointer;

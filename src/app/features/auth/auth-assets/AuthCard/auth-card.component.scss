@@ -4,22 +4,13 @@
 
 :host {
     position: relative;
-    width: 610px;
-    scrollbar-gutter: stable;
-
-    @media screen and (max-width: $breakpoint-700) {
-        width: 93%;
-    }
-
+    max-width: 610px;
+    width: clamp(300px, 238px + 19.375vw, 610px);
+    margin-bottom: 30px;
 }
 
 .auth-card-container {
     background-color: $white;
-    // max-width: 610px;
-    // width: clamp(300px, 238px + 19.375vw, 610px);
-    // min-width: 90%;
-    // max-width: 610px;
-
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(18px, 15.6px + 0.75vw, 30px));
     text-align: center;
     padding: clamp(16px, 7.2px + 2.75vw, 60px);
