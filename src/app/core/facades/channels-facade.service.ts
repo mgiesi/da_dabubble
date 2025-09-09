@@ -3,6 +3,8 @@ import { ChannelsService } from '../repositories/channels.service';
 import { Auth } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MockDataService } from '../services/mock-data.service';
+import { UsersFacadeService } from './users-facade.service';
+import { firstValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +21,7 @@ export class ChannelsFacadeService {
   /** Repository that performs Firestore I/O for channels. */
   private data = inject(ChannelsService);
   /** Firebase Auth instance used to determine the current user. */
-  private auth = inject(Auth);
+  private users = inject(UsersFacadeService);
 
   constructor() { }
 
@@ -45,12 +47,15 @@ export class ChannelsFacadeService {
    * @returns A promise that resolves when the channel has been created.
    */
   async createChannel(name: string, description: string = '') {
-    const uid = this.auth.currentUser?.uid;
-    // if (!uid) {
-    //   return;
-    // }
-    const userId = uid || 'dev-user-123';
-    await this.data.createChannel(name, userId, description);
+    const userObs = this.users.currentUser();
+    if (!userObs) {
+      return;
+    }
+    const user = await firstValueFrom(userObs);
+    if (!user) {
+      return;
+    }
+    await this.data.createChannel(name, user.id, description);
   }
 
   /**
