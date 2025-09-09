@@ -1,4 +1,6 @@
-import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter, ChangeDetectorRef, OnDestroy } from "@angular/core";
+// src/app/features/chat/chat-area/chat-area.component.ts
+
+import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef, Renderer2, AfterViewInit } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
 import { NgFor, NgIf } from "@angular/common";
 import { MessageInputComponent } from "../message-input/message-input.component";
@@ -19,9 +21,10 @@ import { ChannelSettingsComponent } from "../../channels/channel-settings/channe
   templateUrl: "./chat-area.component.html",
   styleUrl: "./chat-area.component.scss",
 })
-export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
+export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   @Input() channelId: string | null = null;
   @Output() threadOpened = new EventEmitter<any>();
+  @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef;
 
   private router = inject(Router);
   private logoState = inject(LogoStateService);
@@ -30,21 +33,19 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
   private messagesFacade = inject(MessagesFacadeService);
   private cdr = inject(ChangeDetectorRef);
   private messagesService = inject(MessagesService);
+  private renderer = inject(Renderer2);
+
+  private messageSubscription: (() => void) | null = null;
+  private previousChannelId: string | null = null;
 
   currentChannel: Channel | null = null;
   memberCount = 0;
   members: User[] = [];
   showMembersList = false;
-
+  createdByName = "";
   messages: Message[] = [];
   isLoadingMessages = false;
-  private messageSubscription: (() => void) | null = null;
-
-  // NEU: UI-State für Settings-Card
   showSettings = false;
-
-  // Optional: wird an die Card gereicht (falls du den Ownernamen laden willst)
-  createdByName = "";
 
   async ngOnInit() {
     if (this.channelId) {
@@ -54,10 +55,18 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    // ViewChild is available now
+  }
+
   async ngOnChanges() {
-    this.cleanupSubscription();
-    if (this.channelId) {
-      await this.initializeChannel();
+    const channelChanged = this.channelId !== this.previousChannelId;
+    if (channelChanged) {
+      this.previousChannelId = this.channelId;
+      this.cleanupSubscription();
+      if (this.channelId) {
+        await this.initializeChannel();
+      }
     }
   }
 
@@ -65,6 +74,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.cleanupSubscription();
   }
 
+  /**
+   * Initializes channel with all data
+   */
   private async initializeChannel() {
     if (!this.channelId) return;
 
@@ -77,6 +89,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoadingMessages = false;
   }
 
+  /**
+   * Sets up message subscription with scroll
+   */
   private async setupMessageSubscription() {
     if (!this.channelId) return;
 
@@ -85,10 +100,63 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
       (messages) => {
         this.messages = messages;
         this.cdr.detectChanges();
+        this.scrollToBottomAfterUpdate();
       }
     );
   }
 
+  /**
+   * Scrolls to bottom after message update
+   */
+  private scrollToBottomAfterUpdate() {
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.waitForImagesToLoad();
+    }, 1);
+  }
+
+  /**
+   * Scrolls messages container to bottom
+   */
+  private scrollToBottom() {
+    if (this.messagesContainer?.nativeElement) {
+      const element = this.messagesContainer.nativeElement;
+      this.renderer.setProperty(element, 'scrollTop', element.scrollHeight);
+    }
+  }
+
+  /**
+   * Waits for images and scrolls again
+   */
+  private waitForImagesToLoad() {
+    if (!this.messagesContainer?.nativeElement) return;
+
+    const images = this.messagesContainer.nativeElement.querySelectorAll('img');
+    let loadedImages = 0;
+    const totalImages = images.length;
+
+    if (totalImages === 0) return;
+
+    images.forEach((img: HTMLImageElement) => {
+      if (img.complete) {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          this.scrollToBottom();
+        }
+      } else {
+        img.onload = () => {
+          loadedImages++;
+          if (loadedImages === totalImages) {
+            this.scrollToBottom();
+          }
+        };
+      }
+    });
+  }
+
+  /**
+   * Cleans up message subscription
+   */
   private cleanupSubscription() {
     if (this.messageSubscription) {
       this.messageSubscription();
@@ -96,11 +164,13 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Loads channel data from facade
+   */
   private async loadChannelData() {
     const channels = this.channelsFacade.channels();
     this.currentChannel = channels.find((c) => c.id === this.channelId) || null;
 
-    // Load creator name if available
     if (this.currentChannel?.ownerId) {
       const allUsers = this.usersFacade.users();
       const creator = allUsers?.find(user => user.id === this.currentChannel?.ownerId);
@@ -108,6 +178,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Loads channel members with fallback
+   */
   private async loadChannelMembers() {
     if (!this.channelId) return;
 
@@ -121,10 +194,20 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
       }
     } catch (error) {
       console.error("Failed to load channel members:", error);
-      // Improved fallback: try to get reasonable member count
       const allUsers = this.usersFacade.users();
       this.memberCount = Math.min(allUsers?.length || 1, 5);
       this.members = allUsers?.slice(0, this.memberCount) || [];
+    }
+  }
+
+  /**
+   * Runs migration for old reactions
+   */
+  async runMigration() {
+    try {
+      await this.messagesService.migrateOldReactions();
+    } catch (error) {
+      console.error('Migration failed:', error);
     }
   }
 
@@ -146,9 +229,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
 
   onAddMember() {
     console.log("Add member to channel:", this.channelId);
-    // Feature: Member-Management wird in separater Story implementiert
   }
-
 
   openThread(threadId: string) {
     this.logoState.setCurrentView("thread");
@@ -157,19 +238,21 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  async runMigration() {
-    try {
-      await this.messagesService.migrateOldReactions();
-    } catch (error) {
-      console.error('Migration failed:', error);
-    }
+  openSettings() {
+    this.showSettings = true;
   }
 
-  // NEU: Settings öffnen/schließen
-  openSettings() { this.showSettings = true; }
-  closeSettings() { this.showSettings = false; }
+  closeSettings() {
+    this.showSettings = false;
+  }
 
-  // Optional: Nach Speichern/Verlassen Card schließen + Daten aktualisieren
-  onSettingsSaved() { this.closeSettings(); this.loadChannelData(); }
-  onChannelLeft() { this.closeSettings(); /* ggf. Route wechseln */ }
+  onSettingsSaved() {
+    this.closeSettings();
+    this.loadChannelData();
+  }
+
+  onChannelLeft() {
+    this.closeSettings();
+    this.router.navigate(['/workspace']);
+  }
 }
