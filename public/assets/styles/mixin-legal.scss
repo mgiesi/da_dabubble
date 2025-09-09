@@ -5,28 +5,27 @@
 
  @mixin styleLegal() {
      :host {
-         @include dFlexAllCenter();
-         overflow-y: auto;
+         @include authCardHost();
+         height: unset;
      }
 
      .content {
+         margin-top: 120px;
+         margin-bottom: 100px;
          background-color: $white;
-         max-width: 700px;
-         margin-inline: auto;
+         width: 90%;
+         max-width: 610px;
          @include dFlexAllCenter($fld: column, $ai: flex-start);
          position: relative;
          padding: 40px;
-         margin-top: 110px;
-         margin-bottom: 110px;
          border-radius: 30px;
          box-shadow: $box-shadow;
-         text-align: justify;
 
+         @media screen and (max-width: $breakpoint-915) {
+             //  @include dFlexAllCenter($ai: flex-start, $jc: center);
+             overflow-y: hidden;
+             margin-top: unset;
 
-         @media screen and (max-width: $breakpoint-700) {
-             width: 100%;
-             border-radius: 0;
-             margin-bottom: 0;
          }
 
          a {
@@ -40,8 +39,6 @@
 
          h1 {
              margin-top: 60px;
-             //  padding-top: clamp(0px, 27.6316px + -3.9474vw, 15px);
-
              @include fontSizeWeightColor($font-size-26-46, $we: 700, $co: $purple-1);
          }
 
