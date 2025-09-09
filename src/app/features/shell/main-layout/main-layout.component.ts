@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core"
+import { Component, inject, OnInit } from "@angular/core"
 import { WorkspaceMenuComponent } from "../../../features/menu/workspace-menu/workspace-menu.component"
 import { WorkspaceMenuTogglerComponent } from "../workspace-menu-toggler/workspace-menu-toggler.component"
 import { ChatAreaComponent } from "../../chat/chat-area/chat-area.component"
@@ -13,15 +13,44 @@ import { LogoStateService } from "../../../core/services/logo-state.service"
   templateUrl: "./main-layout.component.html",
   styleUrl: "./main-layout.component.scss",
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   selectedChannelId: string | null = null
   selectedThread: any = null
-  currentView: "workspace" | "chat" | "thread" = "workspace"
-  isWorkspaceMenuOpen = false
+  currentView: "workspace" | "chat" | "thread" = "chat"
+  isWorkspaceMenuOpen = true
 
   private channelsFacade = inject(ChannelsFacadeService)
   private logoState = inject(LogoStateService)
   logo = inject(LogoStateService);
+
+  ngOnInit() {
+    this.initializeDefaultState();
+  }
+
+  /**
+   * Sets up default layout with workspace menu and first channel
+   */
+  private initializeDefaultState() {
+    // Set initial view state
+    this.logoState.setCurrentView("chat");
+    
+    // Auto-select first available channel
+    this.selectFirstAvailableChannel();
+  }
+
+  /**
+   * Auto-selects first channel if available
+   */
+  private selectFirstAvailableChannel() {
+    const channels = this.channelsFacade.channels();
+    if (channels && channels.length > 0) {
+      const firstChannel = channels[0];
+      this.selectedChannelId = firstChannel.id || null;
+      if (firstChannel.name) {
+        this.logoState.setCurrentChannelName(firstChannel.name);
+      }
+    }
+  }
 
   /**
    * Toggles workspace menu visibility on desktop.
