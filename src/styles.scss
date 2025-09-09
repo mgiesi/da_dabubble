@@ -141,9 +141,17 @@ input {
 }
 
 
+//width: 4px;
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
+
+@media (pointer: coarse) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 
 ::-webkit-scrollbar-thumb {
   background-color: $purple-1;
