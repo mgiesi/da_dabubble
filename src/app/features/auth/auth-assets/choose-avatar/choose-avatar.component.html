@@ -6,7 +6,7 @@
             </div>
             <button #tooltip="matTooltip" matTooltip="Lade dein eigenes Bild" matTooltipPosition="below"
                 class="hero-add-icon-btn" type="button" (click)="fileInput.click()" aria-label="Eigenes Bild hochladen">
-                <mat-icon>photo_camera</mat-icon>
+                <img src="icons/camera.svg" alt="Eigenes Bild hochladen">
             </button>
 
             <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)" />

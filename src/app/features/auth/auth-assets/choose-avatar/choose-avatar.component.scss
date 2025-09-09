@@ -39,19 +39,19 @@
     border: 2px solid $black;
     border-radius: 50%;
     width: clamp(32px, 29.6px + 0.75vw, 44px);
-    aspect-ratio: 1/1;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
+    height: clamp(32px, 29.6px + 0.75vw, 44px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover,
     &:focus {
         background: $light-purple;
     }
 
-    mat-icon {
-        font-size: 24px;
-        color: $black
+    img {
+        transform: translate(0, -1px);
+        width: 80%;
     }
 }
 
