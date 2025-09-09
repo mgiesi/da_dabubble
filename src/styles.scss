@@ -41,34 +41,6 @@ input {
   text-shadow: 0 0 0 $purple-1;
 }
 
-.auth-card-container {
-  background-color: $white;
-  max-width: 610px;
-  width: clamp(300px, 238px + 19.375vw, 610px);
-  // min-width: clamp(610px, 672.9508px + -3.2787vw, 650px);
-  @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(18px, 15.6px + 0.75vw, 30px));
-  text-align: center;
-  padding: clamp(16px, 7.2px + 2.75vw, 60px);
-  border-radius: 30px;
-  box-shadow: $box-shadow;
-  position: relative;
-
-  // @media screen and (max-width: $breakpoint-700) {
-  //   width: 100%;
-  //   border-radius: 0;
-  // }
-
-  h1 {
-    @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
-  }
-
-  form {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(25px, 24px + 0.3125vw, 30px));
-    width: 100%;
-    position: relative;
-  }
-}
-
 .disable-interaction {
   pointer-events: none;
   opacity: 0.6;

@@ -8,6 +8,7 @@
 :host {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
     overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
     height: 100dvh;
 }
@@ -44,26 +45,33 @@
 
 .animation-overlay-content {
     width: 667px;
+    // width: clamp(240px, 154.6px + 26.6875vw, 667px);
     height: 185px;
     position: absolute;
     z-index: 4;
     top: 50%;
     left: 50%;
-    transform: translate(-15%, -50%);
-    @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
+    transform: translate(-22%, -50%);
+    // transform: translate(-5%, -50%);
+
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 10px);
     animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    // animation: contentAnimation $animation-login-overlay-logo;
+
 }
 
 .logo {
-    position: absolute;
-    left: 0%;
+    // position: absolute;
+    // left: 0%;
     display: flex;
     align-items: center;
     justify-content: end;
     background: transparent;
     z-index: 3;
-    width: 190px;
-    animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    width: $animation-width-71-190;
+    // animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    animation: logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+
 
     img {
         width: 100%;
@@ -72,20 +80,26 @@
 }
 
 .text {
-    position: absolute;
-    top: 50%;
-    left: -22%;
-    transform: translate(0%, -50%);
+    // position: absolute;
+    // top: 50%;
+    // left: -22%;
+    // transform: translate(-50%, 0%);
     background-color: transparent;
     @include dFlexAllCenter($ai: center, $jc: center);
     z-index: 1;
     height: 100%;
-    animation: textAnimation $animation-login-overlay-text, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    // animation: textAnimation $animation-login-overlay-text, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    // animation: textAnimation $animation-login-overlay-text;
+
 
     h1 {
-        @include fontSizeWeightColor($si: 70px, $we: 700, $co: transparent);
+        @include fontSizeWeightColor($si: clamp(26px, 17.2px + 2.75vw, 70px), $we: 700, $co: transparent);
         position: relative;
-        animation: h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
+        transform: translate(-105%, 0%);
+        animation: textAnimation $animation-login-overlay-text;
+
+
+        // animation: h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
         &::after {
             content: 'DABubble';
@@ -95,6 +109,8 @@
             clip-path: inset(0 0 0 100%);
             color: $white;
             animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation;
+            // animation: textSlideIn $animation-login-overlay-text;
+
         }
     }
 }
@@ -104,10 +120,10 @@
     position: absolute;
     @include dFlexAllCenter($g: 16px);
     width: 203.05px;
-    height: 71.5px;
+    height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
 
     img {
-        height: 71.5px;
+        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
         aspect-ratio: 1 / 1;
     }
 
@@ -135,7 +151,7 @@
 
     p,
     h1 {
-        @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+        @include fontSizeWeightColor($si: $font-size-20-24, $we: 700, $co: $black);
         margin: 0;
     }
 }

@@ -27,7 +27,7 @@
 
 @keyframes contentAnimation {
     0% {
-        transform: translate(-15%, -50%);
+        transform: translate(-22%, -50%);
     }
 
     100% {
@@ -71,23 +71,27 @@
 
 @keyframes textAnimation {
     0% {
-        left: -22%;
+        transform: translate(-105%, 0%);
+
     }
 
     100% {
-        left: 31%;
+        transform: translate(0%, 0%);
+
     }
 }
 
-@keyframes textToLeftCornerAnimation {
-    0% {
-        left: 31%;
-    }
+// @keyframes textToLeftCornerAnimation {
+//     0% {
+//         transform: translate(0%, 0%);
+//         left: 12%;
 
-    100% {
-        left: unset;
-    }
-}
+//     }
+
+//     100% {
+//         left: unset;
+//     }
+// }
 
 @keyframes overlayToLeftCornerAnimation {
     0% {
@@ -104,20 +108,20 @@
         top: 55px;
         width: 203.05px;
         justify-content: flex-end;
-        height: 71.5px;
+        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
         transform: translate(0%, 0%);
     }
 }
 
 @keyframes logoToLeftCornerAnimation {
     0% {
-        width: 190px;
+        width: $animation-width-71-190;
         aspect-ratio: 1 / 1;
         justify-content: flex-end;
     }
 
     100% {
-        width: 71.5px;
+        width: clamp(56px, 52.9px + 0.9688vw, 71.5px);
         aspect-ratio: 1 / 1;
         justify-content: flex-start;
     }
@@ -129,7 +133,7 @@
     }
 
     100% {
-        font-size: 24px;
+        font-size: $font-size-20-24;
         transform: translateX(0px);
     }
 }

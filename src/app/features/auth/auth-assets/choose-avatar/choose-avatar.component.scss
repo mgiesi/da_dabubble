@@ -1,9 +1,13 @@
 @use "../../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../authCard/auth-card.component.scss" as *;
+
+
 
 .choose-avatar-container {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 25px);
+    width: 100%;
 
     h1 {
         @include fontSizeWeightColor($si: $font-size-32, $we: 700, $co: $black);
@@ -36,6 +40,7 @@
 
 .avatar-icons-box {
     @include dFlexAllCenter($g: 15px);
+    flex-wrap: wrap;
 }
 
 .single-avatar-box {
