@@ -1,6 +1,6 @@
-@use "../../../../../../public/assets/styles/variables.scss" as *;
-@use "../../../../../../public/assets/styles/mixins.scss" as *;
-@use "../../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 .channel-settings-overlay {
   position: fixed; 
@@ -16,10 +16,10 @@
   width: 872px;
   height: 616px;
   background: $white;
-  border-top-right-radius: 0;
+  border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
   border-bottom-left-radius: 30px;
-  border-top-left-radius: 30px;
+  border-top-left-radius: 0;
   box-shadow: $box-shadow;
   padding: 40px;
   @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
@@ -110,7 +110,65 @@
 
   .pill {
     display: inline-block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: $bg-color;
     @include fontSizeWeightColor($si: $font-size-18, $we: 600, $co: $black);
+  }
+
+  .edit {
+    margin-top: 8px;
+    
+    .edit-input,
+    .edit-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid $light-purple;
+      border-radius: 12px;
+      @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+      background: $white;
+      transition: $transition-0-3-ease-in-out;
+      font-family: inherit;
+      
+      &:focus {
+        outline: none;
+        border-color: $purple-1;
+      }
+      
+      &::placeholder {
+        color: $text-gray;
+      }
+    }
+    
+    .edit-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .edit-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 12px;
+      
+      .btn-cancel {
+        @include buttonStyle(
+          $btn-bg-color: transparent,
+          $hover-bg-color: $bg-color,
+          $text-color: $text-gray,
+          $border: $light-purple,
+          $hover-text-color: $black
+        );
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      
+      .btn-save {
+        @include buttonStyle();
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
   }
 
   .description { 

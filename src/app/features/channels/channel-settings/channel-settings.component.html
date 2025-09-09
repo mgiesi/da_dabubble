@@ -1,0 +1,83 @@
+<div class="channel-settings-overlay">
+  <div class="card" role="dialog" aria-modal="true" aria-labelledby="cs-title">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="title">
+        <h3 id="cs-title"># {{ channelName || 'channel-name' }}</h3>
+      </div>
+      <button class="close-btn" (click)="onClose()" aria-label="Schließen">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Channel-Name Block -->
+    <section class="block">
+      <div class="block-head">
+        <span class="label">Channel-Name</span>
+        <button class="link" type="button" (click)="editChannelName()" *ngIf="!editingName">Bearbeiten</button>
+      </div>
+      <div class="view" *ngIf="!editingName">
+        <span class="pill"># {{ channelName || 'channel-name' }}</span>
+      </div>
+      <div class="edit" *ngIf="editingName">
+        <input 
+          type="text" 
+          [(ngModel)]="tempChannelName" 
+          class="edit-input"
+          placeholder="Channel-Name eingeben"
+          maxlength="50"
+          (keydown.enter)="saveChannelName()"
+          (keydown.escape)="cancelNameEdit()">
+        <div class="edit-actions">
+          <button class="btn-cancel" (click)="cancelNameEdit()" [disabled]="isUpdating">Abbrechen</button>
+          <button class="btn-save" (click)="saveChannelName()" [disabled]="!tempChannelName.trim() || isUpdating">
+            {{ isUpdating ? 'Speichere...' : 'Speichern' }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Beschreibung Block -->
+    <section class="block">
+      <div class="block-head">
+        <span class="label">Beschreibung</span>
+        <button class="link" type="button" (click)="editDescription()" *ngIf="!editingDescription">Bearbeiten</button>
+      </div>
+      <div class="view" *ngIf="!editingDescription">
+        <p class="description">
+          {{ channelDescription || 'Keine Beschreibung hinzugefügt.' }}
+        </p>
+      </div>
+      <div class="edit" *ngIf="editingDescription">
+        <textarea 
+          [(ngModel)]="tempChannelDescription" 
+          class="edit-textarea"
+          placeholder="Beschreibung eingeben"
+          maxlength="200"
+          rows="3"
+          (keydown.escape)="cancelDescriptionEdit()">
+        </textarea>
+        <div class="edit-actions">
+          <button class="btn-cancel" (click)="cancelDescriptionEdit()" [disabled]="isUpdating">Abbrechen</button>
+          <button class="btn-save" (click)="saveDescription()" [disabled]="isUpdating">
+            {{ isUpdating ? 'Speichere...' : 'Speichern' }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Erstellt von -->
+    <section class="block">
+      <div class="label">Erstellt von</div>
+      <a class="creator">{{ createdByName || 'Unbekannt' }}</a>
+    </section>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn-primary" type="button" (click)="onLeaveChannel()">Channel verlassen</button>
+    </div>
+  </div>
+</div>
