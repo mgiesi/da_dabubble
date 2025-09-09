@@ -72,6 +72,15 @@ export class ChooseAvatarComponent {
     });
   }
 
+  // Kamera-Blitz Effekt auf dem Button
+  flashCameraIcon(event: MouseEvent) {
+    const btn = event.currentTarget as HTMLElement;
+    btn.classList.add('flash');
+    setTimeout(() => {
+      btn.classList.remove('flash');
+    }, 300);
+  }
+
   @Output() avatarsLoaded = new EventEmitter<void>();
   avatarIconsArray = [
     {
