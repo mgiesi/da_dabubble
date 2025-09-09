@@ -14,6 +14,14 @@
     }
 }
 
+
+.hero-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: center;
+}
+
 .hero-icon-box {
     border-radius: 50%;
     width: clamp(120px, 110.4px + 3vw, 168px);
@@ -21,7 +29,32 @@
     @include dFlexAllCenter();
     overflow: hidden;
     position: relative;
+}
+
+.hero-add-icon-btn {
+    position: absolute;
+    right: 68%;
+    top: 25%;
+    transform: translate(50%, 50%);
+    background: $white;
+    border: 2px solid $black;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
     cursor: pointer;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        // background: gray;
+    }
+
+    mat-icon {
+        font-size: 24px;
+        color: $black
+    }
 }
 
 .hero-add-icon-box {

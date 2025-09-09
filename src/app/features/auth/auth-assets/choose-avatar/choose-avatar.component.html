@@ -1,9 +1,16 @@
 <div class="choose-avatar-container">
     <ng-container *ngIf="userLocal() as user">
-        <div class="hero-icon-box" (click)="fileInput.click()">
-            <app-profile-avatar [user]="user" [imgSize]="160" [showAddAvatar]="true"></app-profile-avatar>
+        <div class="hero-avatar-row">
+            <div class="hero-icon-box">
+                <app-profile-avatar [user]="user" [imgSize]="160" [showAddAvatar]="false"></app-profile-avatar>
+            </div>
+            <button #tooltip="matTooltip" matTooltip="Lade dein eigenes Bild" matTooltipPosition="below"
+                class="hero-add-icon-btn" type="button" (click)="fileInput.click()" aria-label="Eigenes Bild hochladen">
+                <mat-icon>photo_camera</mat-icon>
+            </button>
+
+            <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)" />
         </div>
-        <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)" />
         <h1>{{ user.displayName }}</h1>
         <div class="choose-avatar-text-box">
             <p>Aus der Liste wählen</p>

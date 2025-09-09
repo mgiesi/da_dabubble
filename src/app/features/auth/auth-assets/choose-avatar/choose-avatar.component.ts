@@ -1,4 +1,17 @@
-import { afterNextRender, Component, DestroyRef, effect, ElementRef, EnvironmentInjector, inject, input, InputSignal, runInInjectionContext, signal, ViewChild} from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  EnvironmentInjector,
+  inject,
+  input,
+  InputSignal,
+  runInInjectionContext,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -11,6 +24,7 @@ import { ImageStorageService } from '../../../../core/services/image-storage.ser
 import { ProfileAvatarComponent } from '../../../profile/profile-avatar/profile-avatar.component';
 import { User } from '../../../../shared/models/user';
 import { Timestamp } from '@angular/fire/firestore';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const defaultUser: User = {
   id: '',
@@ -18,7 +32,7 @@ const defaultUser: User = {
   displayName: '',
   email: '',
   imgUrl: '',
-  createdAt: Timestamp.now()
+  createdAt: Timestamp.now(),
 };
 
 @Component({
@@ -31,7 +45,8 @@ const defaultUser: User = {
     MatCheckboxModule,
     MatIconModule,
     ProfileAvatarComponent,
-    NgIf
+    NgIf,
+    MatTooltipModule,
   ],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.scss',
@@ -54,7 +69,7 @@ export class ChooseAvatarComponent {
           this.userLocal.set(u);
         });
       });
-    });    
+    });
   }
 
   @Output() avatarsLoaded = new EventEmitter<void>();
@@ -102,22 +117,22 @@ export class ChooseAvatarComponent {
    * Writes the given url to the local user object.
    * Url can be a link to a default avatar icon or a link to the
    * uploaded file.
-   * 
+   *
    * @param url url for the avatar image
    */
   selectAvatar(url: string) {
-    this.userLocal.update(u => {
+    this.userLocal.update((u) => {
       if (!u) return null;
       return { ...u, imgUrl: url };
     });
   }
-  
+
   /**
    * This method gets called when pressing the avatar image, to upload
    * a new image.
    * The function will try to do a upload by PHP script. If this fails,
    * the image will be stored in the internal IndexedDB as blob.
-   * 
+   *
    * @param event event
    */
   async onFileSelected(event: Event): Promise<void> {
@@ -127,15 +142,15 @@ export class ChooseAvatarComponent {
 
     try {
       const url = await this.uploadAvatarPhoto(file);
-      this.selectAvatar(url);      
+      this.selectAvatar(url);
     } catch (err: any) {
-      console.log(err);      
+      console.log(err);
     }
   }
 
   /**
    * Uploads a file to the webspace (PHP) or IndexedDB.
-   * 
+   *
    * @param file file or blob data
    * @returns url to the uploaded file
    */
@@ -165,7 +180,7 @@ export class ChooseAvatarComponent {
 
   /**
    * Determine the extension of a file or blob element.
-   * 
+   *
    * @param blob file or blob data
    * @returns file extension to use
    */
