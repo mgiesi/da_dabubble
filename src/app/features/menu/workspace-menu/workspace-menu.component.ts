@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
-import { ChannelCreateComponent } from './channel-create/channel-create.component';
+import { ChannelCreateComponent } from '../../channels/channel-create/channel-create.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
 import { Router } from '@angular/router';

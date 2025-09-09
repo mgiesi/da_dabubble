@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { NgIf } from '@angular/common'
-import { ChannelsFacadeService } from '../../../../core/facades/channels-facade.service'
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service'
 
 @Component({
   selector: 'app-channel-create',

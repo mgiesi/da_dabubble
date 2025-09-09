@@ -11,7 +11,7 @@ import { MessageItemComponent } from "../message-item/message-item.component";
 import { Router } from "@angular/router";
 import { LogoStateService } from "../../../core/services/logo-state.service";
 import { MessagesService } from '../../../core/repositories/messages.service';
-import { ChannelSettingsComponent } from "../../menu/workspace-menu/channel-settings/channel-settings.component";
+import { ChannelSettingsComponent } from "../../channels/channel-settings/channel-settings.component";
 
 @Component({
   selector: "app-chat-area",
