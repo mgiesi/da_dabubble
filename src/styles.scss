@@ -46,12 +46,21 @@ input {
   opacity: 0.6;
 }
 
+.reset-password-email-successfully {
+  width: clamp(270px, 236px + 10.625vw, 440px);
+}
+
 .account-created-successfully {
+  width: clamp(300px, 254px + 14.375vw, 530px);
+}
+
+.account-created-successfully,
+.reset-password-email-successfully {
   z-index: 5;
   @include accountCreatedSuccessfully;
   position: absolute;
-  bottom: 45px;
-  right: 45px;
+  bottom: clamp(10px, 3px + 2.1875vw, 45px);
+  right: clamp(10px, 3px + 2.1875vw, 45px);
   transform: translateX(115%);
   animation: fadeInSuccessfully 0.5s ease-in-out forwards;
   opacity: 0;

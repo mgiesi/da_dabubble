@@ -357,11 +357,13 @@
 
 @mixin accountCreatedSuccessfully {
   @include dFlexAllCenter($g: clamp(18px, 16px + 0.625vw, 28px));
-  padding: clamp(30px, 26px + 1.25vw, 50px);
+  padding-inline: clamp(30px, 26px + 1.25vw, 50px);
+  padding-block: clamp(20px, 14px + 1.875vw, 50px);
   background-color: $purple-1;
   border-radius: $padding-20-30 $padding-20-30 0 $padding-20-30;
 
   p {
+    text-align: center;
     @include fontSizeWeightColor($si: $font-size-22-36, $we: 700, $co: $white);
   }
 

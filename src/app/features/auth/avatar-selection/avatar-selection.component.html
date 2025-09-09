@@ -20,13 +20,9 @@
             <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar>
         </div>
 
-        <!-- <div class="button-box">
+        <div class="button-box">
             <button [disabled]="inProgress || !chooseAvatar?.userLocal()?.imgUrl" (click)="register()"
                 class="btn-blue ">Konto erstellen</button>
-        </div> -->
-
-        <div class="button-box">
-            <button (click)="test()" class="btn-blue ">Konto erstellen</button>
         </div>
     </div>
 </app-auth-card>
