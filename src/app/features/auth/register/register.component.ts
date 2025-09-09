@@ -62,6 +62,7 @@ export class RegisterComponent implements OnInit {
   registerData = inject(RegisterDataService);
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     const name = this.registerData.displayName();
     const mail = this.registerData.email();
     const pw = this.registerData.pwd();

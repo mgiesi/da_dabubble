@@ -1,16 +1,12 @@
 import {
   afterNextRender,
   Component,
-  DestroyRef,
   effect,
-  ElementRef,
   EnvironmentInjector,
   inject,
   input,
-  InputSignal,
   runInInjectionContext,
   signal,
-  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
@@ -61,6 +57,10 @@ export class ChooseAvatarComponent {
   /** Local user object as signal, to link it with the avatar component. */
   userLocal = signal<User | null>(this.user());
 
+  ngOnInit(): void {
+    window.scrollTo(0, 0);
+  }
+
   constructor() {
     afterNextRender(() => {
       runInInjectionContext(this.env, () => {
@@ -70,15 +70,6 @@ export class ChooseAvatarComponent {
         });
       });
     });
-  }
-
-  // Kamera-Blitz Effekt auf dem Button
-  flashCameraIcon(event: MouseEvent) {
-    const btn = event.currentTarget as HTMLElement;
-    btn.classList.add('flash');
-    setTimeout(() => {
-      btn.classList.remove('flash');
-    }, 300);
   }
 
   @Output() avatarsLoaded = new EventEmitter<void>();
