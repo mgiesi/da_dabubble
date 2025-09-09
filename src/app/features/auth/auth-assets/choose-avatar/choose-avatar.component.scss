@@ -45,7 +45,7 @@
 
     &:hover,
     &:focus {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        background: $light-purple;
     }
 
     mat-icon {
