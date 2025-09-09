@@ -27,13 +27,14 @@
     gap: 20px;
 
     h2 {
-        font-size: 28px;
+        @include fontSizeWeightColor($si: 28px, $we: 700, $co: $black);
+
         margin: 0;
         word-break: break-word;
     }
 
     p {
-        font-size: 18px;
+        @include fontSizeWeightColor($si: $font-size-18, $we: 700, $co: $black);
         margin: 0;
         word-break: break-word;
     }
