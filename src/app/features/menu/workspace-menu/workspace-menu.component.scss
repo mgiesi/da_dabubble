@@ -77,9 +77,18 @@
     @include dFlexAllCenter($jc: start, $g: 8px);
     transition: $transition-0-3-ease-in-out;
 
+    svg path {
+      fill: $black;
+      transition: $transition-0-3-ease-in-out;
+    }
+
     &:hover {
       cursor: pointer;
       color: $purple-1;
+    }
+
+    &:hover svg path {
+      fill: $purple-1;
     }
 
     &:hover .close-icon svg path {
@@ -92,17 +101,6 @@
 
     &.closed {
       transform: rotate(-90deg);
-    }
-  }
-
-  svg path {
-    fill: $black;
-    transition: $transition-0-3-ease-in-out;
-  }
-
-  &:hover {
-    svg path {
-      fill: $purple-3;
     }
   }
 
