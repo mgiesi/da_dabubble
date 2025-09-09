@@ -28,7 +28,6 @@
 
     h2 {
         @include fontSizeWeightColor($si: 28px, $we: 700, $co: $black);
-
         margin: 0;
         word-break: break-word;
     }
