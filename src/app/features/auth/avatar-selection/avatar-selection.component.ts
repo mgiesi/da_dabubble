@@ -63,6 +63,10 @@ export class AvatarSelectionComponent implements OnInit {
 
   errMsg: string = '';
 
+  test() {
+    this.accountCreatedSuccessfully = true;
+  }
+
   ngOnInit(): void {
     const mail = this.registerData.email();
     const name = this.registerData.displayName();

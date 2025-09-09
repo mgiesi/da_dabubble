@@ -47,6 +47,7 @@ input {
 }
 
 .account-created-successfully {
+  z-index: 5;
   @include accountCreatedSuccessfully;
   position: absolute;
   bottom: 45px;

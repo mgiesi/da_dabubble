@@ -6,6 +6,10 @@
 
 :host {
     @include authCardHost();
+
+    @media screen and (max-width: $breakpoint-915) {
+        padding-bottom: 35px;
+    }
 }
 
 .progress-bar {

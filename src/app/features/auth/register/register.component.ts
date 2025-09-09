@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
   private env = inject(EnvironmentInjector);
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
-  infoMsg: string = '';
+  infoMsg: string = '13131351';
   registerData = inject(RegisterDataService);
 
   ngOnInit(): void {
@@ -75,9 +75,9 @@ export class RegisterComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params['reason'] === 'missingdata') {
         this.infoMsg = '*Bitte gib zuerst deine Registrierungsdaten ein.';
-        setTimeout(() => {
-          this.infoMsg = '';
-        }, 8000);
+        // setTimeout(() => {
+        //   this.infoMsg = '';
+        // }, 8000);
       }
     });
   }
