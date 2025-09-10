@@ -1,11 +1,27 @@
-import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, orderBy, query, serverTimestamp, updateDoc } from '@angular/fire/firestore';
+import {
+  inject,
+  Injectable,
+  Injector,
+  runInInjectionContext,
+} from '@angular/core';
+import {
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  Firestore,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Channel } from '../../shared/models/channel';
 import { where, getDocs } from '@angular/fire/firestore';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /**
  * Service that manages Firestore operations for channels.
@@ -18,8 +34,9 @@ import { where, getDocs } from '@angular/fire/firestore';
  */
 export class ChannelsService {
   private fs = inject(Firestore);
+  private injector = inject(Injector);
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Returns an observable stream of all channels ordered by name (ascending).
@@ -41,14 +58,16 @@ export class ChannelsService {
    * @returns Promise that resolves when the channel has been created.
    */
   async createChannel(name: string, ownerId: string, description = '') {
-    const ref = collection(this.fs, 'channels');
-    await addDoc(ref, {
-      name,
-      description,
-      ownerId,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    } as Channel);
+    return runInInjectionContext(this.injector, async () => {
+      const ref = collection(this.fs, 'channels');
+      await addDoc(ref, {
+        name,
+        description,
+        ownerId,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      } as Channel);
+    });
   }
 
   /**
@@ -59,8 +78,10 @@ export class ChannelsService {
    * @returns Promise that resolves when the channel has been updated.
    */
   async renameChannel(channelId: string, name: string) {
-    const ref = doc(this.fs, `channels/${channelId}`);
-    await updateDoc(ref, { name: name, updatedAt: serverTimestamp() });
+    return runInInjectionContext(this.injector, async () => {
+      const ref = doc(this.fs, `channels/${channelId}`);
+      await updateDoc(ref, { name: name, updatedAt: serverTimestamp() });
+    });
   }
 
   /**
@@ -71,8 +92,13 @@ export class ChannelsService {
    * @returns Promise that resolves when the description has been updated.
    */
   async updateDescription(channelId: string, description: string) {
-    const ref = doc(this.fs, `channels/${channelId}`);
-    await updateDoc(ref, { description: description, updatedAt: serverTimestamp() });
+    return runInInjectionContext(this.injector, async () => {
+      const ref = doc(this.fs, `channels/${channelId}`);
+      await updateDoc(ref, {
+        description: description,
+        updatedAt: serverTimestamp(),
+      });
+    });
   }
 
   /**
@@ -82,28 +108,30 @@ export class ChannelsService {
    * @returns Promise that resolves when the channel has been deleted.
    */
   async deleteChannel(channelId: string) {
-    const ref = doc(this.fs, `channels/${channelId}`);
-    await deleteDoc(ref);
+    return runInInjectionContext(this.injector, async () => {
+      const ref = doc(this.fs, `channels/${channelId}`);
+      await deleteDoc(ref);
+    });
   }
-
-
 
   /**
    * Gets all member user IDs for a specific channel.
    * Queries the channel's members subcollection.
-   * 
+   *
    * @param channelId - The ID of the channel
    * @returns Promise that resolves to array of user IDs
    */
   async getChannelMembers(channelId: string): Promise<string[]> {
-    const membersRef = collection(this.fs, `channels/${channelId}/members`);
-    const docs = await getDocs(membersRef);
-    return docs.docs.map(doc => doc.data()['userId']);
+    return runInInjectionContext(this.injector, async () => {
+      const membersRef = collection(this.fs, `channels/${channelId}/members`);
+      const docs = await getDocs(membersRef);
+      return docs.docs.map((doc) => doc.data()['userId']);
+    });
   }
 
   /**
    * Adds a user as member to a channel.
-   * 
+   *
    * @param channelId - The channel ID
    * @param userId - The user ID to add
    * @returns Promise that resolves when member is added
@@ -113,17 +141,7 @@ export class ChannelsService {
     await addDoc(memberRef, {
       userId,
       channelId,
-      joinedAt: serverTimestamp()
+      joinedAt: serverTimestamp(),
     });
   }
-
-
-
-
-
-
-
-
 }
-
-

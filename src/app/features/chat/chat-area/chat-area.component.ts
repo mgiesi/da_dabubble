@@ -245,6 +245,7 @@ export class ChatAreaComponent
    * Runs migration for old reactions
    */
   async runMigration() {
+    if (this.destroyed) return;
     try {
       await this.messagesService.migrateOldReactions();
     } catch (error) {
