@@ -6,6 +6,11 @@
 :host {
     @include authCardHost();
 
+    @media screen and (max-height: $breakpoint-height-850) {
+        padding-bottom: 35px;
+    }
+
+
     @media screen and (max-width: $breakpoint-915) {
         padding-bottom: 35px;
     }
