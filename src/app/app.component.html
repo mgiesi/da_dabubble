@@ -1,6 +1,6 @@
 <app-overlay-landscape></app-overlay-landscape>
 
-<!-- @if (shouldShowAnimation$ | async) {
+@if (shouldShowAnimation$ | async) {
 <div class="animation-overlay">
   <div class="overlay-box">
     <div class="animation-overlay-content">
@@ -13,11 +13,13 @@
     </div>
   </div>
 </div>
-} -->
+}
 
-<div class="app-container">
-  <div class="logo-text-box-desktop"
-    *ngIf="!(isAuthenticated$ | async) || ((isAuthenticated$ | async) && !(showHeader$ | async))">
+<div class="app-container" [ngClass]="{'animation-active': shouldShowAnimation$ | async}">
+  <div [ngClass]="{
+      'logo-text-box-desktop': !(isAuthenticated$ | async),
+      'visible': showLogoBox && !(isAuthenticated$ | async)
+    }" *ngIf="!(isAuthenticated$ | async) || ((isAuthenticated$ | async) && !(showHeader$ | async))">
     <img (load)="onLogoLoad()" src="img/logo/DABubble-logo-animation.png" alt="DABubble Logo">
     <h1>DABubble</h1>
   </div>

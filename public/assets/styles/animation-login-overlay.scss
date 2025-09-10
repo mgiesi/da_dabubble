@@ -27,7 +27,7 @@
 
 @keyframes contentAnimation {
     0% {
-        transform: translate(-22%, -50%);
+        transform: translate(-25%, -50%);
     }
 
     100% {
@@ -129,12 +129,16 @@
 
 @keyframes h1ToLeftCornerAnimation {
     0% {
-        font-size: 70px;
+        font-size: clamp(26px, 17.2px + 2.75vw, 70px);
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 
     100% {
         font-size: $font-size-20-24;
-        transform: translateX(0px);
+        top: 50%;
+        transform: translateY(-50%);
     }
 }
 
