@@ -53,8 +53,8 @@
 }
 
 .btn-arrow-back {
-    @include btn-back-close-style($top: clamp(10px, 3px + 2.1875vw, 45px),
-        $left: clamp(0px, -8px + 2.5vw, 40px),
+    @include btn-back-close-style($top: clamp(5px, 2px + 0.9375vw, 20px),
+        $left: clamp(5px, 2px + 0.9375vw, 20px),
         $width-container: 40px,
         $width-svg: 24px);
 }

@@ -2,7 +2,8 @@
     <ng-container *ngIf="userLocal() as user">
         <div class="hero-avatar-row">
             <div class="hero-icon-box">
-                <app-profile-avatar [user]="user" [imgSize]="160" [showAddAvatar]="false"></app-profile-avatar>
+                <app-profile-avatar [user]="user" [imgSize]="'clamp(120px, 12vw, 160px)'"
+                    [showAddAvatar]="false"></app-profile-avatar>
             </div>
             <button #tooltip="matTooltip" matTooltip="Lade dein eigenes Bild" matTooltipPosition="below"
                 class="hero-add-icon-btn" type="button" (click)="fileInput.click()" aria-label="Eigenes Bild hochladen">
