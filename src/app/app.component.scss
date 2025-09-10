@@ -91,7 +91,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // animation: backgroundAnimation $backgroundAnimation;
+    animation: backgroundAnimation $backgroundAnimation;
 }
 
 .overlay-box {
@@ -103,20 +103,18 @@
 }
 
 .animation-overlay-content {
-
-    width: clamp(295px, 220.6px + 23.25vw, 667px);
-    // width: clamp(240px, 154.6px + 26.6875vw, 667px);
-    height: clamp(76px, 54.2px + 6.8125vw, 185px);
+    width: clamp(295px, -77.407px + 40.7002vw, 667px);
+    height: clamp(76px, -33.1193px + 11.9256vw, 185px);
     position: absolute;
     z-index: 4;
     top: 50%;
     left: 50%;
     transform: translate(-25%, -50%);
-    // transform: translate(-5%, -50%);
+    background-color: #00ffffc4;
 
     @include dFlexAllCenter($ai: center, $jc: center, $g: 10px);
-    // animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    animation: contentAnimation $animation-login-overlay-logo;
+    animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    // animation: contentAnimation $animation-login-overlay-logo;
 
 }
 
@@ -175,7 +173,7 @@
             clip-path: inset(0 0 0 100%);
             color: $white;
             // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
-            animation: textSlideIn $animation-login-overlay-text;
+            // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation;
 
         }
     }
@@ -246,7 +244,7 @@
 .logo-text-box-desktop {
     top: 55px;
     left: 55px;
-    opacity: 0;
+    opacity: 1;
     pointer-events: none;
     transition: opacity 0.3s ease;
 

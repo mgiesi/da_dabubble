@@ -95,10 +95,8 @@
 
 @keyframes overlayToLeftCornerAnimation {
     0% {
-        top: 50%;
-        left: 50%;
-        width: 667px;
-        height: 185px;
+        width: clamp(295px, -77.407px + 40.7002vw, 667px);
+        height: clamp(76px, -33.1193px + 11.9256vw, 185px);
         transform: translate(-50%, -50%);
         justify-content: center;
     }
@@ -106,9 +104,9 @@
     100% {
         left: 55px;
         top: 55px;
-        width: 203.05px;
+        width: clamp(203px, 163.9573px + 4.267vw, 242px);
+        height: clamp(61.76px, 52.0093px + 1.0656vw, 71.5px);
         justify-content: flex-end;
-        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
         transform: translate(0%, 0%);
     }
 }
