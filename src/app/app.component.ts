@@ -1,16 +1,15 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
 import { AuthService } from './core/services/auth.service';
 import { SharedFunctionsService } from '../../src/app/core/services/shared-functions.service';
 import { LogoStateService } from './core/services/logo-state.service';
 import { UsersService } from './core/repositories/users.service';
-import { firstValueFrom, filter, Observable, combineLatest } from 'rxjs';
+import { firstValueFrom, Observable, combineLatest } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
 import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-landscape.component';
-import { map, startWith } from 'rxjs/operators';
-import { setLogLevel } from '@angular/fire/firestore';
+import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -33,14 +32,13 @@ export class AppComponent {
   private userPresenceService: UserPresenceService =
     inject(UserPresenceService);
 
-  title = 'DABubble';
-  isAuthenticated$ = this.auth.isAuthenticated$;
-  showAnimation$ = this.sharedFunctions.showAnimation$;
-
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
   readonly showBackArrow = this.logoState.showBackArrow;
 
+  title = 'DABubble';
+  isAuthenticated$ = this.auth.isAuthenticated$;
+  showAnimation$ = this.sharedFunctions.showAnimation$;
   logoLoaded = false;
   overlayTimerDone = false;
   showLogoBox = false;
@@ -51,6 +49,19 @@ export class AppComponent {
   errMsg: string = '';
   email: string = '';
   pwd: string = '';
+
+  showHeader$: Observable<boolean> = this.router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    map(
+      () =>
+        !this.router.url.includes('imprint') &&
+        !this.router.url.includes('privacy-policy')
+    ),
+    startWith(
+      !this.router.url.includes('imprint') &&
+        !this.router.url.includes('privacy-policy')
+    )
+  );
 
   shouldShowAnimation$: Observable<boolean> = combineLatest([
     this.showAnimation$,

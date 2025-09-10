@@ -16,14 +16,13 @@
 } -->
 
 <div class="app-container">
-  <div class="logo-text-box-after-animation" *ngIf="!(isAuthenticated$ | async)">
+  <div class="logo-text-box-after-animation"
+    *ngIf="!(isAuthenticated$ | async) || ((isAuthenticated$ | async) && !(showHeader$ | async))">
     <img (load)="onLogoLoad()" src="img/logo/DABubble-logo-animation.png" alt="DABubble Logo">
     <h1>DABubble</h1>
   </div>
 
-
-
-  <div class="header" *ngIf="isAuthenticated$ | async">
+  <div class="header" *ngIf="(isAuthenticated$ | async) && (showHeader$ | async)">
     <div class="header-logo">
       <img [src]="logoSrc()" alt="Logo">
       @if (showBackArrow()) {
@@ -49,18 +48,8 @@
       <app-profile-menu></app-profile-menu>
     </div>
   </div>
-  <!-- <div class="logo-text-box-desktop">
-    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
-    <h1>DABubble</h1>
-  </div> -->
-
-
 
   <main class="app-content">
-    <!-- <div class="logo-text-box-mobile">
-      <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
-      <h1>DABubble</h1>
-    </div> -->
     <router-outlet></router-outlet>
   </main>
 </div>

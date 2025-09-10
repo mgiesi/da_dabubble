@@ -1,30 +1,61 @@
 // src/app/features/chat/chat-area/chat-area.component.ts
 
-import { Component, Output, Input, inject, type OnInit, type OnChanges, EventEmitter, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef, Renderer2, AfterViewInit } from "@angular/core";
-import { MatCardModule } from "@angular/material/card";
-import { NgFor, NgIf } from "@angular/common";
-import { MessageInputComponent } from "../message-input/message-input.component";
-import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service";
-import { UsersFacadeService } from "../../../core/facades/users-facade.service";
-import { MessagesFacadeService, type Message } from "../../../core/facades/messages-facade.service";
-import type { User } from "../../../shared/models/user";
-import type { Channel } from "../../../shared/models/channel";
-import { MessageItemComponent } from "../message-item/message-item.component";
-import { Router } from "@angular/router";
-import { LogoStateService } from "../../../core/services/logo-state.service";
+import {
+  Component,
+  Output,
+  Input,
+  inject,
+  type OnInit,
+  type OnChanges,
+  EventEmitter,
+  ChangeDetectorRef,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  AfterViewInit,
+} from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { NgFor, NgIf } from '@angular/common';
+import { MessageInputComponent } from '../message-input/message-input.component';
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import {
+  MessagesFacadeService,
+  type Message,
+} from '../../../core/facades/messages-facade.service';
+import type { User } from '../../../shared/models/user';
+import type { Channel } from '../../../shared/models/channel';
+import { MessageItemComponent } from '../message-item/message-item.component';
+import { Router } from '@angular/router';
+import { LogoStateService } from '../../../core/services/logo-state.service';
 import { MessagesService } from '../../../core/repositories/messages.service';
-import { ChannelSettingsComponent } from "../../channels/channel-settings/channel-settings.component";
+import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
 
 @Component({
-  selector: "app-chat-area",
-  imports: [MatCardModule, NgFor, NgIf, MessageInputComponent, MessageItemComponent, ChannelSettingsComponent],
-  templateUrl: "./chat-area.component.html",
-  styleUrl: "./chat-area.component.scss",
+  selector: 'app-chat-area',
+  imports: [
+    MatCardModule,
+    NgFor,
+    NgIf,
+    MessageInputComponent,
+    MessageItemComponent,
+    ChannelSettingsComponent,
+  ],
+  templateUrl: './chat-area.component.html',
+  styleUrl: './chat-area.component.scss',
 })
-export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class ChatAreaComponent
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
+  /**
+   * Flag, ob Komponente zerstört wurde (für async-Schutz)
+   */
+  private destroyed = false;
   @Input() channelId: string | null = null;
   @Output() threadOpened = new EventEmitter<any>();
-  @ViewChild('messagesContainer', { static: false }) messagesContainer!: ElementRef;
+  @ViewChild('messagesContainer', { static: false })
+  messagesContainer!: ElementRef;
 
   private router = inject(Router);
   private logoState = inject(LogoStateService);
@@ -42,7 +73,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   memberCount = 0;
   members: User[] = [];
   showMembersList = false;
-  createdByName = "";
+  createdByName = '';
   messages: Message[] = [];
   isLoadingMessages = false;
   showSettings = false;
@@ -51,7 +82,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     if (this.channelId) {
       await this.runMigration();
       await this.initializeChannel();
-      this.logoState.setCurrentView("chat");
+      this.logoState.setCurrentView('chat');
     }
   }
 
@@ -71,6 +102,7 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   ngOnDestroy() {
+    this.destroyed = true;
     this.cleanupSubscription();
   }
 
@@ -78,14 +110,15 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * Initializes channel with all data
    */
   private async initializeChannel() {
-    if (!this.channelId) return;
+    if (!this.channelId || this.destroyed) return;
 
     this.isLoadingMessages = true;
     await Promise.all([
       this.loadChannelData(),
       this.loadChannelMembers(),
-      this.setupMessageSubscription()
+      this.setupMessageSubscription(),
     ]);
+    if (this.destroyed) return;
     this.isLoadingMessages = false;
   }
 
@@ -173,7 +206,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
 
     if (this.currentChannel?.ownerId) {
       const allUsers = this.usersFacade.users();
-      const creator = allUsers?.find(user => user.id === this.currentChannel?.ownerId);
+      const creator = allUsers?.find(
+        (user) => user.id === this.currentChannel?.ownerId
+      );
       this.createdByName = creator?.displayName || 'Unbekannt';
     }
   }
@@ -182,18 +217,24 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * Loads channel members with fallback
    */
   private async loadChannelMembers() {
-    if (!this.channelId) return;
+    if (!this.channelId || this.destroyed) return;
 
     try {
-      const userIds = await this.channelsFacade.getChannelMembers(this.channelId);
+      const userIds = await this.channelsFacade.getChannelMembers(
+        this.channelId
+      );
+      if (this.destroyed) return;
       this.memberCount = userIds.length;
 
       const allUsers = this.usersFacade.users();
       if (allUsers) {
-        this.members = allUsers.filter((user) => userIds.includes(user.id || ""));
+        this.members = allUsers.filter((user) =>
+          userIds.includes(user.id || '')
+        );
       }
     } catch (error) {
-      console.error("Failed to load channel members:", error);
+      if (this.destroyed) return;
+      console.error('Failed to load channel members:', error);
       const allUsers = this.usersFacade.users();
       this.memberCount = Math.min(allUsers?.length || 1, 5);
       this.members = allUsers?.slice(0, this.memberCount) || [];
@@ -212,11 +253,11 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   get currentChatName(): string {
-    return this.currentChannel?.name || "Entwicklerteam";
+    return this.currentChannel?.name || 'Entwicklerteam';
   }
 
   get currentChatDescription(): string {
-    return this.currentChannel?.description || "";
+    return this.currentChannel?.description || '';
   }
 
   trackByMessageId(index: number, message: Message): string {
@@ -228,13 +269,13 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   onAddMember() {
-    console.log("Add member to channel:", this.channelId);
+    console.log('Add member to channel:', this.channelId);
   }
 
   openThread(threadId: string) {
-    this.logoState.setCurrentView("thread");
+    this.logoState.setCurrentView('thread');
     if (this.logoState.showBackArrow()) {
-      this.router.navigate(["/m/thread", threadId]);
+      this.router.navigate(['/m/thread', threadId]);
     }
   }
 
