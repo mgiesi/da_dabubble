@@ -48,10 +48,6 @@
     }
 }
 
-.description-login {
-    @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
-}
-
 .vector-text-box {
     position: relative;
     height: 35px;

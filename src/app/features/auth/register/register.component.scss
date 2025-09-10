@@ -43,10 +43,6 @@ form {
     width: 100%;
 }
 
-.description-login {
-    @include fontSizeWeightColor($si: $font-size-17-20, $we: 400, $co: $black);
-}
-
 .next-btn-box {
     width: 100%;
     @include dFlexAllCenter($jc: flex-end, $g: 30px);

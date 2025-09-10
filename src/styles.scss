@@ -102,6 +102,9 @@ input {
   }
 }
 
+.description-login {
+  @include fontSizeWeightColor($si: $font-size-17-20, $we: 500, $co: $black);
+}
 
 .error-message {
   position: absolute;
