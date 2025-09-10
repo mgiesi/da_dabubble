@@ -23,9 +23,6 @@
                    [channelId]="selectedChannelId" 
                    (threadOpened)="onThreadOpened($event)">
     </app-chat-area>
-    <div *ngIf="!selectedChannelId" class="no-channel-selected">
-      Wähle einen Channel aus
-    </div>
   </main>
 
   <!-- Thread -->
