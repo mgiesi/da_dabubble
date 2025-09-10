@@ -1,11 +1,10 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { NgIf } from '@angular/common'
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service'
 
 @Component({
   selector: 'app-channel-create',
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule],
   templateUrl: './channel-create.component.html',
   styleUrl: './channel-create.component.scss'
 })

@@ -1,4 +1,3 @@
-<!-- Workspace Menu Toggler - nur Desktop, außerhalb des Grids -->
 <app-workspace-menu-toggler *ngIf="!logo.isMobile()" [isOpen]="isWorkspaceMenuOpen" (toggle)="onToggleWorkspaceMenu()">
 </app-workspace-menu-toggler>
 
@@ -7,14 +6,12 @@
      [class.workspace-open]="isWorkspaceMenuOpen"
      [class.thread-open]="currentView === 'thread'">
 
-  <!-- Workspace -->
   <aside class="workspace-sidebar"
     *ngIf="(!logo.isMobile() && isWorkspaceMenuOpen) || (logo.isMobile() && logo.isWorkspaceView())"
     [class.active]="currentView === 'workspace'">
     <app-workspace-menu (channelSelected)="onChannelSelected($event)"></app-workspace-menu>
   </aside>
 
-  <!-- Chat -->
   <main class="chat-main" 
        *ngIf="!logo.isMobile() || logo.isChatView()" 
        [class.active]="currentView === 'chat'"
@@ -25,7 +22,6 @@
     </app-chat-area>
   </main>
 
-  <!-- Thread -->
   <aside class="thread-sidebar" 
          *ngIf="!logo.isMobile() || logo.isThreadView()"
          [class.active]="currentView === 'thread'">

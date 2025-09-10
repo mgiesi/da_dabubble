@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LegalBtnsComponent } from '../../auth-assets/legal-btns/legal-btns.component';
+import { LegalBtnsComponent } from '../legal-btns/legal-btns.component';
 
 @Component({
   selector: 'app-auth-card',
