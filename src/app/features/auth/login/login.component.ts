@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, AfterViewInit } from '@angular/core';
 import { AppComponent } from '../../../app.component';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
-import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({
@@ -25,7 +25,7 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
   styleUrl: './login.component.scss',
   animations: [fadeInOut],
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
   constructor(private appComponent: AppComponent) {}
   auth = inject(AuthService);
   router = inject(Router);
@@ -40,6 +40,10 @@ export class LoginComponent {
   errMsg: string = '';
   email: string = '';
   pwd: string = '';
+
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
+  }
 
   get emailPattern(): string {
     return AuthService.EMAIL_PATTERN.source;

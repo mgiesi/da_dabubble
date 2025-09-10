@@ -6,10 +6,9 @@ import { RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
-import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
 
 @Component({
   selector: 'app-forgot-password',

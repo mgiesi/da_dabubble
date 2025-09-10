@@ -5,6 +5,7 @@ import {
   ViewChild,
   EnvironmentInjector,
   runInInjectionContext,
+  AfterViewInit,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
@@ -16,7 +17,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
-import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({
@@ -35,7 +36,7 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
   styleUrl: './register.component.scss',
   animations: [fadeInOut],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, AfterViewInit {
   @ViewChild('f') form!: NgForm;
 
   fullName: string = '';
@@ -61,8 +62,11 @@ export class RegisterComponent implements OnInit {
   infoMsg: string = '';
   registerData = inject(RegisterDataService);
 
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
+  }
+
   ngOnInit(): void {
-    window.scrollTo(0, 0);
     const name = this.registerData.displayName();
     const mail = this.registerData.email();
     const pw = this.registerData.pwd();

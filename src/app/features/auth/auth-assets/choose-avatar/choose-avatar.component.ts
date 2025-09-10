@@ -7,6 +7,7 @@ import {
   input,
   runInInjectionContext,
   signal,
+  AfterViewInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, NgIf } from '@angular/common';
@@ -47,7 +48,7 @@ const defaultUser: User = {
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.scss',
 })
-export class ChooseAvatarComponent {
+export class ChooseAvatarComponent implements AfterViewInit {
   private http = inject(HttpClient);
   private storage = inject(ImageStorageService);
   private env = inject(EnvironmentInjector);
@@ -57,8 +58,8 @@ export class ChooseAvatarComponent {
   /** Local user object as signal, to link it with the avatar component. */
   userLocal = signal<User | null>(this.user());
 
-  ngOnInit(): void {
-    window.scrollTo(0, 0);
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
   }
 
   constructor() {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, AfterViewInit } from '@angular/core';
 import { SharedFunctionsService } from '../../core/services/shared-functions.service';
 
 @Component({
@@ -7,8 +7,12 @@ import { SharedFunctionsService } from '../../core/services/shared-functions.ser
   templateUrl: './imprint.component.html',
   styleUrl: './imprint.component.scss',
 })
-export class ImprintComponent {
+export class ImprintComponent implements AfterViewInit {
   private sharedSharedFunctionsService = inject(SharedFunctionsService);
+
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
+  }
 
   goBack(): void {
     this.sharedSharedFunctionsService.goBack();

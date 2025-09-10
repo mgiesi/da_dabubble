@@ -5,6 +5,7 @@ import {
   signal,
   ViewChild,
   NgZone,
+  AfterViewInit,
 } from '@angular/core';
 import { fadeInOut } from '../../../core/animations/fade-in-out.animation';
 import { FormsModule } from '@angular/forms';
@@ -13,14 +14,13 @@ import { Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
 import { ChooseAvatarComponent } from '../auth-assets/choose-avatar/choose-avatar.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 import { User } from '../../../shared/models/user';
 import { Timestamp } from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
-import { set } from 'idb-keyval';
 import { UserUtilService } from '../../../core/services/user-util.service';
 
 @Component({
@@ -40,7 +40,7 @@ import { UserUtilService } from '../../../core/services/user-util.service';
   styleUrl: './avatar-selection.component.scss',
   animations: [fadeInOut],
 })
-export class AvatarSelectionComponent implements OnInit {
+export class AvatarSelectionComponent implements OnInit, AfterViewInit {
   inProgress: boolean = true;
   accountCreatedSuccessfully: boolean = false;
   messageHide: boolean = false;
@@ -63,8 +63,8 @@ export class AvatarSelectionComponent implements OnInit {
 
   errMsg: string = '';
 
-  test() {
-    this.accountCreatedSuccessfully = true;
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
   }
 
   ngOnInit(): void {

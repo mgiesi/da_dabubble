@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
-import { AuthCardComponent } from '../auth-assets/AuthCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
 import { confirmPasswordReset } from 'firebase/auth';
 
 @Component({
