@@ -40,8 +40,6 @@
         white-space: nowrap;
     }
 
-
-
     @media screen and (max-width: $breakpoint-915) {
         @include dFlexAllCenter($dFlex: flex, $fld: column, $ai: center, $jc: center, $g: 10px);
 
