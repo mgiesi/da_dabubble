@@ -49,9 +49,6 @@
 }
 
 .search-input-box {
-    // max-width: 1026px;
-    // width: clamp(415px, 292.8px + 38.1875vw, 1026px);
-
     @media screen and (max-width: $breakpoint-800) {
         display: none;
     }
@@ -249,7 +246,6 @@
 }
 
 .logo-text-box-mobile {
-
     margin-top: 20px;
     @include dFlexAllCenter($dFlex: none, $g: 16px);
     width: 203.05px;
@@ -271,13 +267,14 @@
 
 }
 
-.logo-text-box-logged-in {
-    top: 20px;
-    left: 45px;
+// .logo-text-box-logged-in {
 
-    @media screen and (max-width: $breakpoint-450) {
-        top: 25px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
+//     top: 20px;
+//     left: 45px;
+
+//     @media screen and (max-width: $breakpoint-450) {
+//         top: 25px;
+//         left: 50%;
+//         transform: translateX(-50%);
+//     }
+// }
