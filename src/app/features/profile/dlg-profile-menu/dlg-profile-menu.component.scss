@@ -10,7 +10,7 @@
     border-top-right-radius: 30px;
     padding: 30px;
 
-    > div:first-child {
+    >div:first-child {
         margin: 0 auto;
     }
 }
@@ -20,7 +20,7 @@
 }
 
 .menu-item {
-    @include fontSizeWeightColor($si: $font-size-24, $we: 600, $co: $black);
+    @include fontSizeWeightColor($si: $font-size-18-24, $we: 600, $co: $black);
     width: 222px;
     height: 53px;
 

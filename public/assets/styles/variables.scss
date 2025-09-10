@@ -41,9 +41,11 @@ $input-field-width-300-400: clamp(300px, 280px + 6.25vw, 400px);
 $input-field-width-18-24: clamp(18px, 16.8px + 0.375vw, 24px);
 $animation-width-71-190: clamp(71.5px, 47.8px + 7.4063vw, 190px);
 
-
 //max content width
 $max-content-width-1920: 1920px;
+
+//height
+$header-height-115: 115px;
 
 //padding
 $padding-20-30: clamp(20px, 18px + 0.625vw, 30px);

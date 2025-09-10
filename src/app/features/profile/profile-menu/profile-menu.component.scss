@@ -7,11 +7,6 @@
 .profile-menu-container {
     height: 70px;
     @include dFlexAllCenter($fld: row, $ai: center, $jc: start, $g: 20px);
-    position: fixed;
-    top: 25px;
-    right: 34px;
-    z-index: 2000;
-    cursor: pointer;
     background-color: unset;
 
     &:hover h1 {
@@ -19,7 +14,7 @@
     }
 
     &:hover svg path {
-      fill: $purple-1;
+        fill: $purple-1;
     }
 }
 

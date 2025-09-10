@@ -13,6 +13,54 @@
     height: 100dvh;
 }
 
+.header {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    padding-inline: 20px;
+    z-index: 5;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: $header-height-115;
+    gap: 40px;
+    align-items: center;
+
+    @media screen and (max-width: $breakpoint-800) {
+        @include dFlexAllCenter($ai: center, $jc: space-between);
+    }
+}
+
+.header-logo {
+    pointer-events: none;
+    @include dFlexAllCenter($jc: flex-start, $g: 10px);
+
+    width: 203.05px;
+    height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+
+    img {
+        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+        aspect-ratio: 1 / 1;
+    }
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-20-24, $we: 700, $co: $black);
+        margin: 0;
+    }
+}
+
+.search-input-box {
+    // max-width: 1026px;
+    // width: clamp(415px, 292.8px + 38.1875vw, 1026px);
+
+    @media screen and (max-width: $breakpoint-800) {
+        display: none;
+    }
+}
+
+.header-right {
+    justify-self: end;
+}
+
 .app-content {
     height: 100%;
 
@@ -119,6 +167,27 @@
             // animation: textSlideIn $animation-login-overlay-text;
 
         }
+    }
+}
+
+.logo-text-box-after-animation {
+    top: 55px;
+    left: 55px;
+    opacity: 1;
+    pointer-events: none;
+    position: absolute;
+    @include dFlexAllCenter($g: 10px);
+    width: 203.05px;
+    height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+
+    img {
+        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+        aspect-ratio: 1 / 1;
+    }
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-20-24, $we: 700, $co: $black);
+        margin: 0;
     }
 }
 

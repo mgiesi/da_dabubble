@@ -16,39 +16,51 @@
 } -->
 
 <div class="app-container">
-  <div [ngClass]="{
-      'logo-text-box-logged-in': isAuthenticated$ | async,
-      'logo-text-box-desktop': !(isAuthenticated$ | async),
-      'visible': showLogoBox && !(isAuthenticated$ | async)
-    }">
-    <img [src]="logoSrc()" alt="Logo">
-    @if (showBackArrow()) {
-    <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" />
-      </svg>
-    </button>
-    }
-    <h1>{{ headerTitle() }}</h1>
-  </div>
-
-  <div class="header-right" *ngIf="isAuthenticated$ | async">
-    <app-profile-menu></app-profile-menu>
-  </div>
-
-  <div class="logo-text-box-desktop">
-    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
+  <div class="logo-text-box-after-animation" *ngIf="!(isAuthenticated$ | async)">
+    <img (load)="onLogoLoad()" src="img/logo/DABubble-logo-animation.png" alt="DABubble Logo">
     <h1>DABubble</h1>
   </div>
 
 
 
+  <div class="header" *ngIf="isAuthenticated$ | async">
+    <div class="header-logo">
+      <img [src]="logoSrc()" alt="Logo">
+      @if (showBackArrow()) {
+      <button class="back-arrow" (click)="onBackClick()" aria-label="Zurück zum Workspace">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+      }
+      <h1>{{ headerTitle() }}</h1>
+    </div>
+
+    <div class="search-input-box">
+      <label class="label-input-field-white-img-right" for="searchInput">
+        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" />
+        <img src="/icons/search.svg" alt="Suchen Icon" />
+      </label>
+    </div>
+
+
+    <div class="header-right" *ngIf="isAuthenticated$ | async">
+      <app-profile-menu></app-profile-menu>
+    </div>
+  </div>
+  <!-- <div class="logo-text-box-desktop">
+    <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
+    <h1>DABubble</h1>
+  </div> -->
+
+
+
   <main class="app-content">
-    <div class="logo-text-box-mobile">
+    <!-- <div class="logo-text-box-mobile">
       <img src="img/logo/DABubble-logo.png" alt="DABubble Logo">
       <h1>DABubble</h1>
-    </div>
+    </div> -->
     <router-outlet></router-outlet>
   </main>
 </div>
