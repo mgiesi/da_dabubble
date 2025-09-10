@@ -20,7 +20,7 @@
     top: 55px;
     right: 55px;
     @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center, $g: 10px);
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+    @include fontSizeWeightColor($si: $font-size-18, $we: 500, $co: $black);
 
     p {
         padding-right: 15px;

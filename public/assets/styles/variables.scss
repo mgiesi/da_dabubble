@@ -18,7 +18,8 @@ $bg-dlg-close: #D9D9D9;
 //font-sizes
 $font-size-16: 16px; // this is for font size 14px in figma
 $font-size-18: 18px;
-$font-size-17-20: clamp(17px, 16.4px + 0.1875vw, 20px); // for p and li privacy policy imprint
+$font-size-17-20: clamp(17px, 16.4px + 0.1875vw, 20px);
+$font-size-18-20: clamp(18px, 17.6px + 0.125vw, 20px); // for p and li privacy policy imprint
 $font-size-20: 20px;
 $font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px);
 $font-size-16-24: clamp(16px, 14.4px + 0.5vw, 24px); // placeholder input-field
