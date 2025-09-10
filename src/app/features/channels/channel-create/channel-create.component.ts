@@ -14,36 +14,47 @@ export class ChannelCreateComponent {
 
   private channelsFacade = inject(ChannelsFacadeService)
 
+  // Form-Felder für Channel-Erstellung
   name = ''
   description = ''
   isCreating = false
 
+  /**
+   * Erstellt einen neuen Channel mit Name und Beschreibung
+   */
   async createChannel() {
     if (!this.name.trim() || this.isCreating) return
 
     this.isCreating = true
     
     try {
+      // Channel über Facade-Service erstellen
       await this.channelsFacade.createChannel(
         this.name.trim(),
         this.description.trim()
       )
 
-      // Emit success event - parent will handle channel selection
+      // Erfolgs-Event an Parent-Component senden
       this.channelCreated.emit('channel-created')
       this.resetForm()
     } catch (error) {
-      console.error('Failed to create channel:', error)
+      console.error('Fehler beim Erstellen des Channels:', error)
     } finally {
       this.isCreating = false
     }
   }
 
+  /**
+   * Bricht Channel-Erstellung ab und schließt Dialog
+   */
   onCancel() {
     this.resetForm()
     this.close.emit()
   }
 
+  /**
+   * Setzt alle Form-Felder zurück
+   */
   private resetForm() {
     this.name = ''
     this.description = ''
