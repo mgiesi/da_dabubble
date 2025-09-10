@@ -110,11 +110,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-25%, -50%);
-    background-color: #00ffffc4;
 
     @include dFlexAllCenter($ai: center, $jc: center, $g: 10px);
     animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
     // animation: contentAnimation $animation-login-overlay-logo;
+
+    @media screen and (max-width: $breakpoint-915) {
+        animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimationMobile $overlayToLeftCornerAnimation;
+    }
 
 }
 
@@ -131,7 +134,7 @@
     width: $animation-width-71-190;
     aspect-ratio: 1 / 1;
     // animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    // animation: logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    animation: logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
 
     img {
@@ -173,7 +176,7 @@
             clip-path: inset(0 0 0 100%);
             color: $white;
             // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
-            // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation;
+            animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
 
         }
     }

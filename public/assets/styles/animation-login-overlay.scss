@@ -81,18 +81,6 @@
     }
 }
 
-// @keyframes textToLeftCornerAnimation {
-//     0% {
-//         transform: translate(0%, 0%);
-//         left: 12%;
-
-//     }
-
-//     100% {
-//         left: unset;
-//     }
-// }
-
 @keyframes overlayToLeftCornerAnimation {
     0% {
         width: clamp(295px, -77.407px + 40.7002vw, 667px);
@@ -110,6 +98,31 @@
         transform: translate(0%, 0%);
     }
 }
+
+@keyframes overlayToLeftCornerAnimationMobile {
+    0% {
+        width: clamp(295px, -77.407px + 40.7002vw, 667px);
+        height: clamp(76px, -33.1193px + 11.9256vw, 185px);
+        transform: translate(-50%, -50%);
+        justify-content: center;
+    }
+
+    100% {
+        top: 0;
+        left: 50%;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: clamp(203px, 163.9573px + 4.267vw, 242px);
+        height: clamp(61.76px, 52.0093px + 1.0656vw, 71.5px);
+        transform: translate(-50%, 0%);
+        justify-content: flex-end;
+
+    }
+}
+
+
 
 @keyframes logoToLeftCornerAnimation {
     0% {
