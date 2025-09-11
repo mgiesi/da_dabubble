@@ -167,7 +167,7 @@ export class AppComponent {
     } catch (e) {
       this.handleSignInError(e);
     } finally {
-      this.finishSignIn();
+      this.finishSignInWithNavigation();
     }
   }
 
@@ -178,6 +178,16 @@ export class AppComponent {
 
   private finishSignIn() {
     this.inProgress = false;
+  }
+
+  private finishSignInWithNavigation() {
+    this.inProgress = false;
+    // Kurzes Timeout, damit Progressbar und Login-UI verschwinden, bevor navigiert wird
+    setTimeout(() => {
+      if (this.auth.isAuthenticated$) {
+        this.router.navigate(['/chat']);
+      }
+    }, 100);
   }
 
   private handleSignInError(e: any) {
@@ -193,11 +203,11 @@ export class AppComponent {
         await this.checkEmailExistsOrReturn(inputEmail);
       }
       await this.doSignIn(inputEmail, inputPwd);
-      await this.waitForAuthAndNavigate();
+      await this.waitForAuth();
     } catch (e) {
       this.handleSignInError(e);
     } finally {
-      this.finishSignIn();
+      this.finishSignInWithNavigation();
     }
   }
 
@@ -222,7 +232,7 @@ export class AppComponent {
     await this.auth.signIn(email, pwd);
   }
 
-  private async waitForAuthAndNavigate() {
+  private async waitForAuth() {
     await (
       await import('rxjs')
     ).firstValueFrom(
@@ -232,7 +242,6 @@ export class AppComponent {
         ).filter((authenticated: boolean) => authenticated === true)
       )
     );
-    await this.router.navigate(['/chat']);
   }
 
   public mapAuthError(err: unknown): string {
