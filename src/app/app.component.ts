@@ -52,14 +52,20 @@ export class AppComponent {
 
   showHeader$: Observable<boolean> = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
+    map(() => true),
+    startWith(true)
+  );
+
+  showSearchLabel$: Observable<boolean> = this.router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
     map(
       () =>
-        !this.router.url.includes('imprint') &&
-        !this.router.url.includes('privacy-policy')
+        !window.location.pathname.includes('imprint') &&
+        !window.location.pathname.includes('privacy-policy')
     ),
     startWith(
-      !this.router.url.includes('imprint') &&
-        !this.router.url.includes('privacy-policy')
+      !window.location.pathname.includes('imprint') &&
+        !window.location.pathname.includes('privacy-policy')
     )
   );
 

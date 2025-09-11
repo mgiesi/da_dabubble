@@ -39,7 +39,7 @@
     </div>
 
     <div class="search-input-box">
-      <label class="label-input-field-white-img-right" for="searchInput">
+      <label *ngIf="showSearchLabel$ | async" class="label-input-field-white-img-right" for="searchInput">
         <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" />
         <img src="/icons/search.svg" alt="Suchen Icon" />
       </label>
