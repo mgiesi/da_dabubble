@@ -38,7 +38,9 @@ export class DlgProfileMenuComponent {
   router = inject(Router);
   breakpointObserver = inject(BreakpointObserver);
   dialog = inject(MatDialog);
-  parentDesktopDialogRef = inject(MatDialogRef<DlgProfileMenuComponent>, { optional: true });
+  parentDesktopDialogRef = inject(MatDialogRef<DlgProfileMenuComponent>, {
+    optional: true,
+  });
   parentMobileDialogRef = inject(MatBottomSheetRef<DlgProfileMenuComponent>, {
     optional: true,
   });
@@ -60,7 +62,9 @@ export class DlgProfileMenuComponent {
         take(1)
       )
     );
-    await this.router.navigate(['/login']);
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 300);
   }
 
   /**
@@ -71,7 +75,9 @@ export class DlgProfileMenuComponent {
     if (dialogRef) {
       dialogRef.close();
     } else {
-      const isMobile = this.breakpointObserver.isMatched(['(max-width: 768px)']);
+      const isMobile = this.breakpointObserver.isMatched([
+        '(max-width: 768px)',
+      ]);
       if (isMobile) {
         this.openMobileDialog();
       } else {

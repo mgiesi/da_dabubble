@@ -7,15 +7,19 @@ import { Router } from '@angular/router';
 import { filter, firstValueFrom, take } from 'rxjs';
 import { DlgProfileMenuComponent } from '../dlg-profile-menu/dlg-profile-menu.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-profile-menu',
   imports: [CommonModule, ProfileAvatarComponent, MatBottomSheetModule],
   templateUrl: './profile-menu.component.html',
-  styleUrl: './profile-menu.component.scss'
+  styleUrl: './profile-menu.component.scss',
 })
 export class ProfileMenuComponent {
   facade = inject(UsersFacadeService);
@@ -34,24 +38,31 @@ export class ProfileMenuComponent {
    */
   async signOut() {
     this.facade.signOut();
-    await firstValueFrom(this.auth.user$.pipe(
-      filter(u => !u),
-      take(1)
-    ));
-    await this.router.navigate(['/login']);
+    await firstValueFrom(
+      this.auth.user$.pipe(
+        filter((u) => !u),
+        take(1)
+      )
+    );
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 100);
   }
 
   /**
    * Opens the profile menu overlay.
    */
   openProfileMenu() {
-    const desktopDialogRef = this.desktopDialog.getDialogById('profileMenuDialog');
+    const desktopDialogRef =
+      this.desktopDialog.getDialogById('profileMenuDialog');
     if (desktopDialogRef) {
       desktopDialogRef.close();
     } else if (this.mobileDialogRef) {
       this.mobileDialogRef.dismiss();
     } else {
-      const isMobile = this.breakpointObserver.isMatched(['(max-width: 768px)']);
+      const isMobile = this.breakpointObserver.isMatched([
+        '(max-width: 768px)',
+      ]);
       if (isMobile) {
         this.openMobileMenu();
       } else {
@@ -62,7 +73,7 @@ export class ProfileMenuComponent {
 
   openMobileMenu() {
     this.mobileDialogRef = this.mobileDialog.open(DlgProfileMenuComponent, {
-      panelClass: 'empty-dialog'
+      panelClass: 'empty-dialog',
     });
     this.mobileDialogRef.afterDismissed().subscribe(() => {
       this.mobileDialogRef = undefined;
@@ -73,10 +84,10 @@ export class ProfileMenuComponent {
     this.desktopDialog.open(DlgProfileMenuComponent, {
       id: 'profileMenuDialog',
       position: {
-        top: "120px",
-        right: "16px"
+        top: '120px',
+        right: '16px',
       },
-      panelClass: 'no-top-right-radius-dialog'
+      panelClass: 'no-top-right-radius-dialog',
     });
   }
 }
