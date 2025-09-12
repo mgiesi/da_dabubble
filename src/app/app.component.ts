@@ -85,11 +85,11 @@ export class AppComponent {
     return AuthService.getEmailPatternHtml();
   }
 
-  // ngOnInit(): void {
-  //   // setLogLevel('debug'); // am App-Start einmalig
-  //   this.initRedirectAndAnimation();
-  //   this.userPresenceService.init();
-  // }
+  ngOnInit(): void {
+    // setLogLevel('debug'); // am App-Start einmalig
+    this.initRedirectAndAnimation();
+    this.userPresenceService.init();
+  }
 
   private checkFirstVisitAndShowAnimation(): void {
     const hasVisited = sessionStorage.getItem('firstPageVisit');

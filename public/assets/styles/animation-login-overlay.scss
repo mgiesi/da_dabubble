@@ -72,27 +72,22 @@
 @keyframes textAnimation {
     0% {
         transform: translate(-105%, 0%);
-        // width: clamp(124px, 83.0318px + 12.8025vw, 325px);
-
     }
 
     100% {
-        // width: 124px;
         transform: translate(0%, 0%);
-
     }
 }
 
-@keyframes secondStepTextH1Animation {
+@keyframes textBoxMiddleAnimation {
     0% {
-        // width: clamp(124px, 81.404px + 13.3113vw, 325px);
-        width: clamp(103px, 55.9536px + 14.702vw, 325px);
-
+        wwidth: clamp(96.27px, 45.8606px + 15.7529vw, 190px);
     }
 
     100% {
-        width: 103px;
+        width: clamp(96.27px, 91.5749px + 1.4672vw, 105px);
     }
+
 }
 
 @keyframes overlayToLeftCornerAnimation {
@@ -125,88 +120,50 @@
     100% {
         top: 20px;
         width: 203px;
-        // height: clamp(56px, 52.7193px + 1.0252vw, 62.1px);
         height: 56px;
         transform: translate(-50%, 0%);
     }
 }
 
-
-
-@keyframes logoToLeftCornerAnimation {
-    0% {
-        width: clamp(71.5px, 47.447px + 7.5166vw, 185px);
-        aspect-ratio: 1 / 1;
-        // justify-content: flex-end;
-    }
-
-    100% {
-        width: clamp(56px, 52.7152px + 1.0265vw, 71.5px);
-        aspect-ratio: 1 / 1;
-        // justify-content: flex-start;
-    }
-}
-
-@keyframes textWidthAnimation {
-    0% {
-        width: clamp(124px, -77px + 21.9672vw, 325px);
-    }
-
-    100% {
-        width: 124px;
-    }
-}
-
-// @keyframes textBoxToleftCornerANimation {
-//     0% {
-//         width: clamp(96.27px, 45.2544px + 15.9424vw, 337px);
-//     }
-
-//     100% {
-//         width: 96.27px;
-//     }
-
-// }
-
 @keyframes h1ToLeftCornerAnimation {
     0% {
-        // width: clamp(100px, 52.2863px + 14.9105vw, 325px);
-        // width: clamp(124px, -77px + 21.9672vw, 325px);
         font-size: clamp(20px, -30px + 5.4645vw, 70px);
         position: absolute;
         top: 0;
-        // left: 0;
     }
 
     100% {
-        // width: unset;
         font-size: clamp(22px, 20px + 0.2186vw, 24px);
         top: 50%;
-        // left: 107px;
         transform: translateY(-50%);
     }
 }
 
 @keyframes h1ToMiddleAnimationMobile {
     0% {
-        // width: clamp(100px, 52.2863px + 14.9105vw, 325px);
-        // width: clamp(124px, -77px + 21.9672vw, 325px);
         font-size: clamp(22px, 20px + 0.2186vw, 24px);
         position: absolute;
         top: 0;
-        // left: 0;
     }
 
     100% {
-        // width: unset;
         font-size: clamp(20px, 18.9244px + 0.3361vw, 22px);
         top: 50%;
-        // left: 107px;
         transform: translateY(-50%);
     }
 }
 
 @keyframes textSlideIn {
+    0% {
+        clip-path: inset(0 0 0 100%);
+    }
+
+    100% {
+        clip-path: inset(0 0 0 0%);
+    }
+}
+
+@keyframes textSlideInMobile {
     0% {
         clip-path: inset(0 0 0 100%);
     }
