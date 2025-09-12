@@ -244,16 +244,21 @@
   }
 }
 
-@mixin btn-add-style($top: 0px, $left: 0px) {
+@mixin btn-add-style($top: unset, $left: unset, $right: unset, $transform: unset) {
   background-color: transparent;
   position: absolute;
   top: $top;
   left: $left;
+  right: $right;
   width: 40px;
   aspect-ratio: 1 / 1;
   border-radius: 100%;
   @include dFlexAllCenter();
   transition: $transition-0-3-ease-in-out;
+
+  @if $transform !=unset {
+    transform: $transform;
+  }
 
   svg {
     fill: $black;

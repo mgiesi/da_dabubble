@@ -64,7 +64,8 @@
 }
 
 .btn-add-user {
-    @include btn-add-style();
+    @include btn-add-style($top: 50%, $right: 0px, $transform: translateY(-50%));
+
 }
 
 .btn-add-plus {

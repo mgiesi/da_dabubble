@@ -4,13 +4,13 @@
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
 .dlg-profile-details-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 38px);
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 28px);
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    padding: 45px 40px;
     width: clamp(300px, 260px + 12.5vw, 500px);
+    overflow: hidden;
 }
 
 h1 {
@@ -79,16 +79,16 @@ h2 {
     @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: flex-start, $g: 15px);
     width: 100%;
 
-    > div {
+    >div {
         @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start);
 
-        > span {
+        >span {
             @include fontSizeWeightColor($si: 20px, $we: 700, $co: $black);
             margin-left: 20px;
         }
     }
 
-    > a {
+    >a {
         margin-left: 44px;
         @include fontSizeWeightColor($si: 18px, $we: 500, $co: $blue);
     }

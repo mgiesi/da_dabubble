@@ -6,7 +6,7 @@
 
 .chat-area {
     width: 100%;
-    height: calc(100vh - 230px);
+    height: calc(100dvh - 135px);
     background: $white;
     border-radius: 20px;
     position: relative;
@@ -75,30 +75,31 @@
 
         .header-actions {
             @include dFlexAllCenter($g: 12px);
+            position: relative;
 
-            .btn-members {
-                @include dFlexAllCenter($ai: center, $jc: center);
-                background: none;
-                border: none;
-                padding: 6px 8px;
-                border-radius: 50px;
-                cursor: pointer;
+            // .btn-members {
+            //     @include dFlexAllCenter($ai: center, $jc: center);
+            //     background: none;
+            //     border: none;
+            //     padding: 6px 8px;
+            //     border-radius: 50px;
+            //     cursor: pointer;
 
-                &:hover {
-                    background-color: $bg-color;
-                }
+            //     &:hover {
+            //         background-color: $bg-color;
+            //     }
 
-                svg {
-                    width: 18px;
-                    height: 18px;
-                    color: $text-gray;
-                    fill: currentColor;
-                }
+            //     svg {
+            //         width: 18px;
+            //         height: 18px;
+            //         color: $text-gray;
+            //         fill: currentColor;
+            //     }
 
-                &:hover svg path {
-                    fill: $purple-3;
-                }
-            }
+            //     &:hover svg path {
+            //         fill: $purple-3;
+            //     }
+            // }
         }
     }
 
