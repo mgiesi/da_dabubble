@@ -26,14 +26,14 @@ export class UsersFacadeService {
 
   /** A shared observable of all users from the Firestore. */
   private readonly users$ = this.data.users$().pipe(
-    shareReplay({ bufferSize: 1, refCount: true})
+    shareReplay({ bufferSize: 1, refCount: true })
   );
   /** Converts the shared users$ observable into an Angular Signal. */
   readonly users = toSignal<User[]>(this.users$, { initialValue: [] as any });
- 
+
   private readonly currentUser$ = this.currentUser();
   readonly currentUserSig = toSignal<User | null>(this.currentUser$, { initialValue: null });
-  
+
   /**
    * Signs the user out.
    */
@@ -175,5 +175,12 @@ export class UsersFacadeService {
   lastSeenAt(userSig: Signal<User | null>, injector: Injector): Signal<number | null> {
     const p = this.getUserPresence(userSig, injector);
     return computed(() => p().lastSeenAt);
+  }
+
+  /**
+ * Gets a user by ID from Firestore database
+ */
+  async getUserById(userId: string): Promise<User | null> {
+    return await this.data.getUserById(userId);
   }
 }

@@ -20,6 +20,7 @@ export interface Message {
   parentMessageId?: string;
   threadCount?: number;
   isOwnMessage?: boolean;
+  dmId?: string;
 }
 
 export interface Topic {
@@ -277,5 +278,54 @@ export class MessagesFacadeService {
       ...message,
       isOwnMessage: message.senderId === currentUserId,
     }));
+  }
+
+  /**
+ * Subscribes to direct messages between current user and target user
+ */
+  subscribeToDMMessages(targetUserId: string, callback: (messages: Message[]) => void): () => void {
+    const currentUser = this.getCurrentUser();
+
+    const subscription = this.messagesRepo.getDMMessages$(currentUser.uid, targetUserId)
+      .subscribe(messages => {
+        const messagesWithOwnership = this.addOwnershipToMessages(messages);
+        callback(messagesWithOwnership);
+      });
+
+    return () => subscription.unsubscribe();
+  }
+
+  /**
+ * Sends direct message to target user
+ */
+  async sendDMMessage(targetUserId: string, messageText: string): Promise<void> {
+    const currentUser = this.getCurrentUser();
+    const messageData = this.createMessageData(messageText, currentUser.uid);
+
+    try {
+      await this.messagesRepo.createDMMessage(currentUser.uid, targetUserId, messageData);
+    } catch (error) {
+      console.error("Error sending DM:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Adds emoji reaction to DM message
+   */
+  async addDMReaction(dmId: string, messageId: string, emoji: string): Promise<void> {
+    const currentUser = this.getCurrentUser();
+
+    try {
+      await this.messagesRepo.addReactionToDMMessage(
+        dmId,
+        messageId,
+        emoji,
+        currentUser.uid
+      );
+    } catch (error) {
+      console.error("Failed to add DM reaction:", error);
+      throw error;
+    }
   }
 }

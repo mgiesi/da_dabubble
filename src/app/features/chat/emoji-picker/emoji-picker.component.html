@@ -1,8 +1,0 @@
-<div class="emoji-picker" *ngIf="isVisible" (click)="$event.stopPropagation()">
-  <span 
-    *ngFor="let emoji of emojis" 
-    class="emoji-item" 
-    (click)="onEmojiClick(emoji)">
-    <img [src]="getEmojiImagePath(emoji)" [alt]="emoji" />
-  </span>
-</div>

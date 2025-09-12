@@ -86,8 +86,9 @@
       </span>
     </div>
     <div class="dm-content" [class.collapsed]="dmClosed">
-      <app-profile-badge class="dm-item" *ngFor="let user of users(); trackBy: trackById"
-        [user]="user"></app-profile-badge>
+      <app-profile-badge class="dm-item" *ngFor="let user of users(); trackBy: trackById" [user]="user"
+        (userClicked)="onDirectMessageClick($event)">
+      </app-profile-badge>
     </div>
   </section>
 </div>

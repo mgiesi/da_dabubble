@@ -12,8 +12,11 @@ export class MessageInputComponent {
   @Input() channelId: string | null = null
   @Input() topicId: string | null = null
   @Input() parentMessageId: string | null = null
-  @Input() parentMessage: any = null  // Neue Property für Parent Message Object
+  @Input() parentMessage: any = null 
   @Input() placeholder = "Nachricht schreiben..."
+
+  @Input() userId: string | null = null;
+  @Input() isDM: boolean = false;
 
   messageText = ""
   private messagesFacade = inject(MessagesFacadeService)
@@ -26,22 +29,25 @@ export class MessageInputComponent {
   }
 
   async onSendMessage() {
-    if (!this.messageText.trim()) return
-    if (!this.channelId) {
-      console.error("No channel selected")
-      return
-    }
+    if (!this.messageText.trim()) return;
 
     try {
-      if (this.parentMessageId) {
-        await this.sendThreadReply()
+      if (this.isDM && this.userId) {
+        await this.sendDMMessage();
+      } else if (this.channelId) {
+        if (this.parentMessageId) {
+          await this.sendThreadReply();
+        } else {
+          await this.sendChannelMessage();
+        }
       } else {
-        await this.sendChannelMessage()
+        console.error("No channel or user selected");
+        return;
       }
 
-      this.messageText = ""
+      this.messageText = "";
     } catch (error) {
-      console.error("Failed to send message:", error)
+      console.error("Failed to send message:", error);
     }
   }
 
@@ -83,4 +89,13 @@ export class MessageInputComponent {
 
     await this.messagesFacade.sendMessage(this.channelId, activeTopicId, this.messageText)
   }
+
+  /**
+ * Sends direct message
+ */
+private async sendDMMessage() {
+  if (!this.userId) return;
+  
+  await this.messagesFacade.sendDMMessage(this.userId, this.messageText);
+}
 }

@@ -16,6 +16,7 @@ import {
   updateDoc,
   where,
   getDocs,
+  getDoc
 } from '@angular/fire/firestore';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { User } from '../../shared/models/user';
@@ -30,7 +31,7 @@ export class UsersService {
   private auth = inject(AuthService);
   private env = inject(EnvironmentInjector);
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Checks if a user with the given email exists in the Firestore users collection.
@@ -124,7 +125,7 @@ export class UsersService {
    * @returns Promise that resolves when the update completes.
    */
   async updateDisplayName(userId: string, displayName: string) {
-    return runInInjectionContext(this.env, async() => {
+    return runInInjectionContext(this.env, async () => {
       const ref = doc(this.fs, `users/${userId}`);
       await updateDoc(ref, {
         displayName: displayName,
@@ -141,12 +142,32 @@ export class UsersService {
    * @returns Promise that resolves when the update completes.
    */
   async updateImgUrl(userId: string, imgUrl: string) {
-    return runInInjectionContext(this.env, async() => {
+    return runInInjectionContext(this.env, async () => {
       const ref = doc(this.fs, `users/${userId}`);
-      await updateDoc(ref, { 
-        imgUrl: imgUrl, 
-        updatedAt: serverTimestamp() 
+      await updateDoc(ref, {
+        imgUrl: imgUrl,
+        updatedAt: serverTimestamp()
       });
-    });    
+    });
+  }
+
+  /**
+ * Gets a single user by document ID from Firestore
+ */
+  async getUserById(userId: string): Promise<User | null> {
+    return runInInjectionContext(this.env, async () => {
+      try {
+        const userRef = doc(this.fs, 'users', userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          return { id: userSnap.id, ...userSnap.data() } as User;
+        }
+        return null;
+      } catch (error) {
+        console.error('Error fetching user by ID:', error);
+        return null;
+      }
+    });
   }
 }
