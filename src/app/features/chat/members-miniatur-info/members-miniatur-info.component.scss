@@ -1,0 +1,28 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+
+.members-miniatur-container  {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start, $g: 10px);
+    padding: 3px 10px !important;
+}
+
+.member-list {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start);
+
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        margin-left: -10px;
+        border-radius: 100%;
+        border: 2px solid $white;
+
+        &:first-child {
+            margin-left: 0px;
+        }
+    }
+
+    span {
+        @include fontSizeWeightColor($si: 20px, $we: 600);
+    }
+}

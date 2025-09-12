@@ -31,6 +31,7 @@ import { Router } from '@angular/router';
 import { LogoStateService } from '../../../core/services/logo-state.service';
 import { MessagesService } from '../../../core/repositories/messages.service';
 import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
+import { MembersMiniaturInfoComponent } from "../members-miniatur-info/members-miniatur-info.component";
 
 @Component({
   selector: 'app-chat-area',
@@ -41,7 +42,8 @@ import { ChannelSettingsComponent } from '../../channels/channel-settings/channe
     MessageInputComponent,
     MessageItemComponent,
     ChannelSettingsComponent,
-  ],
+    MembersMiniaturInfoComponent
+],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss',
 })
@@ -70,8 +72,6 @@ export class ChatAreaComponent
   private previousChannelId: string | null = null;
 
   currentChannel: Channel | null = null;
-  memberCount = 0;
-  members: User[] = [];
   showMembersList = false;
   createdByName = '';
   messages: Message[] = [];
@@ -115,7 +115,6 @@ export class ChatAreaComponent
     this.isLoadingMessages = true;
     await Promise.all([
       this.loadChannelData(),
-      this.loadChannelMembers(),
       this.setupMessageSubscription(),
     ]);
     if (this.destroyed) return;
@@ -210,34 +209,6 @@ export class ChatAreaComponent
         (user) => user.id === this.currentChannel?.ownerId
       );
       this.createdByName = creator?.displayName || 'Unbekannt';
-    }
-  }
-
-  /**
-   * Loads channel members with fallback
-   */
-  private async loadChannelMembers() {
-    if (!this.channelId || this.destroyed) return;
-
-    try {
-      const userIds = await this.channelsFacade.getChannelMembers(
-        this.channelId
-      );
-      if (this.destroyed) return;
-      this.memberCount = userIds.length;
-
-      const allUsers = this.usersFacade.users();
-      if (allUsers) {
-        this.members = allUsers.filter((user) =>
-          userIds.includes(user.id || '')
-        );
-      }
-    } catch (error) {
-      if (this.destroyed) return;
-      console.error('Failed to load channel members:', error);
-      const allUsers = this.usersFacade.users();
-      this.memberCount = Math.min(allUsers?.length || 1, 5);
-      this.members = allUsers?.slice(0, this.memberCount) || [];
     }
   }
 

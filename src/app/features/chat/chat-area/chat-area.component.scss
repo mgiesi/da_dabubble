@@ -75,31 +75,6 @@
 
         .header-actions {
             @include dFlexAllCenter($g: 12px);
-            position: relative;
-
-            // .btn-members {
-            //     @include dFlexAllCenter($ai: center, $jc: center);
-            //     background: none;
-            //     border: none;
-            //     padding: 6px 8px;
-            //     border-radius: 50px;
-            //     cursor: pointer;
-
-            //     &:hover {
-            //         background-color: $bg-color;
-            //     }
-
-            //     svg {
-            //         width: 18px;
-            //         height: 18px;
-            //         color: $text-gray;
-            //         fill: currentColor;
-            //     }
-
-            //     &:hover svg path {
-            //         fill: $purple-3;
-            //     }
-            // }
         }
     }
 

@@ -1,0 +1,6 @@
+<div class="members-miniatur-container btn-transparent">
+    <div class="member-list">
+        <img *ngFor="let member of firstFiveMembers()" class="member-avatar" [src]="member.imgUrl">
+    </div>
+    <span>{{ membersCount() }}</span>
+</div>

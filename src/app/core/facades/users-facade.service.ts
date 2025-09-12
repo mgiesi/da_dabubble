@@ -49,6 +49,20 @@ export class UsersFacadeService {
     return this.data.currentUser$();
   }
 
+  /** Returns a stream for a single user */
+  getUser$(id: string): Observable<User | null> {
+    return this.users$.pipe(
+      map(list => list.find(u => u.id === id) ?? null),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+  }
+
+  /** Returns a single user as a signal */
+  getUserSig(id: string): Signal<User | null> {
+    return computed(() => this.users()?.find(u => u.id === id) ?? null);
+  }
+
   /**
    * Creates a new user document via the repository.
    *

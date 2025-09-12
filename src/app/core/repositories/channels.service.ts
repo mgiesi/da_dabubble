@@ -8,6 +8,7 @@ import {
   addDoc,
   collection,
   collectionData,
+  CollectionReference,
   deleteDoc,
   doc,
   Firestore,
@@ -16,9 +17,12 @@ import {
   serverTimestamp,
   updateDoc,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, startWith, switchMap, of } from 'rxjs';
 import { Channel } from '../../shared/models/channel';
 import { where, getDocs } from '@angular/fire/firestore';
+import { User } from '../../shared/models/user';
+import { UsersFacadeService } from '../facades/users-facade.service';
+import { Member } from '../../shared/models/member';
 
 @Injectable({
   providedIn: 'root',
@@ -35,8 +39,9 @@ import { where, getDocs } from '@angular/fire/firestore';
 export class ChannelsService {
   private fs = inject(Firestore);
   private injector = inject(Injector);
+  private userFacade = inject(UsersFacadeService);
 
-  constructor() {}
+  constructor() { }
 
   /**
    * Returns an observable stream of all channels ordered by name (ascending).
@@ -115,17 +120,41 @@ export class ChannelsService {
   }
 
   /**
-   * Gets all member user IDs for a specific channel.
-   * Queries the channel's members subcollection.
+   * Returns a real-time stream of full `User` objects for all members of a channel.
    *
-   * @param channelId - The ID of the channel
-   * @returns Promise that resolves to array of user IDs
+   * How it works:
+   * - Queries the subcollection `channels/{channelId}/members` ordered by `joinedAt` (ascending).
+   * - Uses `collectionData(..., { idField: 'id' })` so each member document exposes its doc ID as `id`
+   *   (which corresponds to the user ID).
+   * - For each member ID, subscribes to `this.userFacade.getUser$(id)` to get live user updates.
+   * - Combines all user streams with `combineLatest`, primed by `startWith(null)` so the combined stream
+   *   emits immediately, then filters out `null` placeholders.
+   * - Shares and replays the latest array of users for all subscribers via `shareReplay(1)`.
+   *
+   * @param {string} channelId - The Firestore channel document ID.
+   * @returns {Observable<User[]>} A shared, hot observable that emits the current list of members as `User[]`.
    */
-  async getChannelMembers(channelId: string): Promise<string[]> {
-    return runInInjectionContext(this.injector, async () => {
-      const membersRef = collection(this.fs, `channels/${channelId}/members`);
-      const docs = await getDocs(membersRef);
-      return docs.docs.map((doc) => doc.data()['userId']);
+  getChannelMembers$(channelId: string): Observable<User[]> {
+    return runInInjectionContext(this.injector, () => {
+      const membersRef = collection(this.fs, `channels/${channelId}/members`) as CollectionReference<Member>;
+      const qMembers = query(membersRef, orderBy('joinedAt', 'asc'));
+
+      return collectionData<Member>(qMembers, { idField: 'id' }).pipe(
+        switchMap((members) => {
+          if (!members.length) return of<User[]>([]);
+
+          const streams = members.map(m =>
+            this.userFacade.getUser$(m.id).pipe(
+              startWith(null as User | null)
+            )
+          );
+
+          return combineLatest(streams).pipe(
+            map(users => users.filter((u): u is User => !!u))
+          );
+        }),
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
     });
   }
 

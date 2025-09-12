@@ -4,7 +4,8 @@ import { Auth } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MockDataService } from '../services/mock-data.service';
 import { UsersFacadeService } from './users-facade.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { User } from '../../shared/models/user';
 @Injectable({
   providedIn: 'root'
 })
@@ -96,8 +97,8 @@ export class ChannelsFacadeService {
    * @param channelId - The channel ID to get members for
    * @returns Promise with array of user IDs
    */
-  async getChannelMembers(channelId: string): Promise<string[]> {
-    return await this.data.getChannelMembers(channelId);
+  getChannelMembers$(channelId: string): Observable<User[]> {
+    return this.data.getChannelMembers$(channelId);
   }
 
   /**
@@ -110,16 +111,4 @@ export class ChannelsFacadeService {
   async addMemberToChannel(channelId: string, userId: string) {
     await this.data.addMemberToChannel(channelId, userId);
   }
-
-
-
-private mockData = inject(MockDataService);
-
-
-
-
-
-
-
-
 }

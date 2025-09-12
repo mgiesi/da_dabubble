@@ -246,7 +246,6 @@
 
 @mixin btn-add-style($top: unset, $left: unset, $right: unset, $transform: unset) {
   background-color: transparent;
-  position: absolute;
   top: $top;
   left: $left;
   right: $right;
