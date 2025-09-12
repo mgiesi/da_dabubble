@@ -21,10 +21,9 @@ $font-size-18: 18px;
 $font-size-17-20: clamp(17px, 16.4px + 0.1875vw, 20px);
 $font-size-18-20: clamp(18px, 17.6px + 0.125vw, 20px); // for p and li privacy policy imprint
 $font-size-20: 20px;
-$font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px);
 $font-size-16-24: clamp(16px, 14.4px + 0.5vw, 24px); // placeholder input-field
 $font-size-18-24: clamp(18px, 16.8px + 0.375vw, 24px);
-$font-size-20-24: clamp(20px, 19.2px + 0.25vw, 24px); // for h3 in imprint and privacy policy
+$font-size-20-24: clamp(20px, 19.1523px + 0.2649vw, 24px); // for h3 in imprint and privacy policy
 $font-size-24: 24px;
 $font-size-24-32: clamp(24px, 22.4px + 0.5vw, 32px);
 $font-size-26-32: clamp(26px, 24.8px + 0.375vw, 32px); // for span in imprint and privacy policy
@@ -56,8 +55,12 @@ $transition-0-3-ease-in-out: all 0.3s ease-in-out;
 //animation
 $animation-login-overlay-logo: 0.75s ease forwards 1s;
 $animation-login-overlay-text: 0.5s ease forwards 1.5s;
+$animation-login-overlay-text-mobile: 0.5s ease forwards 1.4s;
+$animation-text-slide-in: 0.5s ease forwards 1.49s;
 $animation-login-overlay: 0.9s ease forwards 1s;
-$second-step-animation: 0.9s ease forwards 2s;
+$second-step-animation: 0.75s ease forwards 4s;
+$second-step-animation-mobile: 0.75s ease forwards 3.99s;
+
 $backgroundAnimation :0.8s ease forwards 3.4s;
 $overlayToLeftCornerAnimation: 0.75s ease forwards 3s;
 $removeBgColor: 0.01s ease forwards 2s;

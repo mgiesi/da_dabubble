@@ -103,35 +103,34 @@
 }
 
 .animation-overlay-content {
+    // width: clamp(400px, 133px + 29.1803vw, 667px);
     width: clamp(203px, 104.6689px + 30.7285vw, 667px);
     height: clamp(71.5px, 47.447px + 7.5166vw, 185px);
     position: absolute;
     z-index: 4;
     top: 50%;
     left: 50%;
-    transform: translate(-25%, -50%);
+    transform: translate(-24%, -50%);
+    background-color: rgba(0, 255, 255, 0.497);
 
-    @include dFlexAllCenter($ai: center, $jc: center, $g: 10px);
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 16px);
     animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimation $overlayToLeftCornerAnimation;
     // animation: contentAnimation $animation-login-overlay-logo;
 
     @media screen and (max-width: $breakpoint-915) {
-        animation: contentAnimation $animation-login-overlay-logo, overlayToLeftCornerAnimationMobile $overlayToLeftCornerAnimation;
+        animation: contentAnimation $animation-login-overlay-logo, overlayToMiddleAnimationMobile $overlayToLeftCornerAnimation;
+        // animation: contentAnimation $animation-login-overlay-logo;
+
     }
 
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
+    @include dFlexAllCenter($ai: center, $jc: center);
     background: transparent;
     z-index: 3;
-    width: clamp(71.5px, 47.447px + 7.5166vw, 185px);
     aspect-ratio: 1 / 1;
-    // animation: removeBgColor $removeBgColor, logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    animation: logoToLeftCornerAnimation $overlayToLeftCornerAnimation;
+    height: 100%;
 
     img {
         width: 100%;
@@ -140,23 +139,42 @@
 }
 
 .text {
-    width: clamp(124px, -77px + 21.9672vw, 325px);
+    // width: clamp(124px, 81.404px + 13.3113vw, 325px);
     background-color: transparent;
     @include dFlexAllCenter($ai: center, $jc: center);
     z-index: 1;
-    height: 100%;
-    // animation: textAnimation $animation-login-overlay-text, textToLeftCornerAnimation $overlayToLeftCornerAnimation;
-    animation: textWidthAnimation $overlayToLeftCornerAnimation;
+    // width: clamp(96.27px, 45.2544px + 15.9424vw, 337px);
+    // height: 100%;
+    // flex: auto;
+    // animation: secondStepTextH1Animation $second-step-animation;
+    // animation: textBoxToleftCornerANimation $overlayToLeftCornerAnimation;
+
+    // @media screen and (max-width: $breakpoint-915) {
+    //     // width: clamp(103px, 55.9536px + 14.702vw, 325px);
+
+    //     // animation: secondStepTextH1Animation $second-step-animation-mobile;
+    // }
+
+
 
 
     h1 {
-        // width: clamp(100px, 52.2863px + 14.9105vw, 325px);
-        width: clamp(124px, -77px + 21.9672vw, 325px);
-
-        @include fontSizeWeightColor($si: clamp(26px, 17.2px + 2.75vw, 70px), $we: 700, $co: transparent);
+        @include fontSizeWeightColor($si: clamp(20px, 9.404px + 3.3113vw, 70px), $we: 700, $co: transparent);
         position: relative;
-        transform: translate(-105%, 0%);
+        width: -webkit-fill-available;
+
+
+        // animation: textAnimation $animation-login-overlay-text, secondStepTextH1Animation $second-step-animation;
         animation: textAnimation $animation-login-overlay-text;
+
+        // @media screen and (max-width: $breakpoint-915) {
+        //     // width: clamp(103px, 55.9536px + 14.702vw, 325px);
+
+        //     // animation: textAnimation $animation-login-overlay-text-mobile, secondStepTextH1Animation $second-step-animation;
+        //     animation: textAnimation $animation-login-overlay-text-mobile;
+        // }
+
+        ;
 
         &::after {
             content: 'DABubble';
@@ -165,8 +183,13 @@
             left: 0;
             clip-path: inset(0 0 0 100%);
             color: $white;
-            animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
-            // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation;
+            // animation: textSlideIn $animation-login-overlay-text, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
+            animation: textSlideIn $animation-text-slide-in, h1ColorAnimation $h1ColorAnimation;
+
+            // @media screen and (max-width: $breakpoint-915) {
+            //     animation: textSlideIn $animation-login-overlay-text-mobile, h1ColorAnimation $h1ColorAnimation, h1ToLeftCornerAnimation $overlayToLeftCornerAnimation;
+            //     // animation: textSlideIn $animation-login-overlay-text-mobile, h1ColorAnimation $h1ColorAnimation;
+            // }
         }
     }
 }
@@ -195,12 +218,11 @@
 .logo-text-box-desktop,
 .logo-text-box-logged-in {
     position: absolute;
-    @include dFlexAllCenter($g: 16px);
+    @include dFlexAllCenter($jc: flex-start, $g: 16px);
     width: 203px;
     height: clamp(56px, 52.7152px + 1.0265vw, 71.5px);
 
     img {
-        // height: clamp(56px, 52.7152px + 1.0265vw, 71.5px);
         height: 100%;
         aspect-ratio: 1 / 1;
     }
@@ -253,11 +275,11 @@
 .logo-text-box-mobile {
     margin-top: 20px;
     @include dFlexAllCenter($dFlex: none, $g: 16px);
-    width: 203.05px;
-    height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+    width: 203px;
+    height: clamp(56px, 52.7152px + 1.0265vw, 71.5px);
 
     h1 {
-        @include fontSizeWeightColor($si: $font-size-20-24, $we: 700, $co: $black);
+        @include fontSizeWeightColor($si: clamp(20px, 19.1523px + 0.2649vw, 24px), $we: 700, $co: $black);
         margin: 0;
     }
 
@@ -266,20 +288,8 @@
     }
 
     img {
-        height: clamp(56px, 52.9px + 0.9688vw, 71.5px);
+        height: 100%;
         aspect-ratio: 1 / 1;
     }
 
 }
-
-// .logo-text-box-logged-in {
-
-//     top: 20px;
-//     left: 45px;
-
-//     @media screen and (max-width: $breakpoint-450) {
-//         top: 25px;
-//         left: 50%;
-//         transform: translateX(-50%);
-//     }
-// }
