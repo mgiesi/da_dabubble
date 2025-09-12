@@ -1,35 +1,28 @@
 <app-workspace-menu-toggler *ngIf="!logo.isMobile()" [isOpen]="isWorkspaceMenuOpen" (toggle)="onToggleWorkspaceMenu()">
 </app-workspace-menu-toggler>
 
-<div class="main-layout" 
-     [class.mobile]="logo.isMobile()"
-     [class.workspace-open]="isWorkspaceMenuOpen"
-     [class.thread-open]="currentView === 'thread'">
+<div class="main-layout" [class.mobile]="logo.isMobile()" [class.workspace-open]="isWorkspaceMenuOpen"
+  [class.thread-open]="currentView === 'thread'">
 
   <aside class="workspace-sidebar"
     *ngIf="(!logo.isMobile() && isWorkspaceMenuOpen) || (logo.isMobile() && logo.isWorkspaceView())"
     [class.active]="currentView === 'workspace'">
-    <app-workspace-menu (channelSelected)="onChannelSelected($event)"></app-workspace-menu>
+    <app-workspace-menu (channelSelected)="onChannelSelected($event)"
+      (directMessageSelected)="onDirectMessageSelected($event)">
+    </app-workspace-menu>
   </aside>
 
-  <main class="chat-main" 
-       *ngIf="!logo.isMobile() || logo.isChatView()" 
-       [class.active]="currentView === 'chat'"
-       [class.thread-open]="currentView === 'thread'">
-    <app-chat-area *ngIf="selectedChannelId" 
-                   [channelId]="selectedChannelId" 
-                   (threadOpened)="onThreadOpened($event)">
+  <main class="chat-main" *ngIf="!logo.isMobile() || logo.isChatView()" [class.active]="currentView === 'chat'"
+    [class.thread-open]="currentView === 'thread'">
+    <app-chat-area *ngIf="selectedChannelId || selectedUserId" [channelId]="selectedChannelId" [userId]="selectedUserId"
+      [isDM]="chatType === 'dm'" (threadOpened)="onThreadOpened($event)">
     </app-chat-area>
   </main>
 
-  <aside class="thread-sidebar" 
-         *ngIf="!logo.isMobile() || logo.isThreadView()"
-         [class.active]="currentView === 'thread'">
-    <app-thread-panel *ngIf="selectedThread" 
-                      [message]="selectedThread" 
-                      [currentChannelName]="currentChannelName"
-                      [selectedChannelId]="selectedChannelId" 
-                      (backToChat)="onBackToChat()">
+  <aside class="thread-sidebar" *ngIf="!logo.isMobile() || logo.isThreadView()"
+    [class.active]="currentView === 'thread'">
+    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName"
+      [selectedChannelId]="selectedChannelId" (backToChat)="onBackToChat()">
     </app-thread-panel>
   </aside>
 </div>

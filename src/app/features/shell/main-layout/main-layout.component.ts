@@ -23,6 +23,9 @@ export class MainLayoutComponent implements OnInit {
   private logoState = inject(LogoStateService)
   logo = inject(LogoStateService);
 
+  selectedUserId: string | null = null;
+  chatType: "channel" | "dm" = "channel";
+
   ngOnInit() {
     this.initializeDefaultState();
   }
@@ -33,7 +36,7 @@ export class MainLayoutComponent implements OnInit {
   private initializeDefaultState() {
     // Set initial view state
     this.logoState.setCurrentView("chat");
-    
+
     // Auto-select first available channel
     this.selectFirstAvailableChannel();
   }
@@ -58,13 +61,24 @@ export class MainLayoutComponent implements OnInit {
    */
   onToggleWorkspaceMenu() {
     this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen
-    
+
     // Workspace öffnen schließt Thread
     if (this.isWorkspaceMenuOpen && this.currentView === 'thread') {
       this.currentView = 'chat'
       this.selectedThread = null
       this.logoState.setCurrentView('chat')
     }
+  }
+
+  /**
+   * Handles direct message selection from workspace menu
+   */
+  onDirectMessageSelected(userId: string) {
+    this.selectedUserId = userId;
+    this.selectedChannelId = null;
+    this.chatType = "dm";
+    this.currentView = "chat";
+    this.logoState.setCurrentView("chat");
   }
 
   /**
@@ -79,6 +93,8 @@ export class MainLayoutComponent implements OnInit {
     }
 
     this.selectedChannelId = channelId
+    this.selectedUserId = null;
+    this.chatType = "channel";
     this.currentView = "chat"
     this.logoState.setCurrentView("chat")
     this.logoState.setCurrentChannelName(this.currentChannelName)

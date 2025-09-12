@@ -16,7 +16,8 @@ import { User } from '../../../shared/models/user';
 })
 export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
-  
+  @Output() directMessageSelected = new EventEmitter<string>();
+
   private router = inject(Router);
   private logoState = inject(LogoStateService);
   private channelsFacade = inject(ChannelsFacadeService);
@@ -58,12 +59,16 @@ export class WorkspaceMenuComponent implements OnInit {
     // No need to emit specific channelId since we don't get it back from the facade
   }
 
+
   onCloseChannelForm() {
     this.showChannelForm = false;
   }
 
+  /**
+   * Handles direct message user click
+   */
   onDirectMessageClick(userId: string) {
-    // TODO: Implement direct message functionality
+    this.directMessageSelected.emit(userId);
   }
 
   onEditWorkspace() {

@@ -46,8 +46,7 @@ import { ChannelSettingsComponent } from '../../channels/channel-settings/channe
   styleUrl: './chat-area.component.scss',
 })
 export class ChatAreaComponent
-  implements OnInit, OnChanges, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   /**
    * Flag, ob Komponente zerstört wurde (für async-Schutz)
    */
@@ -68,6 +67,9 @@ export class ChatAreaComponent
 
   private messageSubscription: (() => void) | null = null;
   private previousChannelId: string | null = null;
+
+  @Input() userId: string | null = null;
+  @Input() isDM: boolean = false;
 
   currentChannel: Channel | null = null;
   memberCount = 0;
@@ -126,7 +128,20 @@ export class ChatAreaComponent
    * Sets up message subscription with scroll
    */
   private async setupMessageSubscription() {
+    if (this.isDM && this.userId) {
+      this.messageSubscription = this.messagesFacade.subscribeToDMMessages(
+        this.userId,
+        (messages) => {
+          this.messages = messages;
+          this.cdr.detectChanges();
+          this.scrollToBottomAfterUpdate();
+        }
+      );
+      return;
+    }
+
     if (!this.channelId) return;
+
 
     this.messageSubscription = this.messagesFacade.subscribeToChannelMessages(
       this.channelId,
@@ -201,6 +216,16 @@ export class ChatAreaComponent
    * Loads channel data from facade
    */
   private async loadChannelData() {
+    if (this.isDM && this.userId) {
+      try {
+        const user = await this.usersFacade.getUserById(this.userId);
+        this.createdByName = user?.displayName || 'Unbekannt';
+      } catch (error) {
+        console.error('Error loading DM user:', error);
+        this.createdByName = 'Unbekannt';
+      }
+      return;
+    }
     const channels = this.channelsFacade.channels();
     this.currentChannel = channels.find((c) => c.id === this.channelId) || null;
 
@@ -254,7 +279,13 @@ export class ChatAreaComponent
   }
 
   get currentChatName(): string {
-    return this.currentChannel?.name || 'Entwicklerteam';
+    if (this.isDM && this.createdByName) {
+      return `@ ${this.createdByName}`;
+    }
+    if (this.isDM) {
+      return "@ Direct Message";
+    }
+    return `# ${this.currentChannel?.name || "Entwicklerteam"}`;
   }
 
   get currentChatDescription(): string {

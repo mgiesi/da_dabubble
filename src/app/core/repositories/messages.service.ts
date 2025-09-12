@@ -12,11 +12,12 @@ import {
   onSnapshot,
   addDoc,
   serverTimestamp,
-  where,
+  collectionGroup,
   doc,
   getDoc,
   updateDoc,
   getDocs,
+  collectionData,
 } from '@angular/fire/firestore';
 import { Observable, defer } from 'rxjs';
 import type { Message, Topic } from '../facades/messages-facade.service';
@@ -293,5 +294,91 @@ export class MessagesService {
     });
 
     return newReactions;
+  }
+
+  /**
+ * Gets direct messages between two users
+ */
+  getDMMessages$(userId1: string, userId2: string): Observable<Message[]> {
+    const dmId = this.createDMId(userId1, userId2);
+
+    return runInInjectionContext(this.injector, () => {
+      const ref = collection(this.fs, 'directMessages', dmId, 'messages');
+      const q = query(ref, orderBy('timestamp', 'asc'));
+      return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
+    });
+  }
+
+  /**
+   * Creates consistent DM ID from two user IDs
+   */
+  private createDMId(userId1: string, userId2: string): string {
+    return [userId1, userId2].sort().join('_');
+  }
+
+  /**
+ * Creates a direct message between two users
+ */
+  async createDMMessage(userId1: string, userId2: string, messageData: Partial<Message>): Promise<void> {
+    return runInInjectionContext(this.injector, async () => {
+      const dmId = this.createDMId(userId1, userId2);
+      const ref = collection(this.fs, 'directMessages', dmId, 'messages');
+
+      await addDoc(ref, {
+        ...messageData,
+        timestamp: serverTimestamp(),
+        dmId: dmId
+      });
+    });
+  }
+
+  /**
+ * Adds reaction to direct message
+ */
+  async addReactionToDMMessage(dmId: string, messageId: string, emoji: string, userId: string): Promise<void> {
+    return runInInjectionContext(this.injector, async () => {
+      const messageRef = doc(this.fs, 'directMessages', dmId, 'messages', messageId);
+      const messageSnap = await getDoc(messageRef);
+
+      if (!messageSnap.exists()) return;
+
+      const currentReactions = messageSnap.data()?.['reactions'] || {};
+      const updatedReactions = this.updateReactions(currentReactions, emoji, userId);
+
+      await updateDoc(messageRef, { reactions: updatedReactions });
+    });
+  }
+
+  /**
+ * Updates reactions with single-emoji-per-user logic
+ */
+  private updateReactions(currentReactions: any, emoji: string, userId: string): any {
+    const reactions = { ...currentReactions };
+
+    // Remove user from any existing emoji
+    for (const [existingEmoji, data] of Object.entries(reactions)) {
+      const entry = data as { users: string[], count: number };
+      const userIndex = entry.users.indexOf(userId);
+      if (userIndex > -1) {
+        entry.users.splice(userIndex, 1);
+        entry.count = Math.max(0, entry.count - 1);
+        if (entry.count === 0) {
+          delete reactions[existingEmoji];
+        }
+      }
+    }
+
+    // Add user to new emoji
+    if (!reactions[emoji]) {
+      reactions[emoji] = { count: 0, users: [] };
+    }
+
+    const entry = reactions[emoji];
+    if (!entry.users.includes(userId)) {
+      entry.users.push(userId);
+      entry.count += 1;
+    }
+
+    return reactions;
   }
 }
