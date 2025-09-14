@@ -45,7 +45,7 @@ export class MembersMiniaturInfoComponent {
 
   
   openMembersListDialog(triggerEl: HTMLElement) {
-    const dialogRef = this.dialog.getDialogById('profileDetailsDialog');
+    const dialogRef = this.dialog.getDialogById('profileMembersListDialog');
     if (dialogRef) {
       dialogRef.close();
     } else {
@@ -53,7 +53,7 @@ export class MembersMiniaturInfoComponent {
       const top = `${rect.bottom + 8}px`;
       const right = `${window.innerWidth - rect.right}px`
       this.dialog.open(DlgMembersListComponent, {
-            id: 'profileDetailsDialog',
+            id: 'profileMembersListDialog',
             position: {
               top: top,
               right: right,
