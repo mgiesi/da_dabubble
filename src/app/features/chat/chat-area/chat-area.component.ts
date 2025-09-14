@@ -32,6 +32,7 @@ import { LogoStateService } from '../../../core/services/logo-state.service';
 import { MessagesService } from '../../../core/repositories/messages.service';
 import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
 import { MembersMiniaturInfoComponent } from "../../channels/members-miniatur-info/members-miniatur-info.component";
+import { BtnAddMembersComponent } from "../../channels/btn-add-members/btn-add-members.component";
 
 @Component({
   selector: 'app-chat-area',
@@ -42,7 +43,8 @@ import { MembersMiniaturInfoComponent } from "../../channels/members-miniatur-in
     MessageInputComponent,
     MessageItemComponent,
     ChannelSettingsComponent,
-    MembersMiniaturInfoComponent
+    MembersMiniaturInfoComponent,
+    BtnAddMembersComponent
 ],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss',

@@ -1,0 +1,31 @@
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/profile.scss" as *;
+
+.dlg-members-list-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 28px);
+    background-color: white;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: clamp(300px, 260px + 12.5vw, 415px);
+    overflow: hidden;
+}
+
+h1 {
+    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
+}
+
+h2 {
+    @include fontSizeWeightColor($si: 24px, $we: 700, $co: $black);
+}
+
+.header {
+    @include dFlexAllCenter($ai: center, $jc: space-between);
+    width: 100%;
+
+    .btn-close {
+        position: unset;
+    }
+}
