@@ -6,6 +6,8 @@ import { ChannelsFacadeService } from '../../../core/facades/channels-facade.ser
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ImgSrcDirective } from "../../../core/services/img-src-directive";
+import { MatDialog } from '@angular/material/dialog';
+import { DlgMembersListComponent } from '../dlg-members-list/dlg-members-list.component';
 
 const EMPTY_USERS: User[] = [];
 
@@ -17,6 +19,7 @@ const EMPTY_USERS: User[] = [];
 })
 export class MembersMiniaturInfoComponent {
   private channelFacade = inject(ChannelsFacadeService);
+  dialog = inject(MatDialog);
 
   // Max number of member avatar fields until a +N field will be shown
   @Input() membersViewLimit = 5;
@@ -38,4 +41,26 @@ export class MembersMiniaturInfoComponent {
   readonly members = computed<User[]>(() => this.membersSig() ?? []);
   // Computes the list of visible members depending on the variable 'membersViewLimit'
   readonly visibleMembers = computed(() => this.membersSig()?.slice(0, this.membersViewLimit) );
+
+
+  
+  openMembersListDialog(triggerEl: HTMLElement) {
+    const dialogRef = this.dialog.getDialogById('profileDetailsDialog');
+    if (dialogRef) {
+      dialogRef.close();
+    } else {
+      const rect = triggerEl.getBoundingClientRect();
+      const top = `${rect.bottom + 8}px`;
+      const right = `${window.innerWidth - rect.right}px`
+      this.dialog.open(DlgMembersListComponent, {
+            id: 'profileDetailsDialog',
+            position: {
+              top: top,
+              right: right,
+            },
+            panelClass: 'no-top-right-radius-dialog',
+            data: this.channel,
+          });
+    }
+  }
 }

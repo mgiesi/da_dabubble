@@ -1,4 +1,4 @@
-<div class="members-miniatur-container btn-transparent">
+<div #container class="members-miniatur-container btn-transparent" (click)="openMembersListDialog(container)">
     <div class="member-list">
         <img *ngFor="let member of visibleMembers()" class="member-avatar" [resolvedImg]="member.imgUrl">
         <div *ngIf="(membersCount() ?? 0) - membersViewLimit > 0" class="member-avatar-count">
