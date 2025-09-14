@@ -20,11 +20,9 @@
           </g>
         </svg>
       </button>
-
-      <!-- <span class="member-count">{{ memberCount }} Mitglieder</span> -->
     </div>
 
-    <div class="header-actions">
+    <div *ngIf="!isDM" class="header-actions">
       <app-members-miniatur-info class="members-miniatur-info" [channel]="currentChannel"></app-members-miniatur-info>
 
       <button class="btn-add-user" (click)="onAddMember()" title="Person hinzufügen">
