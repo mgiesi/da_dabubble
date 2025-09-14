@@ -18,19 +18,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   selector: 'app-dlg-profile-menu',
   imports: [MatDialogContent, RouterLink],
   templateUrl: './dlg-profile-menu.component.html',
-  styleUrl: './dlg-profile-menu.component.scss',
-  animations: [
-    trigger('slideUp', [
-      transition(':enter', [
-        style({ transform: 'translateY(100%' }),
-        animate('250ms ease-out', style({ transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ transform: 'translateY(100%)' })),
-      ]),
-    ]),
-  ],
-  host: { '[@slideUp]': '' },
+  styleUrl: './dlg-profile-menu.component.scss'
 })
 export class DlgProfileMenuComponent {
   auth = inject(AuthService);
