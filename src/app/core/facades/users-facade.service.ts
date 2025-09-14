@@ -49,6 +49,10 @@ export class UsersFacadeService {
     return this.data.currentUser$();
   }
 
+  getUsers$(): Observable<User[]> {
+    return this.data.users$();
+  }
+
   /** Returns a stream for a single user */
   getUser$(id: string): Observable<User | null> {
     return this.users$.pipe(

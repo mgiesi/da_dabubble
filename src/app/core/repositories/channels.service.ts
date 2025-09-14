@@ -15,6 +15,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
 import { combineLatest, map, Observable, shareReplay, startWith, switchMap, of } from 'rxjs';
@@ -163,14 +164,22 @@ export class ChannelsService {
    *
    * @param channelId - The channel ID
    * @param userId - The user ID to add
-   * @returns Promise that resolves when member is added
    */
   async addMemberToChannel(channelId: string, userId: string) {
-    const memberRef = collection(this.fs, `channels/${channelId}/members`);
-    await addDoc(memberRef, {
-      userId,
-      channelId,
+    const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
+    await setDoc(memberRef, {
       joinedAt: serverTimestamp(),
     });
+  }
+
+  /**
+   * Removes a user as member from a channel.
+   *
+   * @param channelId - The channel ID
+   * @param userId - The user ID to remove
+   */
+  async removeMemberFromChannel(channelId: string, userId: string) {
+    const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
+    await deleteDoc(memberRef);
   }
 }
