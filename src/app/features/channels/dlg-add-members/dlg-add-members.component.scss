@@ -3,13 +3,13 @@
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
-.dlg-members-list-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 28px);
+.dlg-add-members-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    width: clamp(300px, 260px + 12.5vw, 415px);
+    width: clamp(320px, 260px + 12.5vw, 514px);
     overflow: hidden;
 }
 
@@ -24,8 +24,127 @@ h2 {
 .header {
     @include dFlexAllCenter($ai: center, $jc: space-between);
     width: 100%;
+    margin-bottom: 5px;
 
     .btn-close {
         position: unset;
+    }
+}
+
+.channel-name-container {
+    @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 15px);
+    width: 100%;
+    margin-bottom: 20px;
+
+    span {
+        @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-2);
+    }
+
+    svg path {
+        fill: $purple-2;
+    }
+}
+
+form {
+    width: 100%;
+    @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center);
+}
+
+:host {
+    display: block;
+}
+
+:host ::ng-deep {
+
+    .add-members-input {
+        display: block;
+        padding: 4px 20px;
+        border: 2px solid $light-purple;
+        border-radius: 30px;
+        background: #fff;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .add-members-input:focus-within {
+        border-color: $purple-1;
+    }
+
+    .add-members-input input {
+        border: 0 !important;
+        outline: none !important;
+        background: transparent;
+        padding: 15px 0px;
+        min-width: 120px;
+        @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        &:focus,
+        &:focus-visible {
+            border: 0 !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .add-members-input .mat-mdc-chip,
+    .add-members-input .mdc-evolution-chip {
+        background: $bg-color !important;
+        color: $black !important;
+        border-radius: 35px;
+
+        --mdc-chip-outline-color: transparent !important;
+        --mdc-chip-flat-outline-color: transparent !important;
+        --mdc-chip-flat-selected-outline-color: transparent !important;
+        --mdc-chip-disabled-outline-color: transparent !important;
+        --mdc-chip-hover-state-layer-opacity: 0 !important;
+        --mdc-chip-focus-state-layer-opacity: 0 !important;
+        --mdc-chip-pressed-state-layer-opacity: 0 !important;
+    }
+
+    .add-members-input .mat-mdc-chip,
+    .add-members-input .mat-mdc-chip *,
+    .add-members-input .mdc-evolution-chip,
+    .add-members-input .mdc-evolution-chip * {
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .add-members-input .mat-mdc-chip::before,
+    .add-members-input .mat-mdc-chip::after,
+    .add-members-input .mdc-evolution-chip::before,
+    .add-members-input .mdc-evolution-chip::after,
+    .add-members-input .mdc-evolution-chip__action::before,
+    .add-members-input .mdc-evolution-chip__action::after,
+    .add-members-input .mdc-evolution-chip__ripple,
+    .add-members-input .mat-ripple-element {
+        content: none !important;
+        display: none !important;
+    }
+
+    .add-members-input .mat-mdc-chip:hover,
+    .add-members-input .mat-mdc-chip:focus,
+    .add-members-input .mat-mdc-chip:active,
+    .add-members-input .mat-mdc-chip.mdc-evolution-chip--selected,
+    .add-members-input .mat-mdc-chip.mdc-evolution-chip--activated,
+    .add-members-input .mdc-evolution-chip:hover,
+    .add-members-input .mdc-evolution-chip:focus,
+    .add-members-input .mdc-evolution-chip:active,
+    .add-members-input .mdc-evolution-chip--selected,
+    .add-members-input .mdc-evolution-chip--activated {
+        background: $bg-color !important;
+        color: $black !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    .add-members-input .mat-mdc-chip .mat-icon {
+        color: $black !important;
+    }
+
+    .add-members-input .mdc-evolution-chip-set__chips {
+        align-items: center !important;
     }
 }
