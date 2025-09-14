@@ -22,7 +22,19 @@
         }
     }
 
-    span {
-        @include fontSizeWeightColor($si: 20px, $we: 600);
+    .member-avatar-count {
+        @include dFlexAllCenter($fld: row, $ai: center, $jc: center);
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        border: 2px solid $white;
+        background-color: $purple-2;
+        margin-left: -10px;
+
+        @include fontSizeWeightColor($si: 16px, $we: 600, $co: $white);
     }
+}
+
+span {
+    @include fontSizeWeightColor($si: 20px, $we: 600);
 }

@@ -1,25 +1,26 @@
-import { Component, computed, effect, inject, input, InputSignal } from '@angular/core';
-import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component";
-import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import { Component, computed, inject, Input, input, InputSignal } from '@angular/core';
 import { User } from '../../../shared/models/user';
-import { Timestamp } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { Channel } from '../../../shared/models/channel';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { ImgSrcDirective } from "../../../core/services/img-src-directive";
 
 const EMPTY_USERS: User[] = [];
 
 @Component({
   selector: 'app-members-miniatur-info',
-  imports: [CommonModule],
+  imports: [CommonModule, ImgSrcDirective],
   templateUrl: './members-miniatur-info.component.html',
   styleUrl: './members-miniatur-info.component.scss'
 })
 export class MembersMiniaturInfoComponent {
   private channelFacade = inject(ChannelsFacadeService);
 
+  // Max number of member avatar fields until a +N field will be shown
+  @Input() membersViewLimit = 5;
+  // Input variable to link this component with a channel
   channel: InputSignal<Channel | null> = input<Channel | null>(null);
 
   readonly membersSig = toSignal<User[] | null>(
@@ -31,7 +32,10 @@ export class MembersMiniaturInfoComponent {
     { initialValue: null }
   );
 
+  // Computes the number of members inside the channel
   readonly membersCount = computed(() => this.membersSig()?.length);
+  // Computes the list of members in form of User objects of the channel
   readonly members = computed<User[]>(() => this.membersSig() ?? []);
-  readonly firstFiveMembers = computed(() => this.membersSig()?.slice(0, 5) );
+  // Computes the list of visible members depending on the variable 'membersViewLimit'
+  readonly visibleMembers = computed(() => this.membersSig()?.slice(0, this.membersViewLimit) );
 }

@@ -1,6 +1,9 @@
 <div class="members-miniatur-container btn-transparent">
     <div class="member-list">
-        <img *ngFor="let member of firstFiveMembers()" class="member-avatar" [src]="member.imgUrl">
+        <img *ngFor="let member of visibleMembers()" class="member-avatar" [resolvedImg]="member.imgUrl">
+        <div *ngIf="(membersCount() ?? 0) - membersViewLimit > 0" class="member-avatar-count">
+            +{{ (membersCount() ?? 0) - membersViewLimit }}
+        </div>
     </div>
     <span>{{ membersCount() }}</span>
 </div>

@@ -1,7 +1,7 @@
 <ng-container *ngIf="user() as user">
     <div class="profile-avatar" [style.width]="isClamp(imgSize) ? imgSize : imgSize + 'px'"
         [style.height]="isClamp(imgSize) ? imgSize : imgSize + 'px'">
-        <img [src]="imgSrc()" (error)="onImgError()">
+        <img [resolvedImg]="user.imgUrl">
         <div *ngIf="showStatus" [ngClass]="isOnline() ? 'profile-state-online' : 'profile-state-offline'"></div>
         <div *ngIf="showAddAvatar" class="add-avatar">
             <img src="icons/add_photo.svg">
