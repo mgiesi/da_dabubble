@@ -33,6 +33,7 @@ import { MessagesService } from '../../../core/repositories/messages.service';
 import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
 import { MembersMiniaturInfoComponent } from "../../channels/members-miniatur-info/members-miniatur-info.component";
 import { BtnAddMembersComponent } from "../../channels/btn-add-members/btn-add-members.component";
+import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component";
 
 @Component({
   selector: 'app-chat-area',
@@ -44,8 +45,9 @@ import { BtnAddMembersComponent } from "../../channels/btn-add-members/btn-add-m
     MessageItemComponent,
     ChannelSettingsComponent,
     MembersMiniaturInfoComponent,
-    BtnAddMembersComponent
-],
+    BtnAddMembersComponent,
+    ProfileAvatarComponent
+  ],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss',
 })
@@ -75,6 +77,8 @@ export class ChatAreaComponent
   @Input() userId: string | null = null;
   @Input() isDM: boolean = false;
 
+  dmUser: User | null = null;
+
   currentChannel: Channel | null = null;
   showMembersList = false;
   createdByName = '';
@@ -103,11 +107,22 @@ export class ChatAreaComponent
         await this.initializeChannel();
       }
     }
+    this.loadDMUser();
   }
 
   ngOnDestroy() {
     this.destroyed = true;
     this.cleanupSubscription();
+  }
+
+  /**
+ * Gets DM user data when userId changes
+ */
+  private loadDMUser() {
+    if (this.userId && this.isDM) {
+      const users = this.usersFacade.users();
+      this.dmUser = users?.find(u => u.id === this.userId) || null;
+    }
   }
 
   /**
