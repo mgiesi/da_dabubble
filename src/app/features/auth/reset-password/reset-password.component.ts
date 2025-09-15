@@ -37,6 +37,7 @@ export class ResetPasswordComponent implements OnInit {
   infoMsg: string = '';
   oobCode: string | null = null;
   passwordResetSuccessful: boolean = false;
+  errorWhileResettingPassword: boolean = false;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -45,11 +46,13 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.oobCode = params['oobCode'] || null;
       if (!this.oobCode) {
-        this.errMsg =
-          '*Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
-        setTimeout(() => {
-          this.errMsg = '';
-        }, 8000);
+        this.errorWhileResettingPassword = true;
+
+        // this.errMsg =
+        //   '*Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
+        // setTimeout(() => {
+        //   this.errMsg = '';
+        // }, 8000);
       }
     });
   }
