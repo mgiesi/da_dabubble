@@ -17,7 +17,7 @@
   cursor: pointer;
   box-shadow: $box-shadow;
   @include dFlexAllCenter($fld: column, $g: 8px);
-  z-index: 1000;
+  z-index: 10;
 
   @include main_mobile_only {
     display: none;
@@ -30,12 +30,12 @@
     @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
     white-space: nowrap;
   }
-  
+
   svg {
     width: $font-size-16;
     height: $font-size-16;
     transition: transform 0.3s ease;
-    
+
     &.rotated {
       transform: rotate(180deg);
     }
@@ -43,11 +43,11 @@
 
   &:hover {
     background: $bg-color;
-    
+
     .toggler-text {
       color: $purple-1;
     }
-    
+
     svg path,
     svg rect {
       stroke: $purple-1;

@@ -10,7 +10,7 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   @include dFlexAllCenter($jc: center, $ai: center);
-  z-index: 1000;
+  z-index: 10;
 
   .form-content {
     background-color: $white;

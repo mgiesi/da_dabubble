@@ -10,7 +10,7 @@
     background-color: $bg-color;
     color: $black;
     @include dFlexAllCenter();
-    z-index: 10;
+    z-index: 1000;
     flex-direction: column;
     text-align: center;
     padding: 20px;
