@@ -27,6 +27,9 @@ import { confirmPasswordReset } from 'firebase/auth';
   animations: [fadeInOut],
 })
 export class ResetPasswordComponent implements OnInit {
+  isMobile(): boolean {
+    return window.innerWidth < 580;
+  }
   private authService = inject(AuthService);
   newPassword: string = '';
   confirmNewPassword: string = '';
@@ -47,12 +50,6 @@ export class ResetPasswordComponent implements OnInit {
       this.oobCode = params['oobCode'] || null;
       if (!this.oobCode) {
         this.errorWhileResettingPassword = true;
-
-        // this.errMsg =
-        //   '*Fehlender oder ungültiger Code zum Zurücksetzen des Passworts.';
-        // setTimeout(() => {
-        //   this.errMsg = '';
-        // }, 8000);
       }
     });
   }

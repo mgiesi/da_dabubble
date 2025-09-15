@@ -18,7 +18,8 @@
 
         <form #f="ngForm" (ngSubmit)="nextStep(f)">
             @if (infoMsg) {
-            <div class="error-message error-marquee" style="top: -24px" @fadeInOut><span>{{ infoMsg }}</span></div>
+            <div class="error-message" style="top: -24px" @fadeInOut [ngClass]="{'error-marquee': isMobile()}"><span>{{
+                    infoMsg }}</span></div>
             }
             <label class="label-input-field-gray-with-img" for="fullName">
                 <img src="icons/person_filled.svg" alt="Bild vom Namens-Eingabefeld">
@@ -29,7 +30,7 @@
 
                 @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
                 fullNameField.value !== '') {
-                <div class="error-message error-marquee" @fadeInOut>
+                <div class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
                         enthalten</span>
                 </div>
@@ -38,7 +39,7 @@
                 </p>
                 } @else if (fullNameField.errors?.['pattern'] && (fullNameField.touched || fullNameField.dirty)&&
                 fullNameField.value !== '') {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Bitte geben Sie Vor- und Nachnamen an.</span>
                 </p>
                 }
@@ -53,7 +54,7 @@
 
                 <ng-container
                     *ngIf="emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value !== ''">
-                    <p class="error-message error-marquee" @fadeInOut>
+                    <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                         <span>*Bitte geben Sie eine gültige E-Mail-Adresse ein</span>
                     </p>
                 </ng-container>
@@ -68,7 +69,7 @@
                 @if (emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value
                 !==
                 '') {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Bitte geben Sie eine gültige E-Mail-Adresse ein</span>
                 </p>
                 }
@@ -105,7 +106,7 @@
                 }
                 @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
                 pwdField.dirty)) {
-                <div class="error-message error-marquee">
+                <div class="error-message" [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
                         enthalten</span>
                 </div>
@@ -117,7 +118,7 @@
                 emailField.valid &&
                 pwdField.valid
                 ) {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Es existiert kein Benutzer mit dieser E-Mail-Adresse</span>
                 </p>
                 }
@@ -142,7 +143,7 @@
                 pwdField.value !== '' &&
                 confirmPwdField.value !== ''
                 ) {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Die Passwörter stimmen nicht überein</span>
                 </p>
                 }

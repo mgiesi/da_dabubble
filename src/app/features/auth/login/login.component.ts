@@ -26,6 +26,9 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
   animations: [fadeInOut],
 })
 export class LoginComponent implements AfterViewInit {
+  isMobile(): boolean {
+    return window.innerWidth < 580;
+  }
   constructor(private appComponent: AppComponent) {}
   auth = inject(AuthService);
   router = inject(Router);

@@ -87,11 +87,19 @@ export class AppComponent {
 
   ngOnInit(): void {
     // setLogLevel('debug'); // am App-Start einmalig
-    this.initRedirectAndAnimation();
+    if (this.router.url.includes('reset-password')) {
+      this.showLogoBox = true;
+    } else {
+      this.initRedirectAndAnimation();
+    }
     this.userPresenceService.init();
   }
 
   private checkFirstVisitAndShowAnimation(): void {
+    if (this.router.url.includes('reset-password')) {
+      this.showLogoBox = true;
+      return;
+    }
     const hasVisited = sessionStorage.getItem('firstPageVisit');
     if (!hasVisited) {
       this.sharedFunctions.setShowAnimation(true);

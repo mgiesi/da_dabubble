@@ -27,7 +27,7 @@
 
                 @if ((emailField.errors?.['required'] && (emailField.touched || emailField.dirty) && emailField.value
                 !== '') || (f.submitted && emailField.value === '')) {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Bitte geben Sie eine gültige E-Mail-Adresse ein</span>
                 </p>
                 }
@@ -41,7 +41,7 @@
 
                 @if (errMsg === 'E-Mail und Passwort stimmen nicht überein.' && emailField.value !== '' &&
                 pwdField.value !== '' && !(pwdField.errors?.['minlength'])) {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*E-Mail und Passwort stimmen nicht überein</span>
                 </p>
                 }
@@ -60,13 +60,13 @@
                         (errMsg === 'E-Mail und Passwort stimmen nicht überein.' && emailField.value !== '' && pwdField.value !== '')
                     " />
                 @if (errMsg === 'WRONG_PASSWORD') {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
                     <span>*Das Passwort stimmt nicht.</span>
                 </p>
                 }
                 @if ((pwdField.errors?.['required'] && (pwdField.touched || pwdField.dirty) && pwdField.value !== '') ||
                 (f.submitted && pwdField.value === '')) {
-                <p class="error-message error-marquee" @fadeInOut>
+                <p class="error-message " @fadeInOut>
                     <span>*Bitte geben Sie ein Passwort ein</span>
                 </p>
                 }
@@ -101,7 +101,8 @@
 
                 </button>
                 @if (errMsg && errMsg !== 'E-Mail und Passwort stimmen nicht überein.') {
-                <p class="error-message error-marquee" @fadeInOut><span>{{ errMsg }}</span></p>
+                <p class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}"><span>{{ errMsg }}</span>
+                </p>
                 }
             </div>
 

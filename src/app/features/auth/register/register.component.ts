@@ -37,6 +37,9 @@ import { RegisterDataService } from '../../../core/services/register-data.servic
   animations: [fadeInOut],
 })
 export class RegisterComponent implements OnInit, AfterViewInit {
+  isMobile(): boolean {
+    return window.innerWidth < 580;
+  }
   @ViewChild('f') form!: NgForm;
 
   fullName: string = '';

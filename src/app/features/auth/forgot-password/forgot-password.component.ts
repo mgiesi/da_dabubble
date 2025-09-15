@@ -27,6 +27,9 @@ import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
   animations: [fadeInOut],
 })
 export class ForgotPasswordComponent {
+  isMobile(): boolean {
+    return window.innerWidth < 580;
+  }
   resetEmail: string = '';
   emailExists: boolean | null = null;
   emailCheckInProgress = false;
