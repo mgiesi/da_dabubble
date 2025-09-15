@@ -5,6 +5,14 @@
 
 .profile-badge-content {
     @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 15px);
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+    padding: 4px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+
+    &:hover {
+        background: $bg-color;
+    }
 }
 
 .profile-avatar {    
