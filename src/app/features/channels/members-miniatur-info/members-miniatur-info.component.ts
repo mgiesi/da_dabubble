@@ -59,7 +59,7 @@ export class MembersMiniaturInfoComponent {
               right: right,
             },
             panelClass: 'no-top-right-radius-dialog',
-            data: this.channel,
+            data: { channel: this.channel, refElement: triggerEl }
           });
     }
   }

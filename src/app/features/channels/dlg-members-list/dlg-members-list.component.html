@@ -16,11 +16,11 @@
                 </svg>
             </button>
         </div>
-        <div class="members-list">
+        <div #memberslist class="members-list">
             <app-profile-badge class="" *ngFor="let member of members(); trackBy: trackById" [user]="member">
                 (userClicked)="onDirectMessageClick($event)">
             </app-profile-badge>
-            <div class="members-add-btn">
+            <div class="members-add-btn" (click)="openAddMembersDialog()">
                 <div class="members-add-btn-icon-bg">
                     <div class="members-add-btn-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

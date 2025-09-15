@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, Signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { Channel } from '../../../shared/models/channel';
 import { NgFor, NgIf } from '@angular/common';
@@ -8,6 +8,12 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { of } from 'rxjs';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
+import { DlgAddMembersComponent } from '../dlg-add-members/dlg-add-members.component';
+
+interface MembersDialogData {
+  channel: Signal<Channel | null>;
+  refElement: HTMLElement | ElementRef<HTMLElement>;
+}
 
 @Component({
   selector: 'app-dlg-members-list',
@@ -17,9 +23,13 @@ import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge
 })
 export class DlgMembersListComponent {
   private channelFacade = inject(ChannelsFacadeService);
+  dialog = inject(MatDialog);
   private dialogRef = inject(MatDialogRef<DlgMembersListComponent>);
   
-  readonly channel = inject<Signal<Channel | null>>(MAT_DIALOG_DATA);
+  readonly dialogData = inject<MembersDialogData>(MAT_DIALOG_DATA);
+  readonly channel = this.dialogData.channel;
+  readonly refElement = this.dialogData.refElement instanceof ElementRef 
+  ? this.dialogData.refElement.nativeElement : this.dialogData.refElement;
 
   readonly membersSig = toSignal<User[] | null>(
     toObservable(this.channel).pipe(
@@ -37,5 +47,26 @@ export class DlgMembersListComponent {
   
   closeDialog() {
     this.dialogRef.close(false);
+  }
+
+  openAddMembersDialog() {
+    this.closeDialog();
+    const dialogRef = this.dialog.getDialogById('addMemberDialog');
+    if (dialogRef) {
+      dialogRef.close();
+    } else {
+      const rect = this.refElement.getBoundingClientRect();
+      const top = `${rect.bottom + 8}px`;
+      const right = `${window.innerWidth - rect.right}px`
+      this.dialog.open(DlgAddMembersComponent, {
+        id: 'addMemberDialog',
+        position: {
+          top: top,
+          right: right,
+        },
+        panelClass: 'no-top-right-radius-dialog',
+        data: this.channel
+      });
+    }
   }
 }
