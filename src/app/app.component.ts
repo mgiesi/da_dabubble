@@ -1,3 +1,6 @@
+import { UsersService } from './core/repositories/users.service';
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { map, startWith, filter } from 'rxjs/operators';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -5,11 +8,9 @@ import { ProfileMenuComponent } from './features/profile/profile-menu/profile-me
 import { AuthService } from './core/services/auth.service';
 import { SharedFunctionsService } from '../../src/app/core/services/shared-functions.service';
 import { LogoStateService } from './core/services/logo-state.service';
-import { UsersService } from './core/repositories/users.service';
-import { firstValueFrom, Observable, combineLatest } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
 import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-landscape.component';
-import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -27,8 +28,6 @@ export class AppComponent {
   private auth = inject(AuthService);
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
-
-  private usersService: UsersService = inject(UsersService);
   private userPresenceService: UserPresenceService =
     inject(UserPresenceService);
 
@@ -69,6 +68,31 @@ export class AppComponent {
     )
   );
 
+  private usersService = inject(UsersService);
+  searchInput$ = new BehaviorSubject<string>('');
+  users$: Observable<any[]> = this.usersService.users$();
+  filteredUsers$: Observable<any[]> = combineLatest([
+    this.searchInput$,
+    this.users$,
+  ]).pipe(
+    map(([search, users]) => {
+      if (search.startsWith('@')) {
+        const term = search.slice(1).toLowerCase();
+        if (!term) {
+          return users;
+        }
+        return users.filter((u) =>
+          u.displayName?.toLowerCase().startsWith(term)
+        );
+      }
+      return [];
+    })
+  );
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchInput$.next(value);
+  }
+
   shouldShowAnimation$: Observable<boolean> = combineLatest([
     this.showAnimation$,
     this.router.events.pipe(
@@ -93,6 +117,11 @@ export class AppComponent {
       this.initRedirectAndAnimation();
     }
     this.userPresenceService.init();
+
+    // Dropdown nach Reload ausblenden, wenn Input leer
+    if (!this.searchInput$.value) {
+      this.searchInput$.next('');
+    }
   }
 
   private checkFirstVisitAndShowAnimation(): void {

@@ -40,9 +40,19 @@
 
     <div class="search-input-box">
       <label *ngIf="showSearchLabel$ | async" class="label-input-field-white-img-right" for="searchInput">
-        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" />
+        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen"
+          (input)="onSearchInput($event)" />
         <img src="icons/search.svg" alt="Suchen Icon" />
       </label>
+      <div *ngIf="(filteredUsers$ | async) as users" class="autocomplete-dropdown">
+        <ng-container *ngIf="users.length > 0">
+          <ul class="user-search-list">
+            <li *ngFor="let user of users" class="autocomplete-option">
+              <span>{{ user.displayName }}</span>
+            </li>
+          </ul>
+        </ng-container>
+      </div>
     </div>
 
 
