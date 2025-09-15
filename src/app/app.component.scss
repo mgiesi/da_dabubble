@@ -83,6 +83,10 @@
     }
 }
 
+.autocomplete-title {
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
+}
+
 .user-search-list {
     list-style: none;
     margin: 0;

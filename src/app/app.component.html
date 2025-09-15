@@ -48,7 +48,7 @@
         <ng-container *ngIf="users.length > 0">
           <ul class="user-search-list">
             <li *ngFor="let user of users" class="autocomplete-option">
-              <span>{{ user.displayName }}</span>
+              <span (click)="onDirectMessageClick(user)">{{ user.displayName }}</span>
             </li>
           </ul>
         </ng-container>

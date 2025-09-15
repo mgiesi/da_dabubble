@@ -93,6 +93,14 @@ export class AppComponent {
     this.searchInput$.next(value);
   }
 
+  // Öffnet Direktnachricht mit dem ausgewählten User
+  onDirectMessageClick(user: any) {
+    // user kann ein User-Objekt oder nur ein userId sein, je nach Aufrufer
+    const userId = user?.id || user;
+    // Navigiere zur Chat-Ansicht mit userId als DM
+    this.router.navigate(['/chat'], { queryParams: { dm: userId } });
+  }
+
   shouldShowAnimation$: Observable<boolean> = combineLatest([
     this.showAnimation$,
     this.router.events.pipe(
