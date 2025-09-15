@@ -3,13 +3,13 @@
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 
 .channel-settings-overlay {
-  position: fixed; 
+  position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, .35);
   backdrop-filter: blur(2px);
-  display: grid; 
+  display: grid;
   place-items: center;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .card {
@@ -26,24 +26,24 @@
 }
 
 .header {
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
 
   .title {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     gap: 12px;
 
-    .hash { 
-      width: 24px; 
-      height: 24px; 
+    .hash {
+      width: 24px;
+      height: 24px;
       fill: $black;
     }
-    
-    h3 { 
-      margin: 0; 
+
+    h3 {
+      margin: 0;
       @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
     }
   }
@@ -52,22 +52,22 @@
     background: none;
     border: none;
     cursor: pointer;
-    width: 40px; 
+    width: 40px;
     height: 40px;
     border-radius: 50%;
-    display: grid; 
+    display: grid;
     place-items: center;
     transition: $transition-0-3-ease-in-out;
 
-    svg { 
-      width: 24px; 
-      height: 24px; 
+    svg {
+      width: 24px;
+      height: 24px;
       fill: $black;
     }
-    
-    &:hover { 
+
+    &:hover {
       background: $bg-color;
-      
+
       svg {
         fill: $purple-1;
       }
@@ -82,30 +82,30 @@
   margin-top: 16px;
 
   .block-head {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
 
-    .label { 
+    .label {
       @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $text-gray);
     }
-    
-    .link { 
+
+    .link {
       background: none;
       border: none;
       cursor: pointer;
       @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $purple-1);
       transition: $transition-0-3-ease-in-out;
-      
+
       &:hover {
         color: $purple-2;
       }
     }
   }
 
-  .view { 
-    margin-top: 8px; 
+  .view {
+    margin-top: 8px;
   }
 
   .pill {
@@ -118,7 +118,7 @@
 
   .edit {
     margin-top: 8px;
-    
+
     .edit-input,
     .edit-textarea {
       width: 100%;
@@ -129,40 +129,38 @@
       background: $white;
       transition: $transition-0-3-ease-in-out;
       font-family: inherit;
-      
+
       &:focus {
         outline: none;
         border-color: $purple-1;
       }
-      
+
       &::placeholder {
         color: $text-gray;
       }
     }
-    
+
     .edit-textarea {
       resize: vertical;
       min-height: 80px;
     }
-    
+
     .edit-actions {
       display: flex;
       gap: 12px;
       justify-content: flex-end;
       margin-top: 12px;
-      
+
       .btn-cancel {
-        @include buttonStyle(
-          $btn-bg-color: transparent,
+        @include buttonStyle($btn-bg-color: transparent,
           $hover-bg-color: $bg-color,
           $text-color: $text-gray,
           $border: $light-purple,
-          $hover-text-color: $black
-        );
+          $hover-text-color: $black );
         padding: 8px 16px;
         font-size: 14px;
       }
-      
+
       .btn-save {
         @include buttonStyle();
         padding: 8px 16px;
@@ -171,17 +169,17 @@
     }
   }
 
-  .description { 
-    margin: 8px 0 0; 
+  .description {
+    margin: 8px 0 0;
     @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
-    line-height: 1.5; 
+    line-height: 1.5;
   }
-  
-  .creator { 
+
+  .creator {
     @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $purple-1);
     text-decoration: none;
     cursor: pointer;
-    
+
     &:hover {
       color: $purple-2;
     }
@@ -189,8 +187,8 @@
 }
 
 .actions {
-  display: flex; 
-  gap: 16px; 
+  display: flex;
+  gap: 16px;
   justify-content: flex-end;
   margin-top: auto;
   padding-top: 20px;
@@ -198,17 +196,15 @@
   button {
     @include buttonStyle();
     min-width: 120px;
-    
+
     &.btn-secondary {
-      @include buttonStyle(
-        $btn-bg-color: transparent,
+      @include buttonStyle($btn-bg-color: transparent,
         $hover-bg-color: $bg-color,
         $text-color: $black,
         $border: $light-purple,
-        $hover-text-color: $purple-1
-      );
+        $hover-text-color: $purple-1 );
     }
-    
+
     &.btn-primary {
       @include buttonStyle();
     }

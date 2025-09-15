@@ -9,15 +9,16 @@
 
   // Desktop: Dynamisches Grid basierend auf Workspace-Menu Status
   @include main_desktop_up {
+
     // Workspace Menu geschlossen: Chat allein oder Chat + Thread
     &:not(.workspace-open):not(.thread-open) {
       grid-template-columns: 1fr;
     }
-    
+
     &:not(.workspace-open).thread-open {
       grid-template-columns: 1fr 1fr;
     }
-    
+
     // Workspace Menu offen: 3 Spalten Layout
     &.workspace-open {
       grid-template-columns: 1fr 3fr 1fr;
@@ -27,28 +28,28 @@
   // Tablet: 2 Spalten Layout
   @include main_tablet_only {
     gap: 20px;
-    
+
     // Workspace Menu geschlossen: Chat allein oder Chat + Thread nebeneinander
     &:not(.workspace-open):not(.thread-open) {
       grid-template-columns: 1fr;
     }
-    
+
     &:not(.workspace-open).thread-open {
       grid-template-columns: 1fr 1fr;
     }
-    
+
     // Workspace Menu offen: Workspace + Chat oder Workspace + Thread (abwechselnd)
     &.workspace-open:not(.thread-open) {
       grid-template-columns: 2fr 3fr;
     }
-    
+
     &.workspace-open.thread-open {
       grid-template-columns: 2fr 3fr;
-      
+
       .chat-main {
         display: none;
       }
-      
+
       .thread-sidebar {
         grid-column: 2;
       }
@@ -66,12 +67,12 @@
     .thread-sidebar {
       grid-column: 1;
       display: none;
-      
+
       &.active {
         display: block;
       }
     }
-    
+
     .workspace-sidebar {
       display: block;
     }
@@ -81,7 +82,7 @@
 .workspace-sidebar {
   padding: 0;
   position: relative;
-  z-index: 100;
+  z-index: 9;
 }
 
 .chat-main {
