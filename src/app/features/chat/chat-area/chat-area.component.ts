@@ -73,6 +73,7 @@ export class ChatAreaComponent
 
   private messageSubscription: (() => void) | null = null;
   private previousChannelId: string | null = null;
+  private previousUserId: string | null = null;
 
   @Input() userId: string | null = null;
   @Input() isDM: boolean = false;
@@ -87,11 +88,14 @@ export class ChatAreaComponent
   showSettings = false;
 
   async ngOnInit() {
-    if (this.channelId) {
+    this.loadDMUser();
+    if (this.isDM && this.userId) {
+      await this.initializeDM();
+    } else if (this.channelId) {
       await this.runMigration();
       await this.initializeChannel();
-      this.logoState.setCurrentView('chat');
     }
+    this.logoState.setCurrentView('chat');
   }
 
   ngAfterViewInit() {
@@ -100,10 +104,17 @@ export class ChatAreaComponent
 
   async ngOnChanges() {
     const channelChanged = this.channelId !== this.previousChannelId;
-    if (channelChanged) {
+    const userChanged = this.userId !== this.previousUserId;
+
+    if (channelChanged || userChanged) {
       this.previousChannelId = this.channelId;
+      this.previousUserId = this.userId;
+      this.messages = []; // Clear old messages
       this.cleanupSubscription();
-      if (this.channelId) {
+
+      if (this.isDM && this.userId) {
+        await this.initializeDM();
+      } else if (this.channelId) {
         await this.initializeChannel();
       }
     }
@@ -113,6 +124,21 @@ export class ChatAreaComponent
   ngOnDestroy() {
     this.destroyed = true;
     this.cleanupSubscription();
+  }
+
+  /**
+ * Initializes DM with user data and message subscription
+ */
+  private async initializeDM() {
+    if (!this.userId || this.destroyed) return;
+
+    this.isLoadingMessages = true;
+    await Promise.all([
+      this.loadDMUser(),
+      this.setupMessageSubscription(),
+    ]);
+    if (this.destroyed) return;
+    this.isLoadingMessages = false;
   }
 
   /**
@@ -253,6 +279,8 @@ export class ChatAreaComponent
       this.createdByName = creator?.displayName || 'Unbekannt';
     }
   }
+
+
 
   /**
    * Runs migration for old reactions
