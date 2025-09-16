@@ -1,10 +1,24 @@
-import { Component, Input, Output, EventEmitter, HostListener, inject, ChangeDetectorRef, ElementRef, ViewChild, AfterViewInit, OnChanges, OnDestroy } from "@angular/core"
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  inject,
+  ChangeDetectorRef,
+  type ElementRef,
+  ViewChild,
+  type AfterViewInit,
+  type OnChanges,
+  type OnDestroy,
+} from "@angular/core"
 import { NgIf } from "@angular/common"
-import { createPicker } from 'picmo'
+import { MatProgressBarModule } from "@angular/material/progress-bar"
+import { createPicker } from "picmo"
 
 @Component({
   selector: "app-message-emoji-picker",
-  imports: [NgIf],
+  imports: [NgIf, MatProgressBarModule],
   templateUrl: "./message-emoji-picker.component.html",
   styleUrl: "./message-emoji-picker.component.scss",
 })
@@ -14,11 +28,12 @@ export class MessageEmojiPickerComponent implements AfterViewInit, OnChanges, On
   @Output() emojiSelected = new EventEmitter<string>()
   @Output() pickerClosed = new EventEmitter<void>()
 
-  @ViewChild('pickerContainer', { static: false }) pickerContainer!: ElementRef
+  @ViewChild("pickerContainer", { static: false }) pickerContainer!: ElementRef
 
   private cdr = inject(ChangeDetectorRef)
   private picker: any = null
   private emojiUsageCount: { [emoji: string]: number } = {}
+  isLoading = false
 
   ngAfterViewInit() {
     if (this.isVisible) {
@@ -44,22 +59,30 @@ export class MessageEmojiPickerComponent implements AfterViewInit, OnChanges, On
   private initializePicker() {
     if (!this.pickerContainer?.nativeElement || this.picker) return
 
+    this.isLoading = true
+    this.cdr.detectChanges()
+
     this.loadEmojiUsage()
-    
+
     this.picker = createPicker({
       rootElement: this.pickerContainer.nativeElement,
-      theme: 'light',
+      theme: "light",
       showCategoryTabs: true,
       showSearch: true,
       showRecents: true,
       showPreview: false,
       emojisPerRow: 8,
-      emojiSize: '1.8em',
-      showVariants: true
+      emojiSize: "1.8em",
+      showVariants: true,
     })
 
-    this.picker.addEventListener('emoji:select', (event: any) => {
+    this.picker.addEventListener("emoji:select", (event: any) => {
       this.onEmojiSelect(event.emoji)
+    })
+
+    this.picker.addEventListener("data:ready", () => {
+      this.isLoading = false
+      this.cdr.detectChanges()
     })
   }
 
@@ -71,6 +94,7 @@ export class MessageEmojiPickerComponent implements AfterViewInit, OnChanges, On
       this.picker.destroy()
       this.picker = null
     }
+    this.isLoading = false
   }
 
   /**
