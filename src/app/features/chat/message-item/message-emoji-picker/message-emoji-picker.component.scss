@@ -28,6 +28,18 @@
   z-index: 10000 !important;
 }
 
+.progress-bar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 10001;
+}
+
+.picker-content {
+  width: 100%;
+  height: 100%;
+}
+
 ::ng-deep .picmo__searchContainer {
   height: 4em !important;
   min-height: 4em !important;
@@ -154,8 +166,6 @@
     background: rgba(0, 0, 0, 0.3) !important;
   }
 }
-
-
 
 // Individual Emojis
 ::ng-deep .picmo__emoji {

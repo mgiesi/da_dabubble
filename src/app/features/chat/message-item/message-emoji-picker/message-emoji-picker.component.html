@@ -1,3 +1,7 @@
 <div *ngIf="isVisible" class="emoji-picker-container" (click)="onBackdropClick($event)">
-  <div #pickerContainer class="picmo-container" (click)="$event.stopPropagation()"></div>
+  <div class="picmo-container" (click)="$event.stopPropagation()">
+    <!-- Added progress bar similar to login component -->
+    <mat-progress-bar class="progress-bar" *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+    <div #pickerContainer class="picker-content"></div>
+  </div>
 </div>
