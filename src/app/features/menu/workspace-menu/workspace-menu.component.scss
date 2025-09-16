@@ -143,13 +143,15 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
+  scrollbar-gutter: stable;
+
 
   &::-webkit-scrollbar {
     width: 0px;
   }
 
   &:hover::-webkit-scrollbar {
-    width: 6px;
+    width: 2px;
   }
 
   &:hover::-webkit-scrollbar-thumb {
