@@ -11,7 +11,7 @@ export class PrivacyPolicyComponent implements AfterViewInit {
   private sharedSharedFunctionsService = inject(SharedFunctionsService);
 
   ngAfterViewInit(): void {
-    setTimeout(() => window.scrollTo(0, 0), 0.25);
+    setTimeout(() => window.scrollTo(0, 0), 100);
   }
 
   goBack(): void {

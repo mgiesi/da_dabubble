@@ -22,6 +22,15 @@
     width: 100%;
     height: $header-height-115;
 
+    @media screen and (max-width: $breakpoint-1080) {
+        background-color: $bg-color;
+        width: calc(100% - 4px);
+    }
+
+    @media (pointer: coarse) {
+        width: 100%;
+    }
+
     @media screen and (max-width: $breakpoint-800) {
         @include dFlexAllCenter($ai: center, $jc: space-between);
     }
