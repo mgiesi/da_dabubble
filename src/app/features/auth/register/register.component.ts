@@ -66,7 +66,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   registerData = inject(RegisterDataService);
 
   ngAfterViewInit(): void {
-    setTimeout(() => window.scrollTo(0, 0), 0.25);
+    setTimeout(() => window.scrollTo(0, 0), 100);
   }
 
   ngOnInit(): void {
