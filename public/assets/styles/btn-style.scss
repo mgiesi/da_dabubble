@@ -53,11 +53,11 @@
 }
 
 .btn-scroll-top {
-    background-color: transparent;
+    background-color: $purple-2;
     position: fixed;
     top: 90%;
-    right: 550px;
-    width: 45px;
+    right: clamp(3px, -320.4435px + 47.5652vw, 550px);
+    width: clamp(35px, 32.8808px + 0.6623vw, 45px);
     aspect-ratio: 1 / 1;
     border-radius: 100%;
     @include dFlexAllCenter();
@@ -66,19 +66,14 @@
 
     svg {
         rotate: 90deg;
-
         fill: $black;
         width: 100%;
         aspect-ratio: 1 / 1;
         transition: $transition-0-3-ease-in-out;
 
         &:hover {
-            fill: $purple-1;
+            fill: $white;
         }
-    }
-
-    &:hover {
-        background-color: $white;
     }
 }
 
