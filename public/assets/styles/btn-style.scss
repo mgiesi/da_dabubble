@@ -52,6 +52,36 @@
         $hover-text-color: $purple-3);
 }
 
+.btn-scroll-top {
+    background-color: transparent;
+    position: fixed;
+    top: 90%;
+    right: 550px;
+    width: 45px;
+    aspect-ratio: 1 / 1;
+    border-radius: 100%;
+    @include dFlexAllCenter();
+    transition: $transition-0-3-ease-in-out;
+    z-index: 10;
+
+    svg {
+        rotate: 90deg;
+
+        fill: $black;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        transition: $transition-0-3-ease-in-out;
+
+        &:hover {
+            fill: $purple-1;
+        }
+    }
+
+    &:hover {
+        background-color: $white;
+    }
+}
+
 .btn-arrow-back {
     @include btn-back-close-style($top: clamp(5px, 2px + 0.9375vw, 20px),
         $left: clamp(5px, 2px + 0.9375vw, 20px),

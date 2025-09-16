@@ -1,7 +1,7 @@
 import { UsersService } from './core/repositories/users.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
@@ -11,6 +11,7 @@ import { LogoStateService } from './core/services/logo-state.service';
 import { firstValueFrom } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
 import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-landscape.component';
+import { fadeInOut } from './core/animations/fade-in-out.animation';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-la
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  animations: [fadeInOut],
 })
 export class AppComponent {
   private router = inject(Router);
@@ -91,6 +93,23 @@ export class AppComponent {
   onSearchInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchInput$.next(value);
+  }
+
+  @ViewChild('appContainer', { static: false }) appContainerRef?: ElementRef;
+  showScrollTopBtn = false;
+
+  onAppContainerScroll(): void {
+    const appContainer = this.appContainerRef?.nativeElement;
+    if (appContainer) {
+      this.showScrollTopBtn = appContainer.scrollTop > 250;
+    }
+  }
+
+  scrollToTop(): void {
+    const appContainer = this.appContainerRef?.nativeElement;
+    if (appContainer) {
+      appContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   // Öffnet Direktnachricht mit dem ausgewählten User
