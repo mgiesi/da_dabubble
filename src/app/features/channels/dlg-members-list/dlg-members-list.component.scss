@@ -4,13 +4,12 @@
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
 .dlg-members-list-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 28px);
+    @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: center, $g: 28px);
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     width: clamp(300px, 260px + 12.5vw, 415px);
-    overflow: hidden;
 }
 
 h1 {
@@ -33,6 +32,9 @@ h2 {
 .members-list {
     @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: flex-start, $g: 13px);
     width: 100%;
+    min-height: 0;
+    max-height: clamp(320px, 50%, 500px);
+    overflow-y: auto;
 }
 
 .members-add-btn {
