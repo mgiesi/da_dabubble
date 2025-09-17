@@ -41,4 +41,9 @@ export interface User {
      * Usually set to `serverTimestamp()` when the document is first written.
      */
     createdAt: Timestamp;
+
+    /**
+     * If user object is read only and can not be changed by the profile menu.
+     */
+    readonly: boolean;
 }

@@ -21,7 +21,7 @@
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>
-                <button (click)="openEditProfile()" *ngIf="isSelf()">Bearbeiten</button>
+                <button (click)="openEditProfile()" *ngIf="isSelf()" [disabled]="u.readonly">Bearbeiten</button>
             </div>
             <div class="profile-state-content">
                 <div [ngClass]="isOnline() ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>

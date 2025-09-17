@@ -59,6 +59,7 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
     email: '',
     imgUrl: '',
     createdAt: Timestamp.now(),
+    readonly: false,
   };
 
   errMsg: string = '';

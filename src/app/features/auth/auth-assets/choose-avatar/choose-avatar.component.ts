@@ -30,6 +30,7 @@ const defaultUser: User = {
   email: '',
   imgUrl: '',
   createdAt: Timestamp.now(),
+  readonly: false,
 };
 
 @Component({

@@ -45,8 +45,13 @@ h2 {
         @include fontSizeWeightColor($si: 18px, $we: 400, $co: $purple-1);
         cursor: pointer;
 
-        &:hover {
+        &:hover:not(:disabled) {
             @include fontSizeWeightColor($si: 18px, $we: 700, $co: $purple-1);
+        }
+
+        &:disabled {
+            color: $text-gray;
+            cursor: not-allowed;
         }
     }
 }
