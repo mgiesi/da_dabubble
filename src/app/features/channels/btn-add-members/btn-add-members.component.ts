@@ -24,7 +24,7 @@ export class BtnAddMembersComponent {
    * Opens the profile details overlay.
    */
   openAddMemberDialog(triggerEl: HTMLElement) {
-    const dialogRef = this.dialog.getDialogById('addMemberDialog');
+    const dialogRef = this.dialog.getDialogById('btnAddMemberDialog');
     if (dialogRef) {
       dialogRef.close();
     } else {
@@ -32,7 +32,7 @@ export class BtnAddMembersComponent {
         '(max-width: 768px)',
       ]);
       if (isMobile) {
-        this.openMobileDialog();
+        this.openMobileDialog(triggerEl);
       } else {
         this.openDesktopDialog(triggerEl);
       }
@@ -44,7 +44,7 @@ export class BtnAddMembersComponent {
     const top = `${rect.bottom + 8}px`;
     const right = `${window.innerWidth - rect.right}px`
     this.dialog.open(DlgAddMembersComponent, {
-      id: 'addMemberDialog',
+      id: 'btnAddMemberDialog',
       position: {
         top: top,
         right: right,
@@ -54,10 +54,10 @@ export class BtnAddMembersComponent {
     });
   }
 
-  openMobileDialog() {
+  openMobileDialog(triggerEl: HTMLElement) {
     this.dialog.open(DlgMembersListComponent, {
-      id: 'addMemberDialog',
-      data: this.channel,
+      id: 'btnAddMemberDialog',
+      data: { channel: this.channel, refElement: triggerEl }
     });
   }
 }

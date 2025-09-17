@@ -37,6 +37,12 @@
             border-radius: 0;
         }
 
+        .members-miniatur-info {
+            @media (max-width: 576px) {
+                display: none;
+            }
+        }
+
         .chat-info {
             display: flex;
             align-items: center;
