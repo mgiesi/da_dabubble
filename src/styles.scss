@@ -198,3 +198,41 @@ mat-dialog-content {
   box-shadow: unset;
   padding: 0;
 }
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel {
+  background-color: #fff;
+  border: 1px solid #c4b5fd !important;
+  border-top-right-radius: 20px !important;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  box-shadow: none;
+  overflow: auto;
+  padding: 0;
+  --mat-autocomplete-panel-max-height: 320px;
+
+  -webkit-clip-path: inset(0 round 0 20px 20px 20px);
+  clip-path: inset(0 round 0 20px 20px 20px);
+}
+
+.cdk-overlay-container .mdc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px 21px;
+}
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option + .mat-mdc-option {
+  margin-top: 15px;
+}
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:first-child { margin-top: 12px; }
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:last-child  { margin-bottom: 12px; }
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option {
+  padding-inline: 21px;
+}
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:hover,
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-active {
+  background-color: unset;
+}
