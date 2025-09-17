@@ -4,13 +4,14 @@
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
 .dlg-profile-edit-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 38px);
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 32px);
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    padding: 45px 40px;
+    padding: clamp(20px, 14.702px + 1.6556vw, 45px) clamp(15px, 9.702px + 1.6556vw, 40px);
     width: clamp(300px, 260px + 12.5vw, 500px);
+    overflow: hidden;
 }
 
 h1 {
@@ -39,8 +40,8 @@ app-profile-avatar {
     width: 100%;
 
     svg {
-        width: 30px;
-        height: 30px;
+        width: 32px;
+        height: 32px;
     }
 
     form {

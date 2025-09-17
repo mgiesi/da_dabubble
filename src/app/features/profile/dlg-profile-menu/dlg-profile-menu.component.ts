@@ -18,7 +18,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   selector: 'app-dlg-profile-menu',
   imports: [MatDialogContent, RouterLink],
   templateUrl: './dlg-profile-menu.component.html',
-  styleUrl: './dlg-profile-menu.component.scss'
+  styleUrl: './dlg-profile-menu.component.scss',
 })
 export class DlgProfileMenuComponent {
   auth = inject(AuthService);
@@ -59,6 +59,7 @@ export class DlgProfileMenuComponent {
    * Opens the profile details overlay.
    */
   openProfileDetails() {
+    this.closeDialog();
     const dialogRef = this.dialog.getDialogById('profileDetailsDialog');
     if (dialogRef) {
       dialogRef.close();

@@ -1,4 +1,4 @@
-<mat-dialog-content  class="dlg-profile-details-container">
+<mat-dialog-content class="dlg-profile-details-container">
     <ng-container *ngIf="user() as u; else loading">
         <div class="header">
             <h2>Profil</h2>
@@ -16,7 +16,8 @@
                 </svg>
             </button>
         </div>
-        <app-profile-avatar [user]="u" [imgSize]="200" [showStatus]="false"></app-profile-avatar>
+        <app-profile-avatar [user]="u" [imgSize]="'clamp(120px, 12vw, 160px)'"
+            [showStatus]="false"></app-profile-avatar>
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>
@@ -24,14 +25,15 @@
             </div>
             <div class="profile-state-content">
                 <div [ngClass]="isOnline() ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
-                <div [ngClass]="isOnline() ? 'state-text-online' : 'state-text-offline'" class="state-text">{{ isOnline() ? 'Aktiv' : 'Inaktiv' }}</div>
+                <div [ngClass]="isOnline() ? 'state-text-online' : 'state-text-offline'" class="state-text">{{
+                    isOnline() ? 'Aktiv' : 'Inaktiv' }}</div>
             </div>
         </div>
         <div class="profile-email">
             <div>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <mask id="mask0_148656_4856" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
-                        height="24">
+                    <mask id="mask0_148656_4856" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
+                        width="24" height="24">
                         <rect width="24" height="24" fill="#D9D9D9" />
                     </mask>
                     <g mask="url(#mask0_148656_4856)">
