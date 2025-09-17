@@ -33,9 +33,12 @@
         <form>
             <div class="add-members-input" >
                 <mat-chip-grid #chipGrid aria-label="Auswahl der hinzuzufügenden Mitglieder">
-                    @for (user of visibleMembers(); track user.id) {
+                    @for (user of pendingAdds(); track user.id) {
                     <mat-chip-row (removed)="remove(user)">
-                        {{user.displayName}}
+                        <span class="chip-content">
+                            <img class="user-img" [resolvedImg]="user.imgUrl">
+                            {{user.displayName}}
+                        </span>
                         <button matChipRemove [attr.aria-label]="'remove ' + user.displayName">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -55,15 +58,17 @@
                     <input name="currentUser" placeholder="Name eingeben" #userInput [ngModel]="query()" (ngModelChange)="query.set($event)"
                         [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
-                    <mat-autocomplete #auto="matAutocomplete"
+                    <mat-autocomplete #auto="matAutocomplete" 
                         (optionSelected)="selected($event); userInput.value = ''">
                         @for (user of filteredUsers(); track user.id) {
-                        <mat-option [value]="user">{{user.displayName}}</mat-option>
+                        <mat-option [value]="user">
+                            <app-profile-badge [user]="user" [openProfileDetailsOnClick]="false"></app-profile-badge>
+                        </mat-option>
                         }
                     </mat-autocomplete>
                 </mat-chip-grid>
             </div>
-            <button (click)="addMembers()" class="btn-blue btn-save">
+            <button (click)="addMembers()" class="btn-blue btn-save" [disabled]="pendingAdds().length === 0">
                 Hinzufügen
             </button>
         </form>

@@ -50,6 +50,18 @@ form {
     @include dFlexAllCenter($fld: column, $ai: flex-end, $jc: center);
 }
 
+.chip-content {
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: 15px);
+    @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
+}
+
+.user-img {
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
 :host {
     display: block;
 }
@@ -94,6 +106,8 @@ form {
         background: $bg-color !important;
         color: $black !important;
         border-radius: 35px;
+        height: 40px;
+        padding: 8px;
 
         --mdc-chip-outline-color: transparent !important;
         --mdc-chip-flat-outline-color: transparent !important;

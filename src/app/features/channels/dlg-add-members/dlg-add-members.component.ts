@@ -9,15 +9,16 @@ import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/mate
 import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { User } from '../../../shared/models/user';
 import { distinctUntilChanged, forkJoin, map, of, switchMap, take } from 'rxjs';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import { ImgSrcDirective } from '../../../core/services/img-src-directive';
+import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
 
 @Component({
   selector: 'app-dlg-add-members',
-  imports: [NgIf, MatDialogContent, MatFormFieldModule, MatChipsModule, MatIconModule, MatAutocompleteModule, FormsModule],
+  imports: [NgIf, MatDialogContent, MatFormFieldModule, MatChipsModule, MatIconModule, MatAutocompleteModule, FormsModule, ImgSrcDirective, ProfileBadgeComponent],
   templateUrl: './dlg-add-members.component.html',
   styleUrl: './dlg-add-members.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,8 +72,6 @@ export class DlgAddMembersComponent {
       (u.email && u.email.toLowerCase().includes(q))
     );
   });
-
-  readonly announcer = inject(LiveAnnouncer);
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
