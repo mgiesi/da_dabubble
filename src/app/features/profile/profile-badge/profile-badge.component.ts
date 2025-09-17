@@ -1,4 +1,4 @@
-import { Component, inject, input, InputSignal, Output, EventEmitter } from '@angular/core';
+import { Component, inject, input, InputSignal, Output, EventEmitter, Input } from '@angular/core';
 import { ProfileAvatarComponent } from "../profile-avatar/profile-avatar.component";
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { CommonModule } from '@angular/common';
@@ -17,6 +17,8 @@ export class ProfileBadgeComponent {
   dialog = inject(MatDialog);
 
   @Output() userClicked = new EventEmitter<string>();
+
+  @Input() openProfileDetailsOnClick = true;
 
   /** Input variable for the Firebase user object which should be used with this component */
   user: InputSignal<User | null> = input<User | null>(null);
@@ -41,7 +43,7 @@ export class ProfileBadgeComponent {
 
     if (this.userClicked.observed) {
       this.userClicked.emit(currentUser.id);
-    } else {
+    } else if (this.openProfileDetailsOnClick) {
       this.openProfileDetails();
     }
   }
