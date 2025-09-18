@@ -4,7 +4,7 @@
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
 .dlg-profile-edit-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 32px);
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
@@ -54,8 +54,12 @@ app-profile-avatar {
     width: 100%;
 }
 
+
+
 .btns-content {
-    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: 32px);
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .btn-cancel {

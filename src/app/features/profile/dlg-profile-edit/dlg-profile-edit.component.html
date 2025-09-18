@@ -16,8 +16,16 @@
                 </svg>
             </button>
         </div>
-        <app-profile-avatar [user]="u" [imgSize]="'clamp(120px, 12vw, 160px)'" [showStatus]="false"
-            [showAddAvatar]="true" (click)="editAvatar()"></app-profile-avatar>
+
+        <!-- <app-profile-avatar [user]="u" [imgSize]="'clamp(120px, 12vw, 160px)'" [showStatus]="false"
+            [showAddAvatar]="true" (click)="editAvatar()"></app-profile-avatar> -->
+
+        <!-- <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar> -->
+        <app-choose-avatar></app-choose-avatar>
+
+
+
+
         <div class="profile-name-input-content">
             <div class="profile-name-content">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
