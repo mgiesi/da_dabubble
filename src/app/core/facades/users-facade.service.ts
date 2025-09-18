@@ -1,15 +1,32 @@
-import { computed, inject, Injectable, Injector, InputSignal, Signal } from '@angular/core';
+import {
+  computed,
+  inject,
+  Injectable,
+  Injector,
+  InputSignal,
+  Signal,
+} from '@angular/core';
 import { UsersService } from '../repositories/users.service';
 import { Auth } from '@angular/fire/auth';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, map, Observable, of, shareReplay, switchMap } from 'rxjs';
+import {
+  distinctUntilChanged,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+} from 'rxjs';
 import { User } from '../../shared/models/user';
-import { UserPresence, UserPresenceService } from '../services/user-presence.service';
+import {
+  UserPresence,
+  UserPresenceService,
+} from '../services/user-presence.service';
 
 const EMPTY: UserPresence = { isOnline: false, lastSeenAt: null };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /**
  * Facade over user-related data operations.
@@ -22,17 +39,19 @@ export class UsersFacadeService {
   /** User presence service to determine the current state of an user */
   private presence = inject(UserPresenceService);
 
-  constructor() { }
+  constructor() {}
 
   /** A shared observable of all users from the Firestore. */
-  private readonly users$ = this.data.users$().pipe(
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
+  private readonly users$ = this.data
+    .users$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
   /** Converts the shared users$ observable into an Angular Signal. */
   readonly users = toSignal<User[]>(this.users$, { initialValue: [] as any });
 
   private readonly currentUser$ = this.currentUser();
-  readonly currentUserSig = toSignal<User | null>(this.currentUser$, { initialValue: null });
+  readonly currentUserSig = toSignal<User | null>(this.currentUser$, {
+    initialValue: null,
+  });
 
   /**
    * Signs the user out.
@@ -56,7 +75,7 @@ export class UsersFacadeService {
   /** Returns a stream for a single user */
   getUser$(id: string): Observable<User | null> {
     return this.users$.pipe(
-      map(list => list.find(u => u.id === id) ?? null),
+      map((list) => list.find((u) => u.id === id) ?? null),
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       shareReplay({ bufferSize: 1, refCount: true })
     );
@@ -64,7 +83,7 @@ export class UsersFacadeService {
 
   /** Returns a single user as a signal */
   getUserSig(id: string): Signal<User | null> {
-    return computed(() => this.users()?.find(u => u.id === id) ?? null);
+    return computed(() => this.users()?.find((u) => u.id === id) ?? null);
   }
 
   /**
@@ -76,7 +95,12 @@ export class UsersFacadeService {
    * @param imgUrl Absolute URL to the user's avatar image.
    * @returns Promise that resolves when the write completes.
    */
-  async createUser(uid: string, email: string, displayName: string, imgUrl: string) {
+  async createUser(
+    uid: string,
+    email: string,
+    displayName: string,
+    imgUrl: string
+  ) {
     await this.data.createUser(uid, email, displayName, imgUrl);
   }
 
@@ -137,21 +161,26 @@ export class UsersFacadeService {
     return !!user && !!me && user.id === me.id;
   }
 
-  /** 
+  /**
    * Returns the user presence as an Signal object.
-   * 
+   *
    * @param userSig   Reactive auth state (`Signal<User | null>`).
    * @param injector  Angular `Injector` used by `toSignal` for lifecycle and cleanup.
    * @returns         A `Signal<UserPresence>` that updates with RTDB presence changes.
    */
-  getUserPresence(userSig: Signal<User | null>, injector: Injector): Signal<UserPresence> {
+  getUserPresence(
+    userSig: Signal<User | null>,
+    injector: Injector
+  ): Signal<UserPresence> {
     const uid$ = toObservable(userSig).pipe(
-      map(u => u?.uid ?? null),
+      map((u) => u?.uid ?? null),
       distinctUntilChanged()
     );
 
     const presence$ = uid$.pipe(
-      switchMap(uid => uid ? this.presence.watchUserPresence(uid) : of(EMPTY))
+      switchMap((uid) =>
+        uid ? this.presence.watchUserPresence(uid) : of(EMPTY)
+      )
     );
 
     return toSignal(presence$, { initialValue: EMPTY, injector });
@@ -176,14 +205,17 @@ export class UsersFacadeService {
    * @param injector  Angular `Injector` used by `toSignal` in `getUserPresence`.
    * @returns         `Signal<number | null>` representing the last seen server timestamp.
    */
-  lastSeenAt(userSig: Signal<User | null>, injector: Injector): Signal<number | null> {
+  lastSeenAt(
+    userSig: Signal<User | null>,
+    injector: Injector
+  ): Signal<number | null> {
     const p = this.getUserPresence(userSig, injector);
     return computed(() => p().lastSeenAt);
   }
 
   /**
- * Gets a user by ID from Firestore database
- */
+   * Gets a user by ID from Firestore database
+   */
   async getUserById(userId: string): Promise<User | null> {
     return await this.data.getUserById(userId);
   }

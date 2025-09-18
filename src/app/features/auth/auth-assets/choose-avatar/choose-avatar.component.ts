@@ -59,6 +59,8 @@ export class ChooseAvatarComponent implements AfterViewInit {
   /** Local user object as signal, to link it with the avatar component. */
   userLocal = signal<User | null>(this.user());
 
+  @Output() avatarChanged = new EventEmitter<string>();
+
   ngAfterViewInit(): void {
     setTimeout(() => window.scrollTo(0, 0), 0.25);
   }
@@ -127,6 +129,7 @@ export class ChooseAvatarComponent implements AfterViewInit {
       if (!u) return null;
       return { ...u, imgUrl: url };
     });
+    this.avatarChanged.emit(url);
   }
 
   /**

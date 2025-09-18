@@ -44,6 +44,10 @@ export class DlgProfileEditComponent {
   fullName: string = '';
   private hasInitializedFromuser = false;
   customMinLengthError: boolean = false;
+  selectedAvatarUrl: string | null = null;
+  onAvatarChanged(url: string) {
+    this.selectedAvatarUrl = url;
+  }
 
   constructor() {
     effect(() => {
@@ -73,6 +77,9 @@ export class DlgProfileEditComponent {
     const u = this.user();
     if (u) {
       this.facade.updateDisplayName(u.id, this.fullName);
+      if (this.selectedAvatarUrl) {
+        this.facade.updateImgUrl(u.id, this.selectedAvatarUrl);
+      }
     }
     this.dialogRef.close(false);
   }

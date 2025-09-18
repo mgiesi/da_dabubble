@@ -1,5 +1,19 @@
-import { Component, computed, Inject, inject, Injector, Input, Signal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import {
+  Component,
+  computed,
+  Inject,
+  inject,
+  Injector,
+  Input,
+  Signal,
+  effect,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogContent,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../shared/models/user';
 import { NgIf } from '@angular/common';
@@ -13,7 +27,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   selector: 'app-dlg-profile-details',
   imports: [MatDialogContent, NgIf, CommonModule, ProfileAvatarComponent],
   templateUrl: './dlg-profile-details.component.html',
-  styleUrl: './dlg-profile-details.component.scss'
+  styleUrl: './dlg-profile-details.component.scss',
 })
 export class DlgProfileDetailsComponent {
   private dialogRef = inject(MatDialogRef<DlgProfileDetailsComponent>);
@@ -40,7 +54,9 @@ export class DlgProfileDetailsComponent {
     if (dialogRef) {
       dialogRef.close();
     } else {
-      const isMobile = this.breakpointObserver.isMatched(['(max-width: 768px)']);
+      const isMobile = this.breakpointObserver.isMatched([
+        '(max-width: 768px)',
+      ]);
       if (isMobile) {
         this.openMobileDialog();
       } else {
@@ -53,18 +69,18 @@ export class DlgProfileDetailsComponent {
     this.dialog.open(DlgProfileEditComponent, {
       id: 'profileEditsDialog',
       position: {
-        top: "120px",
-        right: "16px"
+        top: '120px',
+        right: '16px',
       },
-      panelClass: 'no-top-right-radius-dialog',      
-      data: this.user
+      panelClass: 'no-top-right-radius-dialog',
+      data: this.user,
     });
   }
 
   openMobileDialog() {
     this.dialog.open(DlgProfileEditComponent, {
-      id: 'profileEditsDialog',     
-      data: this.user
+      id: 'profileEditsDialog',
+      data: this.user,
     });
   }
 }

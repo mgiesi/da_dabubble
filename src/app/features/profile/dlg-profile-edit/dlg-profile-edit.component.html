@@ -21,7 +21,7 @@
             [showAddAvatar]="true" (click)="editAvatar()"></app-profile-avatar> -->
 
         <!-- <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar> -->
-        <app-choose-avatar></app-choose-avatar>
+        <app-choose-avatar [user]="u" (avatarChanged)="onAvatarChanged($event)"></app-choose-avatar>
 
 
 
