@@ -359,7 +359,7 @@ export class ChatAreaComponent
   openProfileDetails() {
     if (!this.dmUser) return;
     this.dialog.open(DlgProfileDetailsComponent, {
-      data: this.dmUser
+      data: { userId: this.dmUser.id }
     });
   }
 }

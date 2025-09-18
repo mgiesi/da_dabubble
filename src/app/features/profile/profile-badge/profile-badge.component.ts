@@ -30,7 +30,7 @@ export class ProfileBadgeComponent {
    */
   openProfileDetails() {
     this.dialog.open(DlgProfileDetailsComponent, {
-      data: this.user
+      data: { userId: this.user()?.id }
     });
   }
 

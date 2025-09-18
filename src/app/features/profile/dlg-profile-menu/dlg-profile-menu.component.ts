@@ -111,14 +111,14 @@ export class DlgProfileMenuComponent {
         right: '16px',
       },
       panelClass: 'no-top-right-radius-dialog',
-      data: this.currentUserSig,
+      data: { userId: this.currentUserSig()?.id },
     });
   }
 
   openMobileDialog() {
     this.dialog.open(DlgProfileDetailsComponent, {
       id: 'profileDetailsDialog',
-      data: this.currentUserSig,
+      data: { userId: this.currentUserSig()?.id },
     });
   }
 

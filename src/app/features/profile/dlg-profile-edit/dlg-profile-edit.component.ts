@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { DlgSelectAvatarComponent } from '../dlg-select-avatar/dlg-select-avatar.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { ChooseAvatarComponent } from '../../auth/auth-assets/choose-avatar/choose-avatar.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dlg-profile-edit',
@@ -39,7 +40,8 @@ export class DlgProfileEditComponent {
   facade = inject(UsersFacadeService);
   private dialog = inject(MatDialog);
 
-  readonly user = inject<WritableSignal<User | null>>(MAT_DIALOG_DATA);
+  readonly dialogData = inject<{ userId: string | undefined }>(MAT_DIALOG_DATA);
+  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null});
 
   fullName: string = '';
   private hasInitializedFromuser = false;
@@ -51,7 +53,7 @@ export class DlgProfileEditComponent {
 
   constructor() {
     effect(() => {
-      const u = this.user();
+      const u = this.userSig();
       if (!this.hasInitializedFromuser && u?.displayName) {
         this.fullName = u.displayName;
         this.hasInitializedFromuser = true;
@@ -60,7 +62,7 @@ export class DlgProfileEditComponent {
   }
 
   editAvatar() {
-    const current = this.user();
+    const current = this.userSig();
     this.dialog.open(DlgSelectAvatarComponent, {
       data: structuredClone(current) as User | null,
     });
@@ -74,7 +76,7 @@ export class DlgProfileEditComponent {
   }
 
   saveProfile() {
-    const u = this.user();
+    const u = this.userSig();
     if (u) {
       this.facade.updateDisplayName(u.id, this.fullName);
       if (this.selectedAvatarUrl) {

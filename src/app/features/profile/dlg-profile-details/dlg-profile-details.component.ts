@@ -35,10 +35,11 @@ export class DlgProfileDetailsComponent {
   private injector = inject(Injector);
   private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
-  readonly user = toSignal(this.facade.currentUser(), { initialValue: null });
-  readonly isSelf = this.facade.isCurrentUser(this.user);
-  readonly isOnline = this.facade.isOnline(this.user, this.injector);
-
+  readonly dialogData = inject<{ userId: string | undefined }>(MAT_DIALOG_DATA);
+  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null});
+  readonly isSelf = this.facade.isCurrentUser(this.userSig);
+  readonly isOnline = this.facade.isOnline(this.userSig, this.injector);
+  
   closeDialog() {
     this.dialogRef.close(false);
   }
@@ -70,14 +71,14 @@ export class DlgProfileDetailsComponent {
         right: '16px',
       },
       panelClass: 'no-top-right-radius-dialog',
-      data: this.user,
+      data: { userId: this.userSig()?.id },
     });
   }
 
   openMobileDialog() {
     this.dialog.open(DlgProfileEditComponent, {
       id: 'profileEditsDialog',
-      data: this.user,
+      data: { userId: this.userSig()?.id },
     });
   }
 }
