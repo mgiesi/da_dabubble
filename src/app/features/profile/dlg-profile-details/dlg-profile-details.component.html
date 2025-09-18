@@ -21,8 +21,10 @@
         <div class="profile-name-state-content">
             <div class="profile-name-content">
                 <h1>{{ u.displayName }}</h1>
-                <button (click)="openEditProfile()" *ngIf="isSelf()" [disabled]="u.readonly">Bearbeiten</button>
+                <button class="btn-edit-profile-details" (click)="openEditProfile()" *ngIf="isSelf()"
+                    [disabled]="u.readonly"><span>Bearbeiten</span></button>
             </div>
+
             <div class="profile-state-content">
                 <div [ngClass]="isOnline() ? 'profile-state-online-white-bg' : 'profile-state-offline-white-bg'"></div>
                 <div [ngClass]="isOnline() ? 'state-text-online' : 'state-text-offline'" class="state-text">{{
@@ -62,5 +64,5 @@
         </button>
     </ng-container>
 
-    <ng-template #loading>Lade Benutzerdaten...</ng-template>
+    <ng-template #loading><span class="loaded-data-span">Lade Benutzerdaten...</span></ng-template>
 </mat-dialog-content>

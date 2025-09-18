@@ -17,12 +17,12 @@
     @include profile-state($border-color: $white, $bg-color: $text-gray);
 }
 
-.profile-avatar {      
+.profile-avatar {
     @include dFlexAllCenter($ai: center, $jc: center);
     position: relative;
     width: 70px;
     height: 70px;
-    
+
     img {
         position: absolute;
         border-radius: 100%;
@@ -37,11 +37,11 @@
     .profile-state-offline-white-bg {
         position: absolute;
         right: 0;
-        bottom: 0;      
+        bottom: 0;
     }
 
     .add-avatar {
-        @include dFlexAllCenter($ai: center, $jc: center);        
+        @include dFlexAllCenter($ai: center, $jc: center);
         width: 100%;
         height: 100%;
         background-color: rgb(0.2, 0.2, 0.2, 0.2);
@@ -49,7 +49,7 @@
         z-index: 1;
         opacity: 0;
         transition: $transition-0-3-ease-in-out;
-        
+
         img {
             width: 50%;
             height: 50%;
@@ -59,4 +59,8 @@
     &:hover .add-avatar {
         opacity: 1;
     }
+}
+
+.loaded-data-span {
+    @include fontSizeWeightColor($si: 18px, $we: 600, $co: $black);
 }

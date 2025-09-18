@@ -160,6 +160,39 @@ mat-icon {
     }
 }
 
+.label-input-field-gray-without-img-border {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    input {
+        @include inputFieldGrayStyle();
+        padding-left: 35px;
+        padding-right: 15px;
+        border: 1px solid $light-purple;
+        cursor: pointer;
+
+        &::placeholder {
+            color: $text-gray;
+            font-size: clamp(16px, 15.6px + 0.125vw, 18px);
+        }
+
+        &:hover {
+            border: 1px solid $purple-2;
+        }
+
+        // &:focus,
+        // &:-webkit-autofill,
+        // &:-webkit-autofill:hover,
+        // &:-webkit-autofill:focus,
+        // &:-webkit-autofill:active {
+        //     border: 1px solid $purple-2;
+        //     background-color: $bg-color !important;
+        //     -webkit-box-shadow: 0 0 0 30px $white inset !important;
+        // }
+    }
+}
+
 .label-input-field-white-img-left-border {
     display: flex;
     align-items: center;

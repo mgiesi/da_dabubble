@@ -13,21 +13,22 @@
     overflow: hidden;
 }
 
-h1 {
-    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
-}
-
-h2 {
-    @include fontSizeWeightColor($si: 24px, $we: 700, $co: $black);
-}
-
 .header {
     @include dFlexAllCenter($ai: center, $jc: space-between);
     width: 100%;
 
+    h2 {
+        @include fontSizeWeightColor($si: 24px, $we: 700, $co: $black);
+    }
+
     .btn-close {
         position: unset;
     }
+}
+
+
+.btn-edit-profile-details {
+    @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
 }
 
 .profile-name-state-content {
@@ -38,6 +39,14 @@ h2 {
 .profile-name-content {
     @include dFlexAllCenter($fld: row, $ai: center, $jc: space-between);
     width: 100%;
+    min-height: 32px;
+
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
+        margin-right: 6px;
+        line-height: normal;
+    }
 
     >button {
         background: transparent;
@@ -46,7 +55,11 @@ h2 {
         cursor: pointer;
 
         &:hover:not(:disabled) {
-            @include fontSizeWeightColor($si: 18px, $we: 700, $co: $purple-1);
+            scale: 1.05;
+
+            span {
+                @include fontSizeWeightColor($si: 18px, $we: 500, $co: $purple-1);
+            }
         }
 
         &:disabled {
@@ -69,7 +82,7 @@ h2 {
 
 .state-text {
     margin-left: 15px;
-    @include fontSizeWeightColor($si: 20px, $we: 400, $co: $green);
+    @include fontSizeWeightColor($si: $font-size-18-20, $we: 400, $co: $green);
 }
 
 .state-text-online {

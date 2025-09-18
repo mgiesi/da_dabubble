@@ -21,6 +21,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   styleUrl: './dlg-profile-menu.component.scss',
 })
 export class DlgProfileMenuComponent {
+  touchStartY: number | null = null;
+  isDragging = false;
   auth = inject(AuthService);
   facade = inject(UsersFacadeService);
   router = inject(Router);
@@ -53,6 +55,32 @@ export class DlgProfileMenuComponent {
     setTimeout(() => {
       this.router.navigate(['/login']);
     }, 300);
+  }
+
+  onTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      this.touchStartY = event.touches[0].clientY;
+      this.isDragging = true;
+    }
+  }
+
+  onTouchMove(event: TouchEvent) {
+    if (this.isDragging) {
+      event.preventDefault(); // Verhindert Pull-to-Refresh
+      // Optional: Drag-Logik hier
+    }
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    if (this.touchStartY !== null && event.changedTouches.length === 1) {
+      const touchEndY = event.changedTouches[0].clientY;
+      const deltaY = touchEndY - this.touchStartY;
+      if (deltaY > 60) {
+        this.closeDialog();
+      }
+    }
+    this.touchStartY = null;
+    this.isDragging = false;
   }
 
   /**

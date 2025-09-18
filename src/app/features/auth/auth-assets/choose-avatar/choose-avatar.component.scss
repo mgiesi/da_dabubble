@@ -66,6 +66,10 @@
 .choose-avatar-text-box {
     width: 100%;
     text-align: start;
+
+    p {
+        @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
+    }
 }
 
 .avatar-icons-box {

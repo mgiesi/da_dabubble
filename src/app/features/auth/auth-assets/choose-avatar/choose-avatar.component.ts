@@ -14,7 +14,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { Output, EventEmitter } from '@angular/core';
+import { Output, EventEmitter, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ImageStorageService } from '../../../../core/services/image-storage.service';
@@ -50,6 +50,7 @@ const defaultUser: User = {
   styleUrl: './choose-avatar.component.scss',
 })
 export class ChooseAvatarComponent implements AfterViewInit {
+  @Input() showDisplayName: boolean = true;
   private http = inject(HttpClient);
   private storage = inject(ImageStorageService);
   private env = inject(EnvironmentInjector);
@@ -58,6 +59,8 @@ export class ChooseAvatarComponent implements AfterViewInit {
   user = input<User | null>(defaultUser);
   /** Local user object as signal, to link it with the avatar component. */
   userLocal = signal<User | null>(this.user());
+
+  @Output() avatarChanged = new EventEmitter<string>();
 
   ngAfterViewInit(): void {
     setTimeout(() => window.scrollTo(0, 0), 0.25);
@@ -127,6 +130,7 @@ export class ChooseAvatarComponent implements AfterViewInit {
       if (!u) return null;
       return { ...u, imgUrl: url };
     });
+    this.avatarChanged.emit(url);
   }
 
   /**

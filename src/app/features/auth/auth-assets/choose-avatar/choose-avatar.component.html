@@ -12,7 +12,7 @@
 
             <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)" />
         </div>
-        <h1>{{ user.displayName }}</h1>
+        <h1 *ngIf="showDisplayName">{{ user.displayName }}</h1>
         <div class="choose-avatar-text-box">
             <p>Aus der Liste wählen</p>
         </div>

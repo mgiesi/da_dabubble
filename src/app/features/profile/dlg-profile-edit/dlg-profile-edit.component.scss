@@ -1,21 +1,24 @@
+@use "../dlg-profile-details/dlg-profile-details.component.scss" as details;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
+
+
 .dlg-profile-edit-container {
-    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: 32px);
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
     background-color: white;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     padding: clamp(20px, 14.702px + 1.6556vw, 45px) clamp(15px, 9.702px + 1.6556vw, 40px);
-    width: clamp(300px, 260px + 12.5vw, 500px);
+    // width: clamp(300px, 260px + 12.5vw, 500px);
     overflow: hidden;
 }
 
 h1 {
-    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
+    @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
 }
 
 h2 {
@@ -55,7 +58,9 @@ app-profile-avatar {
 }
 
 .btns-content {
-    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: 32px);
+    @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .btn-cancel {
