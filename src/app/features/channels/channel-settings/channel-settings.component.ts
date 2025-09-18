@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 
 @Component({
   selector: 'app-channel-settings',
@@ -20,6 +21,7 @@ export class ChannelSettingsComponent implements OnInit {
   @Output() left = new EventEmitter<void>();
 
   private channelsFacade = inject(ChannelsFacadeService);
+  private usersFacade = inject(UsersFacadeService);
 
   isUpdating = false;
   editingName = false;
@@ -103,9 +105,20 @@ export class ChannelSettingsComponent implements OnInit {
   }
 
   async onLeaveChannel() {
-    // TODO: Implement proper leaveChannel functionality
-    console.log('Channel verlassen - Funktionalität noch nicht implementiert');
-    this.left.emit();
+    if (!this.channelId || this.isUpdating) return;
+    try {
+      this.isUpdating = true;
+      
+      const userId = this.usersFacade.currentUserSig()?.id;
+      if (!userId) return;
+
+      await this.channelsFacade.removeMemberFromChannel(this.channelId, userId);
+      this.left.emit();
+    } catch (error) {
+      console.error('Fehler beim Verlassen des Channels:', error);
+    } finally {
+      this.isUpdating = false;
+    }
   }
 
   onClose() {
