@@ -13,12 +13,12 @@
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
     padding: clamp(20px, 14.702px + 1.6556vw, 45px) clamp(15px, 9.702px + 1.6556vw, 40px);
-    width: clamp(300px, 260px + 12.5vw, 500px);
+    // width: clamp(300px, 260px + 12.5vw, 500px);
     overflow: hidden;
 }
 
 h1 {
-    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
+    @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
 }
 
 h2 {

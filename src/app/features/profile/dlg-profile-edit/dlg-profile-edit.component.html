@@ -17,14 +17,8 @@
             </button>
         </div>
 
-        <!-- <app-profile-avatar [user]="u" [imgSize]="'clamp(120px, 12vw, 160px)'" [showStatus]="false"
-            [showAddAvatar]="true" (click)="editAvatar()"></app-profile-avatar> -->
-
-        <!-- <app-choose-avatar (avatarsLoaded)="onAvatarsLoaded()" #chooseAvatar [user]="user"></app-choose-avatar> -->
-        <app-choose-avatar [user]="u" (avatarChanged)="onAvatarChanged($event)"></app-choose-avatar>
-
-
-
+        <app-choose-avatar [user]="u" [showDisplayName]="false"
+            (avatarChanged)="onAvatarChanged($event)"></app-choose-avatar>
 
         <div class="profile-name-input-content">
             <div class="profile-name-content">
@@ -39,10 +33,10 @@
                             fill="black" />
                     </g>
                 </svg>
-                <h2>Vollständiger Name</h2>
+                <h2>Name und Nachname</h2>
             </div>
             <form #f="ngForm">
-                <label class="label-input-field-gray-with-img" for="fullName">
+                <label class="label-input-field-gray-without-img-border" for="fullName">
                     <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName"
                         placeholder="Name und Nachname" required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+"
                         #fullNameField="ngModel" [ngModelOptions]="{ updateOn: 'change' }"

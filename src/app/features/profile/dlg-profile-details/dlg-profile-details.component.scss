@@ -43,8 +43,7 @@
 
 
     h1 {
-        @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
-        // white-space: wrap;
+        @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
         margin-right: 6px;
         line-height: normal;
     }
@@ -87,7 +86,7 @@
 
 .state-text {
     margin-left: 15px;
-    @include fontSizeWeightColor($si: 20px, $we: 400, $co: $green);
+    @include fontSizeWeightColor($si: $font-size-18-20, $we: 400, $co: $green);
 }
 
 .state-text-online {
