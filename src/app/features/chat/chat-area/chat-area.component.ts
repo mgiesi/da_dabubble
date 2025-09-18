@@ -34,6 +34,8 @@ import { ChannelSettingsComponent } from '../../channels/channel-settings/channe
 import { MembersMiniaturInfoComponent } from "../../channels/members-miniatur-info/members-miniatur-info.component";
 import { BtnAddMembersComponent } from "../../channels/btn-add-members/btn-add-members.component";
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component";
+import { DlgProfileDetailsComponent } from '../../profile/dlg-profile-details/dlg-profile-details.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-chat-area',
@@ -75,6 +77,8 @@ export class ChatAreaComponent
   private previousChannelId: string | null = null;
   private previousUserId: string | null = null;
 
+  dialog = inject(MatDialog);
+  
   @Input() userId: string | null = null;
   @Input() isDM: boolean = false;
 
@@ -327,8 +331,12 @@ export class ChatAreaComponent
     }
   }
 
-  openSettings() {
-    this.showSettings = true;
+  openSettings() {    
+    if (this.isDM) {
+      this.openProfileDetails();
+    } else {
+      this.showSettings = true;
+    }
   }
 
   closeSettings() {
@@ -343,5 +351,15 @@ export class ChatAreaComponent
   onChannelLeft() {
     this.closeSettings();
     this.router.navigate(['/workspace']);
+  }
+
+  /**
+   * Opens the profile info overlay.
+   */
+  openProfileDetails() {
+    if (!this.dmUser) return;
+    this.dialog.open(DlgProfileDetailsComponent, {
+      data: this.dmUser
+    });
   }
 }
