@@ -35,11 +35,8 @@ export class DlgProfileDetailsComponent {
   private injector = inject(Injector);
   private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
-
   readonly user = inject<Signal<User | null>>(MAT_DIALOG_DATA);
-
   readonly isSelf = this.facade.isCurrentUser(this.user);
-
   readonly isOnline = this.facade.isOnline(this.user, this.injector);
 
   closeDialog() {

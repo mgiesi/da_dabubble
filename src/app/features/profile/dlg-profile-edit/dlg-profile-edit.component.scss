@@ -1,7 +1,10 @@
+@use "../dlg-profile-details/dlg-profile-details.component.scss" as details;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 @use "../../../../../public/assets/styles/profile.scss" as *;
+
+
 
 .dlg-profile-edit-container {
     @include dFlexAllCenter($fld: column, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
@@ -53,8 +56,6 @@ app-profile-avatar {
     @include dFlexAllCenter($fld: row, $ai: center, $jc: flex-start, $g: 20px);
     width: 100%;
 }
-
-
 
 .btns-content {
     @include dFlexAllCenter($fld: row, $ai: center, $jc: center, $g: clamp(13px, 8.9735px + 1.2583vw, 32px));
