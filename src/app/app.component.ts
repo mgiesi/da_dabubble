@@ -1,4 +1,5 @@
 import { UsersService } from './core/repositories/users.service';
+import { ChannelsService } from './core/repositories/channels.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
 import { Component, inject, ViewChild, ElementRef } from '@angular/core';
@@ -71,21 +72,27 @@ export class AppComponent {
   );
 
   private usersService = inject(UsersService);
+  private channelsService = inject(ChannelsService);
   searchInput$ = new BehaviorSubject<string>('');
   users$: Observable<any[]> = this.usersService.users$();
-  filteredUsers$: Observable<any[]> = combineLatest([
+  channels$: Observable<any[]> = this.channelsService.channels$();
+  filteredResults$: Observable<any[]> = combineLatest([
     this.searchInput$,
     this.users$,
+    this.channels$,
   ]).pipe(
-    map(([search, users]) => {
+    map(([search, users, channels]) => {
       if (search.startsWith('@')) {
         const term = search.slice(1).toLowerCase();
-        if (!term) {
-          return users;
-        }
+        if (!term) return users;
         return users.filter((u) =>
           u.displayName?.toLowerCase().startsWith(term)
         );
+      }
+      if (search.startsWith('#')) {
+        const term = search.slice(1).toLowerCase();
+        if (!term) return channels;
+        return channels.filter((c) => c.name?.toLowerCase().startsWith(term));
       }
       return [];
     })

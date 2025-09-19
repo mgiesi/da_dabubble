@@ -46,11 +46,12 @@
           (input)="onSearchInput($event)" />
         <img src="icons/search.svg" alt="Suchen Icon" />
       </label>
-      <div *ngIf="(filteredUsers$ | async) as users" class="autocomplete-dropdown">
+      <div *ngIf="(filteredResults$ | async) as users" class="autocomplete-dropdown">
         <ng-container *ngIf="users.length > 0">
           <ul class="user-search-list">
-            <li *ngFor="let user of users" class="autocomplete-option">
-              <span (click)="onDirectMessageClick(user)">{{ user.displayName }}</span>
+            <li *ngFor="let item of users" class="autocomplete-option">
+              <span *ngIf="item.displayName" (click)="onDirectMessageClick(item)">&#64;{{ item.displayName }}</span>
+              <span *ngIf="!item.displayName && item.name" class="channel-result">#{{ item.name }}</span>
             </li>
           </ul>
         </ng-container>
