@@ -1,10 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { ChannelsService } from '../repositories/channels.service';
-import { Auth } from '@angular/fire/auth';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MockDataService } from '../services/mock-data.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UsersFacadeService } from './users-facade.service';
-import { firstValueFrom, Observable } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
 import { User } from '../../shared/models/user';
 @Injectable({
   providedIn: 'root'
@@ -24,6 +22,11 @@ export class ChannelsFacadeService {
   /** Firebase Auth instance used to determine the current user. */
   private users = inject(UsersFacadeService);
 
+  /** Current logged in user */
+  private readonly currentUser$ = toObservable(this.users.currentUserSig).pipe(
+    filter((u): u is User => u != null)
+  );
+  
   constructor() { }
 
   /**
@@ -36,6 +39,37 @@ export class ChannelsFacadeService {
     this.data.channels$(), {
     initialValue: [] as any[]
   }
+  );
+
+  /**
+   * Lists only the visible channels for the current user.
+   * 
+   * 
+   */
+  readonly visibleChannelsSig = toSignal(
+    combineLatest([
+      this.data.channels$(),
+      this.currentUser$
+    ]).pipe(
+      switchMap(([channels, user]) => {
+        const memberStreams = channels.map(ch =>
+          this.data.getChannelMembers$(ch.id).pipe(
+            map(members => ({
+              ...ch,
+              isMember: members.some(m => m.id === user.id)
+            }))
+          )
+        );
+
+        return memberStreams.length
+          ? combineLatest(memberStreams)
+          : of([] as any[]);
+      }),
+      map(chs => 
+        chs.filter(c => c.isMember || c.visibility === 'public')
+      )
+    ),
+    {initialValue: [] as any[] }
   );
 
   /**

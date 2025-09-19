@@ -41,4 +41,10 @@ export interface Channel {
      * Also populated automatically by Firestore.
      */
     updatedAt: Timestamp;
+
+    /**
+     * Defines the visibility of the channel.
+     * Private channels can only be seen by channel members.
+     */
+    visibility: ('private' | 'public');
 }

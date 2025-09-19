@@ -31,7 +31,7 @@ export class WorkspaceMenuComponent implements OnInit {
   trackById = (_: number, u: User) => u.id;
 
   get channels() {
-    return this.channelsFacade.channels();
+    return this.channelsFacade.visibleChannelsSig();
   }
 
   ngOnInit() {
