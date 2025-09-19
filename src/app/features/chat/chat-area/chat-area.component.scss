@@ -47,6 +47,9 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 6px 10px;
+            border-radius: 100px;
+            cursor: pointer;
 
             h2 {
                 margin: 0;
@@ -56,7 +59,6 @@
             .chat-info-btn {
                 background: none;
                 border: none;
-                cursor: pointer;
                 display: grid;
                 place-items: center;
                 border-radius: 8px;
@@ -68,14 +70,14 @@
                     width: 22px;
                     height: 22px;
                 }
-
-                &:hover {
-                    background: $bg-color;
-                }
             }
 
             .member-count {
                 @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $text-gray);
+            }
+
+            &:hover {
+                background: $bg-color;
             }
         }
 

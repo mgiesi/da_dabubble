@@ -4,7 +4,7 @@
     <!-- Header -->
     <header class="header">
       <div class="title">
-        <h3 id="cs-title"># {{ channelName || 'channel-name' }}</h3>
+        <h3 id="cs-title">{{ channelName || 'channel-name' }}</h3>
       </div>
       <button class="close-btn" (click)="onClose()" aria-label="Schließen">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -20,7 +20,7 @@
         <button class="link" type="button" (click)="editChannelName()" *ngIf="!editingName">Bearbeiten</button>
       </div>
       <div class="view" *ngIf="!editingName">
-        <span class="pill"># {{ channelName || 'channel-name' }}</span>
+        <span class="pill">{{ channelName || 'channel-name' }}</span>
       </div>
       <div class="edit" *ngIf="editingName">
         <input 

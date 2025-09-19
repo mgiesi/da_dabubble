@@ -1,5 +1,5 @@
 <mat-dialog-content class="dlg-profile-edit-container">
-    <ng-container *ngIf="user() as u; else loading">
+    <ng-container *ngIf="userSig() as u; else loading">
         <div class="header">
             <h2>Dein Profil bearbeiten</h2>
             <button class="btn-close" (click)="closeDialog()">
