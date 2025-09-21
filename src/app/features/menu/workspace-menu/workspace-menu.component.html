@@ -93,7 +93,5 @@
   </section>
 </div>
 
-@if (showChannelForm) {
-<app-channel-create (close)="onCloseChannelForm()" (channelCreated)="onChannelCreated($event)">
+<app-channel-create [hidden]="!showChannelForm" (close)="onCloseChannelForm()" (channelCreated)="onChannelCreated($event)">
 </app-channel-create>
-}

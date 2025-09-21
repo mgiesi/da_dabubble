@@ -53,12 +53,12 @@ export class WorkspaceMenuComponent implements OnInit {
     this.channelSelected.emit(channelId);
   }
 
-  onChannelCreated(event: string) {
+  onChannelCreated(channelId: string) {
     this.showChannelForm = false;
-    // Channel was created successfully - channels() will automatically update
-    // No need to emit specific channelId since we don't get it back from the facade
+    if (channelId) {
+      this.channelSelected.emit(channelId);
+    }
   }
-
 
   onCloseChannelForm() {
     this.showChannelForm = false;

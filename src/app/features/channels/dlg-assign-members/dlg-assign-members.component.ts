@@ -149,7 +149,7 @@ export class DlgAssignMembersComponent {
     } else {
       this.pendingAdds().map(u => this.channelsFacade.addMemberToChannel(channelId, u.id));
     }
-    this.closeDialog();
+    this.closeDialog(channelId);
   }
 
   async assignYourself(channelId: string) {
@@ -158,7 +158,7 @@ export class DlgAssignMembersComponent {
     this.channelsFacade.addMemberToChannel(channelId, user.id);
   }
 
-  closeDialog() {
-    this.dialogRef.close(false);
+  closeDialog(channelId: string | null) {
+    this.dialogRef.close(channelId);
   }
 }

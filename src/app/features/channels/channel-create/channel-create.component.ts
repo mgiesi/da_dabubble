@@ -71,7 +71,7 @@ export class ChannelCreateComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.channelCreated.emit('channel-created');
+        this.channelCreated.emit(result);
       }
     })
   }
@@ -83,7 +83,7 @@ export class ChannelCreateComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.channelCreated.emit('channel-created');
+        this.channelCreated.emit(result);
       }
     })
   }
