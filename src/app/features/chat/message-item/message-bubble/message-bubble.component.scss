@@ -1,5 +1,6 @@
 @use "../../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .message-body {
   background-color: $bg-color;
@@ -10,6 +11,8 @@
   width: fit-content;
   word-wrap: break-word;
   transition: $transition-0-3-ease-in-out;
+  max-width: 350px;
+  width: 100%;
 }
 
 .message-text {
@@ -87,5 +90,19 @@
 
   &:hover svg path {
     fill: $purple-3;
+  }
+}
+
+// Responsive: unter 600px kleinere max-width
+@media (max-width: 600px) {
+  .message-body {
+    max-width: 280px;
+  }
+}
+
+// Responsive: kleinste Auflösung 320px 
+@include mobile_sm {
+  .message-body {
+    max-width: 300px;
   }
 }
