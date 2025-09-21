@@ -63,16 +63,18 @@ export class ChannelsService {
    * @param description - Optional description of the channel (default: empty string).
    * @returns Promise that resolves when the channel has been created.
    */
-  async createChannel(name: string, ownerId: string, description = '') {
+  async createChannel(name: string, ownerId: string, description = ''): Promise<string> {
     return runInInjectionContext(this.injector, async () => {
       const ref = collection(this.fs, 'channels');
-      await addDoc(ref, {
+      const docRef = await addDoc(ref, {
         name,
         description,
         ownerId,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       } as Channel);
+
+      return docRef.id;
     });
   }
 
@@ -166,9 +168,11 @@ export class ChannelsService {
    * @param userId - The user ID to add
    */
   async addMemberToChannel(channelId: string, userId: string) {
-    const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
-    await setDoc(memberRef, {
-      joinedAt: serverTimestamp(),
+    return runInInjectionContext(this.injector, async () => {
+      const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
+      await setDoc(memberRef, {
+        joinedAt: serverTimestamp(),
+      });
     });
   }
 
@@ -179,7 +183,9 @@ export class ChannelsService {
    * @param userId - The user ID to remove
    */
   async removeMemberFromChannel(channelId: string, userId: string) {
-    const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
-    await deleteDoc(memberRef);
+    return runInInjectionContext(this.injector, async () => {
+      const memberRef = doc(this.fs, `channels/${channelId}/members/${userId}`);
+      await deleteDoc(memberRef);
+    });
   }
 }

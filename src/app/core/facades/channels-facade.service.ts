@@ -4,6 +4,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { UsersFacadeService } from './users-facade.service';
 import { combineLatest, filter, firstValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
 import { User } from '../../shared/models/user';
+import { Channel } from '../../shared/models/channel';
 @Injectable({
   providedIn: 'root'
 })
@@ -37,9 +38,19 @@ export class ChannelsFacadeService {
    */
   readonly channels = toSignal(
     this.data.channels$(), {
-    initialValue: [] as any[]
-  }
+      initialValue: [] as any[]
+    }
   );
+
+  /**
+   * Returns a channel object from the cached channel list by its name.
+   *
+   * @param name The name of the channel to look up.
+   * @returns The matching channel object if found, otherwise `undefined`.
+   */
+  getChannelByName(channelName: string): Channel | undefined {
+    return this.channels().find(c => c.name === channelName);
+  }
 
   /**
    * Lists only the visible channels for the current user.
@@ -81,16 +92,16 @@ export class ChannelsFacadeService {
    * @param description - Optional description (defaults to empty string).
    * @returns A promise that resolves when the channel has been created.
    */
-  async createChannel(name: string, description: string = '') {
+  async createChannel(name: string, description: string = ''): Promise<string | null> {
     const userObs = this.users.currentUser();
     if (!userObs) {
-      return;
+      return null;
     }
     const user = await firstValueFrom(userObs);
     if (!user) {
-      return;
+      return null;
     }
-    await this.data.createChannel(name, user.id, description);
+    return await this.data.createChannel(name, user.id, description);
   }
 
   /**
