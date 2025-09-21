@@ -29,8 +29,8 @@
     </div>
 
     <div class="form-actions">
-      <button class="btn-blue" type="button" (click)="createChannel()" [disabled]="!name.trim() || isCreating">
-        {{ isCreating ? 'Erstelle...' : 'Erstellen' }}
+      <button class="btn-blue" type="button" (click)="openAssignMemberDialog()" [disabled]="!name.trim()">
+        Erstellen
       </button>
     </div>
   </div>

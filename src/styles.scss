@@ -236,3 +236,17 @@ mat-dialog-content {
 .cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option.mat-mdc-option-active {
   background-color: unset;
 }
+
+mat-radio-button {
+  --mdc-radio-selected-icon-color: #444DF2;
+  --mdc-radio-selected-hover-icon-color: #444DF2;
+  --mdc-radio-selected-pressed-icon-color: #444DF2;
+  --mdc-radio-selected-focus-icon-color: #444DF2;
+
+  --mdc-radio-unselected-icon-color: #ADB0D9;
+  --mdc-radio-unselected-hover-icon-color: #797EF3;
+  --mdc-radio-unselected-pressed-icon-color: #797EF3;
+  --mdc-radio-unselected-focus-icon-color: #797EF3;
+  
+  @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
+}
