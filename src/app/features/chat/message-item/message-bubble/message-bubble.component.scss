@@ -1,5 +1,6 @@
 @use "../../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .message-body {
   background-color: $bg-color;
@@ -10,7 +11,8 @@
   width: fit-content;
   word-wrap: break-word;
   transition: $transition-0-3-ease-in-out;
-  position: relative;
+  max-width: 350px;
+  width: 100%;
 }
 
 .message-text {
@@ -19,10 +21,12 @@
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
 }
 
+// Standard (Andere Messages): Hover-Actions RECHTS
 .message-hover-actions {
   position: absolute;
-  top: -16px;
-  right: -150px;
+  top: 0;
+  right: 0;
+  transform: translateY(-100%) translateY(-8px);
   @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
   background-color: $white;
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -30,17 +34,17 @@
   padding: 8px 12px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(5px);
   transition: all 0.15s ease;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   z-index: 10;
   white-space: nowrap;
 }
 
-// Owner Messages: Hover-Aktionen nach links verschieben
+// Owner Messages: Hover-Actions LINKS
 :host-context(.own-message) .message-hover-actions {
-  left: -150px;
+  left: 0;
   right: auto;
+  transform: translateY(-100%) translateY(-8px);
 }
 
 .quick-reaction-btn {
@@ -86,5 +90,19 @@
 
   &:hover svg path {
     fill: $purple-3;
+  }
+}
+
+// Responsive: unter 600px kleinere max-width
+@media (max-width: 600px) {
+  .message-body {
+    max-width: 280px;
+  }
+}
+
+// Responsive: kleinste Auflösung 320px 
+@include mobile_sm {
+  .message-body {
+    max-width: 300px;
   }
 }
