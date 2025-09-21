@@ -1,6 +1,14 @@
 @use "../../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../../public/assets/styles/variables.scss" as *;
 
+/* Host-Box, damit der Component sauber im Flow bleibt */
+:host {
+  position: relative;
+  display: block;
+  max-width: 100%;
+}
+
+/* Nachricht passt sich Container an, bleibt max. 350px breit */
 .message-body {
   background-color: $bg-color;
   padding: 15px;
@@ -8,9 +16,18 @@
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
   width: fit-content;
+  max-width: min(350px, 100%);
   word-wrap: break-word;
+  overflow-wrap: anywhere;
   transition: $transition-0-3-ease-in-out;
+  /* KEIN position: relative; – Anker ist .message-content */
+}
+
+/* Anker für Hover-Actions */
+.message-content {
   position: relative;
+  display: inline-block;
+  max-width: 100%;
 }
 
 .message-text {
@@ -19,10 +36,12 @@
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
 }
 
+/* Default: NICHT-Owner → rechts oberhalb von .message-content */
 .message-hover-actions {
   position: absolute;
-  top: -16px;
-  right: -150px;
+  top: 0;
+  right: 0;
+  transform: translateY(-100%) translateY(-8px); /* 8px Abstand */
   @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
   background-color: $white;
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -30,19 +49,27 @@
   padding: 8px 12px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(5px);
   transition: all 0.15s ease;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   z-index: 10;
   white-space: nowrap;
 }
 
-// Owner Messages: Hover-Aktionen nach links verschieben
-:host-context(.own-message) .message-hover-actions {
-  left: -150px;
-  right: auto;
+/* Anzeigen bei Hover/Fokus innerhalb der Nachricht */
+:host(:hover) .message-hover-actions,
+:host(:focus-within) .message-hover-actions {
+  opacity: 1;
+  visibility: visible;
 }
 
+/* Owner: links oberhalb von .message-content */
+:host-context(.own-message) .message-hover-actions {
+  left: 0;
+  right: auto;
+  transform: translateY(-100%) translateY(-8px);
+}
+
+/* Buttons */
 .quick-reaction-btn {
   background: none;
   border: none;
@@ -73,9 +100,7 @@
   cursor: pointer;
   transition: $transition-0-3-ease-in-out;
 
-  &:hover {
-    background-color: $bg-color;
-  }
+  &:hover { background-color: $bg-color; }
 
   svg {
     width: 18px;
@@ -84,7 +109,5 @@
     fill: currentColor;
   }
 
-  &:hover svg path {
-    fill: $purple-3;
-  }
+  &:hover svg path { fill: $purple-3; }
 }
