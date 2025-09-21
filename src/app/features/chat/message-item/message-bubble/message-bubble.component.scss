@@ -5,104 +5,17 @@
 .message-body {
   background-color: $bg-color;
   padding: 15px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  width: fit-content;
+  border-radius: 20px 20px 20px 0;
   word-wrap: break-word;
   transition: $transition-0-3-ease-in-out;
-  max-width: 350px;
-  width: 100%;
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 120px;
+  max-width: 100%;
 }
 
 .message-text {
   margin: 0;
   line-height: 1.4;
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
-}
-
-// Standard (Andere Messages): Hover-Actions RECHTS
-.message-hover-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
-  transform: translateY(-100%) translateY(-8px);
-  @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
-  background-color: $white;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 24px;
-  padding: 8px 12px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.15s ease;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  white-space: nowrap;
-}
-
-// Owner Messages: Hover-Actions LINKS
-:host-context(.own-message) .message-hover-actions {
-  left: 0;
-  right: auto;
-  transform: translateY(-100%) translateY(-8px);
-}
-
-.quick-reaction-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 8px;
-  transition: $transition-0-3-ease-in-out;
-  line-height: 1;
-  @include dFlexAllCenter($ai: center, $jc: center);
-
-  &:hover {
-    background-color: $bg-color;
-    transform: scale(1.15);
-  }
-
-  .quick-emoji {
-    font-size: 20px;
-    line-height: 1;
-  }
-}
-
-.hover-action-btn {
-  @include dFlexAllCenter($ai: center, $jc: center);
-  background: none;
-  border: none;
-  padding: 6px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: $transition-0-3-ease-in-out;
-
-  &:hover {
-    background-color: $bg-color;
-  }
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: $text-gray;
-    fill: currentColor;
-  }
-
-  &:hover svg path {
-    fill: $purple-3;
-  }
-}
-
-// Responsive: unter 600px kleinere max-width
-@media (max-width: 600px) {
-  .message-body {
-    max-width: 280px;
-  }
-}
-
-// Responsive: kleinste Auflösung 320px 
-@include mobile_sm {
-  .message-body {
-    max-width: 300px;
-  }
 }

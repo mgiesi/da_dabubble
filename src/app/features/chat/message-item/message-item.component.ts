@@ -1,6 +1,7 @@
-import { Component, EventEmitter, computed, inject, ChangeDetectorRef, type OnInit } from "@angular/core"
+import { Component, EventEmitter, computed, inject, ChangeDetectorRef, type OnInit, OnDestroy } from "@angular/core"
 import { Input, Output } from "@angular/core"
-import { NgClass } from "@angular/common"
+import { NgClass, NgIf } from "@angular/common"
+import { Subscription } from "rxjs"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { MessageBubbleComponent } from "./message-bubble/message-bubble.component"
@@ -9,12 +10,14 @@ import { MessageReactionsComponent } from "./message-reactions/message-reactions
 import { MessageThreadLinkComponent } from "./message-thread-link/message-thread-link.component"
 import { formatMessageTime } from "../../../shared/utils/timestamp"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
+import { GlobalReactionService } from "../../../core/reactions/global-reaction.service"
 import { Auth } from "@angular/fire/auth"
 
 @Component({
   selector: "app-message-item",
   imports: [
     NgClass,
+    NgIf,
     ProfileAvatarComponent,
     MessageBubbleComponent,
     MessageEmojiPickerComponent,
@@ -24,7 +27,7 @@ import { Auth } from "@angular/fire/auth"
   templateUrl: "./message-item.component.html",
   styleUrl: "./message-item.component.scss",
 })
-export class MessageItemComponent implements OnInit {
+export class MessageItemComponent implements OnInit, OnDestroy {
   @Input() isThreadView = false
   @Input() message!: any
   @Output() replyClicked = new EventEmitter<any>()
@@ -32,10 +35,13 @@ export class MessageItemComponent implements OnInit {
   private usersFacade = inject(UsersFacadeService)
   private cdr = inject(ChangeDetectorRef)
   private messagesFacade = inject(MessagesFacadeService)
+  private globalReactions = inject(GlobalReactionService)
   private auth = inject(Auth)
 
   viewEmojiPicker = false
   selectedEmoji: string | null = null
+  private sub?: Subscription
+  private quickReactions: string[] = []
 
   messageUser = computed(() => {
     if (!this.message?.senderId) {
@@ -52,20 +58,28 @@ export class MessageItemComponent implements OnInit {
     return user
   })
 
-  /**
-   * Gets current user ID from Firebase Auth
-   */
   get currentUserId(): string {
     return this.auth.currentUser?.uid || ''
   }
 
   ngOnInit() {
-    // Component initialization
+    if (this.globalReactions) {
+      this.sub = this.globalReactions.topN$(2).subscribe(list => this.quickReactions = list)
+    }
   }
 
-  /**
-   * Handles emoji selection with single-emoji-per-user logic
-   */
+  ngOnDestroy(): void { 
+    this.sub?.unsubscribe() 
+  }
+
+  getTopEmoji(i: number): string { 
+    return this.quickReactions[i] || "" 
+  }
+
+  addQuickReaction(emoji: string): void { 
+    this.handleUserEmojiReaction(emoji)
+  }
+
   onEmojiSelected(emoji: string) {
     this.viewEmojiPicker = false
     
@@ -74,36 +88,25 @@ export class MessageItemComponent implements OnInit {
     this.handleUserEmojiReaction(emoji)
   }
 
-  /**
-   * Smart emoji reaction handler - one emoji per user
-   */
   private handleUserEmojiReaction(newEmoji: string) {
     const uid = this.currentUserId
     if (!uid) return
 
-    // Create reactions object if it doesn't exist
     const reactions = { ...(this.message.reactions || {}) }
     
-    // Find user's current emoji (if any)
     const userCurrentEmoji = this.findUserCurrentEmoji(reactions, uid)
     
     if (userCurrentEmoji) {
       this.removeUserFromEmoji(reactions, userCurrentEmoji, uid)
     }
     
-    // Add user to new emoji
     this.addUserToEmoji(reactions, newEmoji, uid)
     
-    // Update UI optimistically
     this.message = { ...this.message, reactions }
     
-    // Persist to backend
     this.persistReaction(newEmoji)
   }
 
-  /**
-   * Finds which emoji the user currently has
-   */
   private findUserCurrentEmoji(reactions: any, uid: string): string | null {
     for (const [emoji, data] of Object.entries(reactions)) {
       const entry = data as { users: string[] }
@@ -114,9 +117,6 @@ export class MessageItemComponent implements OnInit {
     return null
   }
 
-  /**
-   * Removes user from emoji entry
-   */
   private removeUserFromEmoji(reactions: any, emoji: string, uid: string) {
     const entry = reactions[emoji]
     if (!entry) return
@@ -132,9 +132,6 @@ export class MessageItemComponent implements OnInit {
     }
   }
 
-  /**
-   * Adds user to emoji entry
-   */
   private addUserToEmoji(reactions: any, emoji: string, uid: string) {
     if (!reactions[emoji]) {
       reactions[emoji] = { count: 0, users: [] }
@@ -147,9 +144,6 @@ export class MessageItemComponent implements OnInit {
     }
   }
 
-  /**
-   * Persists reaction to backend
-   */
   private async persistReaction(emoji: string) {
     try {
       await this.messagesFacade.addReaction(
@@ -191,16 +185,13 @@ export class MessageItemComponent implements OnInit {
     const isUserReaction = entry.users.includes(uid)
     
     if (isUserReaction) {
-      // Remove user's reaction
       this.removeUserFromEmoji(reactions, emoji, uid)
     } else {
-      // First remove user from any other emoji
       const currentEmoji = this.findUserCurrentEmoji(reactions, uid)
       if (currentEmoji) {
         this.removeUserFromEmoji(reactions, currentEmoji, uid)
       }
       
-      // Add user to clicked emoji
       this.addUserToEmoji(reactions, emoji, uid)
     }
 
@@ -212,9 +203,6 @@ export class MessageItemComponent implements OnInit {
     this.replyClicked.emit(message)
   }
 
-  /**
-   * Format message timestamp for display
-   */
   formatTime(timestamp: Date | null | undefined): string {
     return formatMessageTime(timestamp)
   }
