@@ -42,7 +42,6 @@ export class AppComponent {
   private usersService = inject(UsersService);
   private channelsService = inject(ChannelsService);
   private chatNavigationService = inject(ChatNavigationService);
-
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
   readonly showBackArrow = this.logoState.showBackArrow;
@@ -409,5 +408,12 @@ export class AppComponent {
     const isMobile = window.innerWidth < 768; // prüfe < $main_layout_mobile
     this.logoState.setCurrentView('workspace');
     if (isMobile) this.router.navigate(['/m/workspace'], { replaceUrl: true });
+  }
+
+  onSearchBlur() {
+    const value = this.searchInputRef?.nativeElement?.value || '';
+    if (value.startsWith('@') || value.startsWith('#')) {
+      this.clearSearchInput();
+    }
   }
 }
