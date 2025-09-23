@@ -49,7 +49,8 @@
       <div *ngIf="(filteredResults$ | async) as users" class="autocomplete-dropdown">
         <ng-container *ngIf="users.length > 0">
           <ul class="user-search-list">
-            <li *ngFor="let item of users" class="autocomplete-option">
+            <li *ngFor="let item of users" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
+              (mouseleave)="onSearchResultHoverEnd()">
               <span *ngIf="item.displayName" (click)="onDirectMessageClick(item)">&#64;{{ item.displayName }}</span>
               <span *ngIf="!item.displayName && item.name" class="channel-result">#{{ item.name }}</span>
             </li>

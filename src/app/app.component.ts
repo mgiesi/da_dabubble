@@ -27,12 +27,19 @@ import { fadeInOut } from './core/animations/fade-in-out.animation';
   animations: [fadeInOut],
 })
 export class AppComponent {
+  @ViewChild('searchInput', { static: false })
+  searchInputRef?: ElementRef<HTMLInputElement>;
+  @ViewChild('appContainer', { static: false }) appContainerRef?: ElementRef;
+  showScrollTopBtn = false;
+  private lastSearchInputValue: string | null = null;
   private router = inject(Router);
   private auth = inject(AuthService);
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
   private userPresenceService: UserPresenceService =
     inject(UserPresenceService);
+  private usersService = inject(UsersService);
+  private channelsService = inject(ChannelsService);
 
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
@@ -71,8 +78,6 @@ export class AppComponent {
     )
   );
 
-  private usersService = inject(UsersService);
-  private channelsService = inject(ChannelsService);
   searchInput$ = new BehaviorSubject<string>('');
   users$: Observable<any[]> = this.usersService.users$();
   channels$: Observable<any[]> = this.channelsService.channels$();
@@ -102,8 +107,28 @@ export class AppComponent {
     this.searchInput$.next(value);
   }
 
-  @ViewChild('appContainer', { static: false }) appContainerRef?: ElementRef;
-  showScrollTopBtn = false;
+  onSearchResultHover(item: any) {
+    if (this.searchInputRef?.nativeElement) {
+      if (this.lastSearchInputValue === null) {
+        this.lastSearchInputValue = this.searchInputRef.nativeElement.value;
+      }
+      if (item?.displayName) {
+        this.searchInputRef.nativeElement.value = '@' + item.displayName;
+      } else if (item?.name) {
+        this.searchInputRef.nativeElement.value = '#' + item.name;
+      }
+    }
+  }
+
+  onSearchResultHoverEnd() {
+    if (
+      this.lastSearchInputValue !== null &&
+      this.searchInputRef?.nativeElement
+    ) {
+      this.searchInputRef.nativeElement.value = this.lastSearchInputValue;
+      this.lastSearchInputValue = null;
+    }
+  }
 
   onAppContainerScroll(): void {
     const appContainer = this.appContainerRef?.nativeElement;
