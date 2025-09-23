@@ -2,7 +2,13 @@ import { UsersService } from './core/repositories/users.service';
 import { ChannelsService } from './core/repositories/channels.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
-import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from '@angular/core';
 import { ChatNavigationService } from './core/services/chat-navigation.service';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -415,5 +421,22 @@ export class AppComponent {
     if (value.startsWith('@') || value.startsWith('#')) {
       this.clearSearchInput();
     }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const input = this.searchInputRef?.nativeElement;
+    const dropdown = document.querySelector('.autocomplete-dropdown');
+    const target = event.target as Node;
+    if (
+      !input ||
+      (!input.value.startsWith('@') && !input.value.startsWith('#'))
+    )
+      return;
+    if (input.contains(target) || (dropdown && dropdown.contains(target))) {
+      // Klick war im Input oder Dropdown → nichts tun
+      return;
+    }
+    this.clearSearchInput();
   }
 }
