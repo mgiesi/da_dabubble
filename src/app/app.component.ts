@@ -3,7 +3,7 @@ import { ChannelsService } from './core/repositories/channels.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
 import { Component, inject, ViewChild, ElementRef } from '@angular/core';
-import { DirectMessageService } from './core/services/direct-message.service';
+import { ChatNavigationService } from './core/services/chat-navigation.service';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
@@ -41,7 +41,7 @@ export class AppComponent {
     inject(UserPresenceService);
   private usersService = inject(UsersService);
   private channelsService = inject(ChannelsService);
-  private directMessageService = inject(DirectMessageService);
+  private chatNavigationService = inject(ChatNavigationService);
 
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
@@ -148,7 +148,17 @@ export class AppComponent {
 
   onDirectMessageClick(user: any) {
     const userId = user?.id || user;
-    this.directMessageService.selectUser(userId);
+    this.chatNavigationService.selectUser(userId);
+    this.clearSearchInput();
+  }
+
+  onChannelClick(channel: any) {
+    const channelId = channel?.id || channel;
+    this.chatNavigationService.selectChannel(channelId);
+    this.clearSearchInput();
+  }
+
+  private clearSearchInput() {
     this.searchInput$.next('');
     if (this.searchInputRef?.nativeElement) {
       this.searchInputRef.nativeElement.value = '';

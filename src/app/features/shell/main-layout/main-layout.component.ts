@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { DirectMessageService } from '../../../core/services/direct-message.service';
+import { ChatNavigationService } from '../../../core/services/chat-navigation.service';
 import { WorkspaceMenuComponent } from '../../../features/menu/workspace-menu/workspace-menu.component';
 import { WorkspaceMenuTogglerComponent } from '../workspace-menu-toggler/workspace-menu-toggler.component';
 import { ChatAreaComponent } from '../../chat/chat-area/chat-area.component';
@@ -21,8 +21,9 @@ import { LogoStateService } from '../../../core/services/logo-state.service';
   styleUrl: './main-layout.component.scss',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
-  private directMessageService = inject(DirectMessageService);
+  private chatNavigationService = inject(ChatNavigationService);
   private dmSubscription?: any;
+  private channelSubscription?: any;
   selectedChannelId: string | null = null;
   selectedThread: any = null;
   currentView: 'workspace' | 'chat' | 'thread' = 'chat';
@@ -37,15 +38,22 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initializeDefaultState();
-    this.dmSubscription = this.directMessageService.dmSelected$.subscribe(
+    this.dmSubscription = this.chatNavigationService.dmSelected$.subscribe(
       (userId: string) => {
         this.onDirectMessageSelected(userId);
       }
     );
+    this.channelSubscription =
+      this.chatNavigationService.channelSelected$.subscribe(
+        (channelId: string) => {
+          this.onChannelSelected(channelId);
+        }
+      );
   }
 
   ngOnDestroy() {
     if (this.dmSubscription) this.dmSubscription.unsubscribe();
+    if (this.channelSubscription) this.channelSubscription.unsubscribe();
   }
 
   /**

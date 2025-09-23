@@ -52,7 +52,8 @@
             <li *ngFor="let item of users" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
               (mouseleave)="onSearchResultHoverEnd()">
               <span *ngIf="item.displayName" (click)="onDirectMessageClick(item)">&#64;{{ item.displayName }}</span>
-              <span *ngIf="!item.displayName && item.name" class="channel-result">#{{ item.name }}</span>
+              <span *ngIf="!item.displayName && item.name" class="channel-result" (click)="onChannelClick(item)">#{{
+                item.name }}</span>
             </li>
           </ul>
         </ng-container>
