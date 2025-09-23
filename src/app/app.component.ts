@@ -3,6 +3,7 @@ import { ChannelsService } from './core/repositories/channels.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
 import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { DirectMessageService } from './core/services/direct-message.service';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
@@ -40,6 +41,7 @@ export class AppComponent {
     inject(UserPresenceService);
   private usersService = inject(UsersService);
   private channelsService = inject(ChannelsService);
+  private directMessageService = inject(DirectMessageService);
 
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
@@ -144,12 +146,13 @@ export class AppComponent {
     }
   }
 
-  // Öffnet Direktnachricht mit dem ausgewählten User
   onDirectMessageClick(user: any) {
-    // user kann ein User-Objekt oder nur ein userId sein, je nach Aufrufer
     const userId = user?.id || user;
-    // Navigiere zur Chat-Ansicht mit userId als DM
-    this.router.navigate(['/chat'], { queryParams: { dm: userId } });
+    this.directMessageService.selectUser(userId);
+    this.searchInput$.next('');
+    if (this.searchInputRef?.nativeElement) {
+      this.searchInputRef.nativeElement.value = '';
+    }
   }
 
   shouldShowAnimation$: Observable<boolean> = combineLatest([
