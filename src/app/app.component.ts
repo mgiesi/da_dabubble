@@ -434,7 +434,6 @@ export class AppComponent {
     )
       return;
     if (input.contains(target) || (dropdown && dropdown.contains(target))) {
-      // Klick war im Input oder Dropdown → nichts tun
       return;
     }
     this.clearSearchInput();

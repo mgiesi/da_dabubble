@@ -3,7 +3,7 @@ import { NgFor } from '@angular/common';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { ChannelCreateComponent } from '../../channels/channel-create/channel-create.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
-import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
+import { ProfileBadgeComponent } from '../../profile/profile-badge/profile-badge.component';
 import { Router } from '@angular/router';
 import { LogoStateService } from '../../../core/services/logo-state.service';
 import { User } from '../../../shared/models/user';
@@ -12,7 +12,7 @@ import { User } from '../../../shared/models/user';
   selector: 'app-workspace-menu',
   imports: [NgFor, ChannelCreateComponent, ProfileBadgeComponent],
   templateUrl: './workspace-menu.component.html',
-  styleUrl: './workspace-menu.component.scss'
+  styleUrl: './workspace-menu.component.scss',
 })
 export class WorkspaceMenuComponent implements OnInit {
   @Output() channelSelected = new EventEmitter<string>();
@@ -30,12 +30,13 @@ export class WorkspaceMenuComponent implements OnInit {
   readonly users = this.usersFacade.users;
   trackById = (_: number, u: User) => u.id;
 
+  selectedChannelId: string | null = null;
+
   get channels() {
     return this.channelsFacade.visibleChannelsSig();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   toggleChannels() {
     this.channelsClosed = !this.channelsClosed;
@@ -50,6 +51,7 @@ export class WorkspaceMenuComponent implements OnInit {
   }
 
   onChannelClick(channelId: string) {
+    this.selectedChannelId = channelId;
     this.channelSelected.emit(channelId);
   }
 
