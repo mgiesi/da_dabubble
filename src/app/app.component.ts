@@ -88,22 +88,42 @@ export class AppComponent {
     this.users$,
     this.channels$,
   ]).pipe(
-    map(([search, users, channels]) => {
-      if (search.startsWith('@')) {
-        const term = search.slice(1).toLowerCase();
-        if (!term) return users;
-        return users.filter((u) =>
-          u.displayName?.toLowerCase().startsWith(term)
-        );
-      }
-      if (search.startsWith('#')) {
-        const term = search.slice(1).toLowerCase();
-        if (!term) return channels;
-        return channels.filter((c) => c.name?.toLowerCase().startsWith(term));
-      }
-      return [];
-    })
+    map(([search, users, channels]) =>
+      this.filterResults(search, users, channels)
+    )
   );
+
+  private filterResults(search: string, users: any[], channels: any[]): any[] {
+    if (search.startsWith('@')) return this.filterUsersByAt(search, users);
+    if (search.startsWith('#'))
+      return this.filterChannelsByHash(search, channels);
+    return this.filterGeneral(search, users, channels);
+  }
+
+  private filterUsersByAt(search: string, users: any[]): any[] {
+    const term = search.slice(1).toLowerCase();
+    if (!term) return users;
+    return users.filter((u) => u.displayName?.toLowerCase().startsWith(term));
+  }
+
+  private filterChannelsByHash(search: string, channels: any[]): any[] {
+    const term = search.slice(1).toLowerCase();
+    if (!term) return channels;
+    return channels.filter((c) => c.name?.toLowerCase().startsWith(term));
+  }
+
+  private filterGeneral(search: string, users: any[], channels: any[]): any[] {
+    const term = search.toLowerCase();
+    if (term.length < 3) return [];
+    const userResults = users
+      .filter((u) => u.displayName?.toLowerCase().includes(term))
+      .map((u) => ({ ...u, _type: 'user' }));
+    const channelResults = channels
+      .filter((c) => c.name?.toLowerCase().includes(term))
+      .map((c) => ({ ...c, _type: 'channel' }));
+    return [...userResults, ...channelResults];
+  }
+
   onSearchInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchInput$.next(value);
