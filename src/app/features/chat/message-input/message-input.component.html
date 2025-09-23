@@ -1,8 +1,11 @@
 <div class="message-input-wrapper">
     <div class="input-container">
-        <textarea placeholder="Nachricht an #Entwicklerteam" [(ngModel)]="messageText" (keydown)="onKeyDown($event)"
+        <textarea 
+            [placeholder]="placeholder"
+            [(ngModel)]="messageText" 
+            (keydown)="onKeyDown($event)"
             #messageTextarea>
-    </textarea>
+        </textarea>
 
         <div class="input-actions">
             <button class="send-btn" type="button" (click)="onSendMessage()">
@@ -17,7 +20,6 @@
                             fill="#444DF2" />
                     </g>
                 </svg>
-
             </button>
         </div>
     </div>
