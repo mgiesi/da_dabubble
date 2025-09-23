@@ -12,31 +12,34 @@ import {
   type ElementRef,
   Renderer2,
   type AfterViewInit,
-} from "@angular/core"
-import { MatCardModule } from "@angular/material/card"
-import { NgFor, NgIf } from "@angular/common"
-import { MessageInputComponent } from "../message-input/message-input.component"
-import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
-import { UsersFacadeService } from "../../../core/facades/users-facade.service"
-import { MessagesFacadeService, type Message } from "../../../core/facades/messages-facade.service"
-import type { User } from "../../../shared/models/user"
-import type { Channel } from "../../../shared/models/channel"
-import { MessageItemComponent } from "../message-item/message-item.component"
-import { Router } from "@angular/router"
-import { LogoStateService } from "../../../core/services/logo-state.service"
-import { MessagesService } from "../../../core/repositories/messages.service"
-import { ChannelSettingsComponent } from "../../channels/channel-settings/channel-settings.component"
-import { MembersMiniaturInfoComponent } from "../../channels/members-miniatur-info/members-miniatur-info.component"
-import { BtnAddMembersComponent } from "../../channels/btn-add-members/btn-add-members.component"
-import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
-import { DlgProfileDetailsComponent } from "../../profile/dlg-profile-details/dlg-profile-details.component"
-import { MatDialog } from "@angular/material/dialog"
+} from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { NgFor, NgIf } from '@angular/common';
+import { MessageInputComponent } from '../message-input/message-input.component';
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
+import { UsersFacadeService } from '../../../core/facades/users-facade.service';
+import {
+  MessagesFacadeService,
+  type Message,
+} from '../../../core/facades/messages-facade.service';
+import type { User } from '../../../shared/models/user';
+import type { Channel } from '../../../shared/models/channel';
+import { MessageItemComponent } from '../message-item/message-item.component';
+import { Router } from '@angular/router';
+import { LogoStateService } from '../../../core/services/logo-state.service';
+import { MessagesService } from '../../../core/repositories/messages.service';
+import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
+import { MembersMiniaturInfoComponent } from '../../channels/members-miniatur-info/members-miniatur-info.component';
+import { BtnAddMembersComponent } from '../../channels/btn-add-members/btn-add-members.component';
+import { ProfileAvatarComponent } from '../../profile/profile-avatar/profile-avatar.component';
+import { DlgProfileDetailsComponent } from '../../profile/dlg-profile-details/dlg-profile-details.component';
+import { MatDialog } from '@angular/material/dialog';
 
-import { GlobalReactionService } from "../../../core/reactions/global-reaction.service"
-import { aggregateReactions } from "../../../core/reactions/aggregate-reactions.util"
+import { GlobalReactionService } from '../../../core/reactions/global-reaction.service';
+import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.util';
 
 @Component({
-  selector: "app-chat-area",
+  selector: 'app-chat-area',
   imports: [
     MatCardModule,
     NgFor,
@@ -48,54 +51,56 @@ import { aggregateReactions } from "../../../core/reactions/aggregate-reactions.
     BtnAddMembersComponent,
     ProfileAvatarComponent,
   ],
-  templateUrl: "./chat-area.component.html",
-  styleUrl: "./chat-area.component.scss",
+  templateUrl: './chat-area.component.html',
+  styleUrl: './chat-area.component.scss',
 })
-export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  private destroyed = false
-  @Input() channelId: string | null = null
-  @Output() threadOpened = new EventEmitter<any>()
-  @ViewChild("messagesContainer", { static: false })
-  messagesContainer!: ElementRef
+export class ChatAreaComponent
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
+  private destroyed = false;
+  @Input() channelId: string | null = null;
+  @Output() threadOpened = new EventEmitter<any>();
+  @ViewChild('messagesContainer', { static: false })
+  messagesContainer!: ElementRef;
 
-  private router = inject(Router)
-  private logoState = inject(LogoStateService)
-  private channelsFacade = inject(ChannelsFacadeService)
-  private usersFacade = inject(UsersFacadeService)
-  private messagesFacade = inject(MessagesFacadeService)
-  private cdr = inject(ChangeDetectorRef)
-  private messagesService = inject(MessagesService)
-  private renderer = inject(Renderer2)
+  private router = inject(Router);
+  private logoState = inject(LogoStateService);
+  private channelsFacade = inject(ChannelsFacadeService);
+  private usersFacade = inject(UsersFacadeService);
+  private messagesFacade = inject(MessagesFacadeService);
+  private cdr = inject(ChangeDetectorRef);
+  private messagesService = inject(MessagesService);
+  private renderer = inject(Renderer2);
 
-  private messageSubscription: (() => void) | null = null
-  private previousChannelId: string | null = null
-  private previousUserId: string | null = null
+  private messageSubscription: (() => void) | null = null;
+  private previousChannelId: string | null = null;
+  private previousUserId: string | null = null;
 
-  dialog = inject(MatDialog)
+  dialog = inject(MatDialog);
 
-  @Input() userId: string | null = null
-  @Input() isDM = false
+  @Input() userId: string | null = null;
+  @Input() isDM = false;
 
-  dmUser: User | null = null
+  dmUser: User | null = null;
 
-  currentChannel: Channel | null = null
-  showMembersList = false
-  createdByName = ""
-  messages: Message[] = []
-  isLoadingMessages = false
-  showSettings = false
+  currentChannel: Channel | null = null;
+  showMembersList = false;
+  createdByName = '';
+  messages: Message[] = [];
+  isLoadingMessages = false;
+  showSettings = false;
 
   constructor(private globalReactions: GlobalReactionService) {}
 
   async ngOnInit() {
-    this.loadDMUser()
+    this.loadDMUser();
     if (this.isDM && this.userId) {
-      await this.initializeDM()
+      await this.initializeDM();
     } else if (this.channelId) {
-      await this.runMigration()
-      await this.initializeChannel()
+      await this.runMigration();
+      await this.initializeChannel();
     }
-    this.logoState.setCurrentView("chat")
+    this.logoState.setCurrentView('chat');
   }
 
   ngAfterViewInit() {
@@ -103,39 +108,39 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   async ngOnChanges() {
-    const channelChanged = this.channelId !== this.previousChannelId
-    const userChanged = this.userId !== this.previousUserId
+    const channelChanged = this.channelId !== this.previousChannelId;
+    const userChanged = this.userId !== this.previousUserId;
 
     if (channelChanged || userChanged) {
-      this.previousChannelId = this.channelId
-      this.previousUserId = this.userId
-      this.messages = [] // Clear old messages
-      this.cleanupSubscription()
+      this.previousChannelId = this.channelId;
+      this.previousUserId = this.userId;
+      this.messages = []; // Clear old messages
+      this.cleanupSubscription();
 
       if (this.isDM && this.userId) {
-        await this.initializeDM()
+        await this.initializeDM();
       } else if (this.channelId) {
-        await this.initializeChannel()
+        await this.initializeChannel();
       }
     }
-    this.loadDMUser()
+    this.loadDMUser();
   }
 
   ngOnDestroy() {
-    this.destroyed = true
-    this.cleanupSubscription()
+    this.destroyed = true;
+    this.cleanupSubscription();
   }
 
   /**
    * Initializes DM with user data and message subscription
    */
   private async initializeDM() {
-    if (!this.userId || this.destroyed) return
+    if (!this.userId || this.destroyed) return;
 
-    this.isLoadingMessages = true
-    await Promise.all([this.loadDMUser(), this.setupMessageSubscription()])
-    if (this.destroyed) return
-    this.isLoadingMessages = false
+    this.isLoadingMessages = true;
+    await Promise.all([this.loadDMUser(), this.setupMessageSubscription()]);
+    if (this.destroyed) return;
+    this.isLoadingMessages = false;
   }
 
   /**
@@ -143,8 +148,8 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   private loadDMUser() {
     if (this.userId && this.isDM) {
-      const users = this.usersFacade.users()
-      this.dmUser = users?.find((u) => u.id === this.userId) || null
+      const users = this.usersFacade.users();
+      this.dmUser = users?.find((u) => u.id === this.userId) || null;
     }
   }
 
@@ -152,12 +157,15 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * Initializes channel with all data
    */
   private async initializeChannel() {
-    if (!this.channelId || this.destroyed) return
+    if (!this.channelId || this.destroyed) return;
 
-    this.isLoadingMessages = true
-    await Promise.all([this.loadChannelData(), this.setupMessageSubscription()])
-    if (this.destroyed) return
-    this.isLoadingMessages = false
+    this.isLoadingMessages = true;
+    await Promise.all([
+      this.loadChannelData(),
+      this.setupMessageSubscription(),
+    ]);
+    if (this.destroyed) return;
+    this.isLoadingMessages = false;
   }
 
   /**
@@ -165,25 +173,31 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   private async setupMessageSubscription() {
     if (this.isDM && this.userId) {
-      this.messageSubscription = this.messagesFacade.subscribeToDMMessages(this.userId, (messages) => {
-        this.messages = messages
-        const counts = aggregateReactions(this.messages)
-        this.globalReactions.setCounts(counts)
-        this.cdr.detectChanges()
-        this.scrollToBottomAfterUpdate()
-      })
-      return
+      this.messageSubscription = this.messagesFacade.subscribeToDMMessages(
+        this.userId,
+        (messages) => {
+          this.messages = messages;
+          const counts = aggregateReactions(this.messages);
+          this.globalReactions.setCounts(counts);
+          this.cdr.detectChanges();
+          this.scrollToBottomAfterUpdate();
+        }
+      );
+      return;
     }
 
-    if (!this.channelId) return
+    if (!this.channelId) return;
 
-    this.messageSubscription = this.messagesFacade.subscribeToChannelMessages(this.channelId, (messages) => {
-      this.messages = messages
-      const counts = aggregateReactions(this.messages)
-      this.globalReactions.setCounts(counts)
-      this.cdr.detectChanges()
-      this.scrollToBottomAfterUpdate()
-    })
+    this.messageSubscription = this.messagesFacade.subscribeToChannelMessages(
+      this.channelId,
+      (messages) => {
+        this.messages = messages;
+        const counts = aggregateReactions(this.messages);
+        this.globalReactions.setCounts(counts);
+        this.cdr.detectChanges();
+        this.scrollToBottomAfterUpdate();
+      }
+    );
   }
 
   /**
@@ -191,9 +205,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   private scrollToBottomAfterUpdate() {
     setTimeout(() => {
-      this.scrollToBottom()
-      this.waitForImagesToLoad()
-    }, 1)
+      this.scrollToBottom();
+      this.waitForImagesToLoad();
+    }, 1);
   }
 
   /**
@@ -201,8 +215,8 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   private scrollToBottom() {
     if (this.messagesContainer?.nativeElement) {
-      const element = this.messagesContainer.nativeElement
-      this.renderer.setProperty(element, "scrollTop", element.scrollHeight)
+      const element = this.messagesContainer.nativeElement;
+      this.renderer.setProperty(element, 'scrollTop', element.scrollHeight);
     }
   }
 
@@ -210,29 +224,29 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * Waits for images and scrolls again
    */
   private waitForImagesToLoad() {
-    if (!this.messagesContainer?.nativeElement) return
+    if (!this.messagesContainer?.nativeElement) return;
 
-    const images = this.messagesContainer.nativeElement.querySelectorAll("img")
-    let loadedImages = 0
-    const totalImages = images.length
+    const images = this.messagesContainer.nativeElement.querySelectorAll('img');
+    let loadedImages = 0;
+    const totalImages = images.length;
 
-    if (totalImages === 0) return
+    if (totalImages === 0) return;
 
     images.forEach((img: HTMLImageElement) => {
       if (img.complete) {
-        loadedImages++
+        loadedImages++;
         if (loadedImages === totalImages) {
-          this.scrollToBottom()
+          this.scrollToBottom();
         }
       } else {
         img.onload = () => {
-          loadedImages++
+          loadedImages++;
           if (loadedImages === totalImages) {
-            this.scrollToBottom()
+            this.scrollToBottom();
           }
-        }
+        };
       }
-    })
+    });
   }
 
   /**
@@ -240,8 +254,8 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    */
   private cleanupSubscription() {
     if (this.messageSubscription) {
-      this.messageSubscription()
-      this.messageSubscription = null
+      this.messageSubscription();
+      this.messageSubscription = null;
     }
   }
 
@@ -251,21 +265,23 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private async loadChannelData() {
     if (this.isDM && this.userId) {
       try {
-        const user = await this.usersFacade.getUserById(this.userId)
-        this.createdByName = user?.displayName || "Unbekannt"
+        const user = await this.usersFacade.getUserById(this.userId);
+        this.createdByName = user?.displayName || 'Unbekannt';
       } catch (error) {
-        console.error("Error loading DM user:", error)
-        this.createdByName = "Unbekannt"
+        console.error('Error loading DM user:', error);
+        this.createdByName = 'Unbekannt';
       }
-      return
+      return;
     }
-    const channels = this.channelsFacade.channels()
-    this.currentChannel = channels.find((c) => c.id === this.channelId) || null
+    const channels = this.channelsFacade.channels();
+    this.currentChannel = channels.find((c) => c.id === this.channelId) || null;
 
     if (this.currentChannel?.ownerId) {
-      const allUsers = this.usersFacade.users()
-      const creator = allUsers?.find((user) => user.id === this.currentChannel?.ownerId)
-      this.createdByName = creator?.displayName || "Unbekannt"
+      const allUsers = this.usersFacade.users();
+      const creator = allUsers?.find(
+        (user) => user.id === this.currentChannel?.ownerId
+      );
+      this.createdByName = creator?.displayName || 'Unbekannt';
     }
   }
 
@@ -273,76 +289,76 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
    * Runs migration for old reactions
    */
   async runMigration() {
-    if (this.destroyed) return
+    if (this.destroyed) return;
     try {
-      await this.messagesService.migrateOldReactions()
+      await this.messagesService.migrateOldReactions();
     } catch (error) {
-      console.error("Migration failed:", error)
+      console.error('Migration failed:', error);
     }
   }
 
   get currentChatName(): string {
     if (this.isDM && this.createdByName) {
-      return `@ ${this.createdByName}`
+      return `@ ${this.createdByName}`;
     }
     if (this.isDM) {
-      return "@ Direct Message"
+      return '@ Direct Message';
     }
-    return `# ${this.currentChannel?.name || "Entwicklerteam"}`
+    return `# ${this.currentChannel?.name || 'Entwicklerteam'}`;
   }
 
   get currentChatDescription(): string {
-    return this.currentChannel?.description || ""
+    return this.currentChannel?.description || '';
   }
 
   trackByMessageId(index: number, message: Message): string {
-    return message.id || index.toString()
+    return message.id || index.toString();
   }
 
   onReplyToMessage(message: Message) {
-    this.threadOpened.emit(message)
+    this.threadOpened.emit(message);
   }
 
   onAddMember() {
-    console.log("Add member to channel:", this.channelId)
+    console.log('Add member to channel:', this.channelId);
   }
 
   openThread(threadId: string) {
-    this.logoState.setCurrentView("thread")
+    this.logoState.setCurrentView('thread');
     if (this.logoState.showBackArrow()) {
-      this.router.navigate(["/m/thread", threadId])
+      this.router.navigate(['/m/thread', threadId]);
     }
   }
 
   openSettings() {
     if (this.isDM) {
-      this.openProfileDetails()
+      this.openProfileDetails();
     } else {
-      this.showSettings = true
+      this.showSettings = true;
     }
   }
 
   closeSettings() {
-    this.showSettings = false
+    this.showSettings = false;
   }
 
   onSettingsSaved() {
-    this.closeSettings()
-    this.loadChannelData()
+    this.closeSettings();
+    this.loadChannelData();
   }
 
   onChannelLeft() {
-    this.closeSettings()
-    this.router.navigate(["/workspace"])
+    this.closeSettings();
+    this.router.navigate(['/workspace']);
   }
 
   /**
    * Opens the profile info overlay.
    */
   openProfileDetails() {
-    if (!this.dmUser) return
+    if (!this.dmUser) return;
     this.dialog.open(DlgProfileDetailsComponent, {
       data: { userId: this.dmUser.id },
-    })
+    });
   }
 }
