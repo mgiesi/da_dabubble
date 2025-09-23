@@ -1,10 +1,15 @@
-import { Component, Input, inject } from "@angular/core"
+import { Component, Input, inject, ViewChild, ElementRef } from "@angular/core"
 import { FormsModule } from "@angular/forms"
+import { NgFor, NgIf } from "@angular/common"
+import { BehaviorSubject, combineLatest, Observable } from "rxjs"
+import { map } from "rxjs/operators"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
+import { UsersService } from "../../../core/repositories/users.service"
+import { ChannelsService } from "../../../core/repositories/channels.service"
 
 @Component({
   selector: "app-message-input",
-  imports: [FormsModule],
+  imports: [FormsModule, NgFor, NgIf],
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
@@ -14,12 +19,19 @@ export class MessageInputComponent {
   @Input() parentMessageId: string | null = null
   @Input() parentMessage: any = null 
   @Input() placeholder = "Nachricht schreiben..."
+  @Input() userId: string | null = null
+  @Input() isDM: boolean = false
 
-  @Input() userId: string | null = null;
-  @Input() isDM: boolean = false;
+  @ViewChild('messageTextarea', { static: false })
+  messageTextarea?: ElementRef<HTMLTextAreaElement>
 
   messageText = ""
+  showDropdown = false
+  private searchInput$ = new BehaviorSubject<string>('')
+
   private messagesFacade = inject(MessagesFacadeService)
+  private usersService = inject(UsersService)
+  private channelsService = inject(ChannelsService)
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
