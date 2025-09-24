@@ -3,6 +3,10 @@
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
 @use "../../../../../public/assets/styles/profile.scss" as *;
 
+:host {
+    width: 100%;
+}
+
 .profile-badge-content {
     @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 15px);
     @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
