@@ -83,7 +83,6 @@ export class ChatAreaComponent
   @Input() isDM = false;
 
   dmUserSig: Signal<User | null> | null = null;
-
   currentChannel: Channel | null = null;
   showMembersList = false;
   createdByName = '';

@@ -1,5 +1,9 @@
 @use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
+:host {
+  position: relative;
+}
+
 .main-layout {
   display: grid;
   height: 100vh;

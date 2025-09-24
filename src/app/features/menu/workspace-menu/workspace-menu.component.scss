@@ -24,6 +24,10 @@
   }
 }
 
+.userOnline {
+  position: absolute;
+}
+
 .workspace-header {
   @include dFlexAllCenter($jc: space-between);
   flex-shrink: 0;
@@ -147,6 +151,7 @@
   overflow-x: hidden;
   min-height: 0;
   scrollbar-gutter: stable;
+
 
 
   &::-webkit-scrollbar {

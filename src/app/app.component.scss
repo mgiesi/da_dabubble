@@ -145,6 +145,7 @@
     position: relative;
     max-width: $max-content-width-1920;
     overflow-y: auto;
+    overflow-x: hidden;
 
     &.animation-active {
         overflow-y: hidden;

@@ -1,6 +1,13 @@
 <app-workspace-menu-toggler *ngIf="!logo.isMobile()" [isOpen]="isWorkspaceMenuOpen" (toggle)="onToggleWorkspaceMenu()">
 </app-workspace-menu-toggler>
 
+@if(userOnline){
+<div class="userOnline" [class.hide]="messageHide">
+  <p *ngIf="lastOnlineUserName; else noName">{{ lastOnlineUserName }} ist online</p>
+  <ng-template #noName>User ist online</ng-template>
+</div>
+}
+
 <div class="main-layout" [class.mobile]="logo.isMobile()" [class.workspace-open]="isWorkspaceMenuOpen"
   [class.thread-open]="currentView === 'thread'">
 

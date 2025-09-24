@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { DmOnlineLoggerService } from '../../../features/menu/workspace-menu/dm-online-logger.service';
 import { ChatNavigationService } from '../../../core/services/chat-navigation.service';
 import { WorkspaceMenuComponent } from '../../../features/menu/workspace-menu/workspace-menu.component';
 import { WorkspaceMenuTogglerComponent } from '../workspace-menu-toggler/workspace-menu-toggler.component';
@@ -21,6 +22,7 @@ import { LogoStateService } from '../../../core/services/logo-state.service';
   styleUrl: './main-layout.component.scss',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
+  private dmOnlineLogger = inject(DmOnlineLoggerService);
   private chatNavigationService = inject(ChatNavigationService);
   private dmSubscription?: any;
   private channelSubscription?: any;
@@ -28,6 +30,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   selectedThread: any = null;
   currentView: 'workspace' | 'chat' | 'thread' = 'chat';
   isWorkspaceMenuOpen = true;
+  userOnline: boolean = false;
+  lastOnlineUserName: string | null = null;
+  messageHide: boolean = false;
 
   private channelsFacade = inject(ChannelsFacadeService);
   private logoState = inject(LogoStateService);
@@ -49,6 +54,20 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           this.onChannelSelected(channelId);
         }
       );
+
+    // Listen for DM user online events and update name
+    const workspaceMenu = (window as any).workspaceMenuComponentInstance;
+    if (workspaceMenu && workspaceMenu.users) {
+      const usersSafe = () => workspaceMenu.users() ?? [];
+      this.dmOnlineLogger.watchDmUsersOnline(
+        usersSafe as any,
+        (name: string) => {
+          this.lastOnlineUserName = name;
+          this.userOnline = true;
+          this.messageHide = false;
+        }
+      );
+    }
   }
 
   ngOnDestroy() {

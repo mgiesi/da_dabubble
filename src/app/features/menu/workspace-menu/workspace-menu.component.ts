@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { ChatNavigationService } from '../../../core/services/chat-navigation.service';
 import { NgFor } from '@angular/common';
+import { DmOnlineLoggerService } from '../../../core/services/dm-online-logger.service';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { ChannelCreateComponent } from '../../channels/channel-create/channel-create.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
@@ -23,6 +24,7 @@ import { User } from '../../../shared/models/user';
   styleUrl: './workspace-menu.component.scss',
 })
 export class WorkspaceMenuComponent implements OnInit, OnDestroy {
+  private dmOnlineLogger = inject(DmOnlineLoggerService);
   private chatNavigationService = inject(ChatNavigationService);
   private dmSubscription?: any;
   private channelSubscription?: any;
@@ -53,6 +55,9 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Log when a DM user comes online
+    const usersSafe = () => this.users() ?? [];
+    this.dmOnlineLogger.watchDmUsersOnline(usersSafe as any);
     this.dmSubscription = this.chatNavigationService.dmSelected$.subscribe(
       (userId: string) => {
         this.selectedUserId = userId;

@@ -60,7 +60,8 @@ mat-dialog-content {
 }
 
 .account-created-successfully,
-.reset-password-email-successfully {
+.reset-password-email-successfully,
+.userOnline {
   z-index: 5;
   @include accountCreatedSuccessfully;
   position: absolute;
@@ -221,12 +222,17 @@ mat-dialog-content {
   padding: 20px 21px;
 }
 
-.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option + .mat-mdc-option {
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option+.mat-mdc-option {
   margin-top: 15px;
 }
 
-.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:first-child { margin-top: 12px; }
-.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:last-child  { margin-bottom: 12px; }
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:first-child {
+  margin-top: 12px;
+}
+
+.cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option:last-child {
+  margin-bottom: 12px;
+}
 
 .cdk-overlay-container .mat-mdc-autocomplete-panel .mat-mdc-option {
   padding-inline: 21px;
@@ -247,6 +253,6 @@ mat-radio-button {
   --mdc-radio-unselected-hover-icon-color: #797EF3;
   --mdc-radio-unselected-pressed-icon-color: #797EF3;
   --mdc-radio-unselected-focus-icon-color: #797EF3;
-  
+
   @include fontSizeWeightColor($si: 18px, $we: 400, $co: $black);
 }
