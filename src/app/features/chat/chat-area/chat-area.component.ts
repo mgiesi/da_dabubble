@@ -12,6 +12,7 @@ import {
   type ElementRef,
   Renderer2,
   type AfterViewInit,
+  Signal,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor, NgIf } from '@angular/common';
@@ -81,7 +82,7 @@ export class ChatAreaComponent
   @Input() userId: string | null = null;
   @Input() isDM = false;
 
-  dmUser: User | null = null;
+  dmUserSig: Signal<User | null> | null = null;
 
   currentChannel: Channel | null = null;
   showMembersList = false;
@@ -93,8 +94,8 @@ export class ChatAreaComponent
   constructor(private globalReactions: GlobalReactionService) {}
 
   async ngOnInit() {
-    this.loadDMUser();
     if (this.isDM && this.userId) {
+      this.dmUserSig = this.usersFacade.getUserSig(this.userId);
       await this.initializeDM();
     } else if (this.channelId) {
       await this.runMigration();
@@ -118,12 +119,12 @@ export class ChatAreaComponent
       this.cleanupSubscription();
 
       if (this.isDM && this.userId) {
+        this.dmUserSig = this.usersFacade.getUserSig(this.userId);
         await this.initializeDM();
       } else if (this.channelId) {
         await this.initializeChannel();
       }
     }
-    this.loadDMUser();
   }
 
   ngOnDestroy() {
@@ -138,7 +139,7 @@ export class ChatAreaComponent
     if (!this.userId || this.destroyed) return;
 
     this.isLoadingMessages = true;
-    await Promise.all([this.loadDMUser(), this.setupMessageSubscription()]);
+    await Promise.all([this.setupMessageSubscription()]);
     if (this.destroyed) return;
     this.isLoadingMessages = false;
   }
@@ -146,12 +147,7 @@ export class ChatAreaComponent
   /**
    * Gets DM user data when userId changes
    */
-  private loadDMUser() {
-    if (this.userId && this.isDM) {
-      const users = this.usersFacade.users();
-      this.dmUser = users?.find((u) => u.id === this.userId) || null;
-    }
-  }
+  // loadDMUser entfällt, da Signal genutzt wird
 
   /**
    * Initializes channel with all data
@@ -298,10 +294,11 @@ export class ChatAreaComponent
   }
 
   get currentChatName(): string {
-    if (this.isDM && this.createdByName) {
-      return `@ ${this.createdByName}`;
-    }
-    if (this.isDM) {
+    if (this.isDM && this.dmUserSig) {
+      const user = this.dmUserSig();
+      if (user?.displayName) {
+        return `@ ${user.displayName}`;
+      }
       return '@ Direct Message';
     }
     return `# ${this.currentChannel?.name || 'Entwicklerteam'}`;
@@ -356,9 +353,10 @@ export class ChatAreaComponent
    * Opens the profile info overlay.
    */
   openProfileDetails() {
-    if (!this.dmUser) return;
+    const user = this.dmUserSig?.();
+    if (!user) return;
     this.dialog.open(DlgProfileDetailsComponent, {
-      data: { userId: this.dmUser.id },
+      data: { userId: user.id },
     });
   }
 }
