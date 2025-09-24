@@ -172,6 +172,7 @@
   cursor: pointer;
   @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
   border-radius: 25px;
+  margin-bottom: 13px;
 
   svg path {
     fill: black;
