@@ -33,6 +33,10 @@ export class WorkspaceMenuComponent implements OnInit {
   selectedChannelId: string | null = null;
 
   get channels() {
+    const user = this.usersFacade.currentUserSig();
+    if (!user?.email || user.readonly) {
+      return this.channelsFacade.channels();
+    }
     return this.channelsFacade.visibleChannelsSig();
   }
 

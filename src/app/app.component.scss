@@ -21,6 +21,7 @@
     top: 0;
     width: 100%;
     height: $header-height-115;
+    max-width: $max-content-width-1920;
 
     @media screen and (max-width: $breakpoint-1080) {
         background-color: $bg-color;

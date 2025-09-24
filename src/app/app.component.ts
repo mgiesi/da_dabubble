@@ -1,5 +1,7 @@
 import { UsersService } from './core/repositories/users.service';
 import { ChannelsService } from './core/repositories/channels.service';
+import { UsersFacadeService } from './core/facades/users-facade.service';
+import { ChannelsFacadeService } from './core/facades/channels-facade.service';
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { map, startWith, filter } from 'rxjs/operators';
 import {
@@ -34,6 +36,8 @@ import { fadeInOut } from './core/animations/fade-in-out.animation';
   animations: [fadeInOut],
 })
 export class AppComponent {
+  private usersFacade = inject(UsersFacadeService);
+  private channelsFacade = inject(ChannelsFacadeService);
   @ViewChild('searchInput', { static: false })
   searchInputRef?: ElementRef<HTMLInputElement>;
   @ViewChild('appContainer', { static: false }) appContainerRef?: ElementRef;
@@ -85,17 +89,41 @@ export class AppComponent {
     )
   );
 
+  showScrollToTopBtn$: Observable<boolean> = this.router.events.pipe(
+    filter((event) => event instanceof NavigationEnd),
+    map(
+      () =>
+        window.location.pathname.includes('imprint') &&
+        window.location.pathname.includes('privacy-policy')
+    ),
+    startWith(
+      window.location.pathname.includes('imprint') &&
+        window.location.pathname.includes('privacy-policy')
+    )
+  );
+
   searchInput$ = new BehaviorSubject<string>('');
   users$: Observable<any[]> = this.usersService.users$();
-  channels$: Observable<any[]> = this.channelsService.channels$();
+  get channels() {
+    const user = this.usersFacade.currentUserSig();
+    if (!user?.email || user.readonly) {
+      return this.channelsFacade.channels();
+    }
+    return this.channelsFacade.visibleChannelsSig();
+  }
   filteredResults$: Observable<any[]> = combineLatest([
     this.searchInput$,
     this.users$,
-    this.channels$,
+    this.channelsService.channels$(),
   ]).pipe(
-    map(([search, users, channels]) =>
-      this.filterResults(search, users, channels)
-    )
+    map(([search, users, allChannels]) => {
+      const user = this.usersFacade.currentUserSig();
+      const channels =
+        !user?.email || user.readonly
+          ? allChannels
+          : this.channelsFacade.visibleChannelsSig();
+      return this.filterResults(search, users, channels);
+    })
   );
 
   private filterResults(search: string, users: any[], channels: any[]): any[] {
