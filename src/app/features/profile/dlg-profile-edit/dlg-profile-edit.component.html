@@ -37,7 +37,7 @@
             </div>
             <form #f="ngForm">
                 <label class="label-input-field-gray-without-img-border" for="fullName">
-                    <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName"
+                    <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" maxlength="15"
                         placeholder="Name und Nachname" required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+"
                         #fullNameField="ngModel" [ngModelOptions]="{ updateOn: 'change' }"
                         (change)="validateNameLength()"

@@ -41,13 +41,6 @@
     width: 100%;
     min-height: 32px;
 
-
-    h1 {
-        @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
-        margin-right: 6px;
-        line-height: normal;
-    }
-
     >button {
         background: transparent;
         border: none;
@@ -66,6 +59,16 @@
             color: $text-gray;
             cursor: not-allowed;
         }
+    }
+}
+
+.text-box {
+    max-width: 75%;
+    margin-right: 6px;
+
+    h1 {
+        @include fontSizeWeightColor($si: $font-size-24-32, $we: 700, $co: $black);
+        line-height: normal;
     }
 }
 

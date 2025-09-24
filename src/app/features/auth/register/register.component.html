@@ -24,7 +24,7 @@
             <label class="label-input-field-gray-with-img" for="fullName">
                 <img src="icons/person_filled.svg" alt="Bild vom Namens-Eingabefeld">
                 <input type="text" id="fullName" [(ngModel)]="fullName" name="fullName" placeholder="Name und Nachname"
-                    required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+" #fullNameField="ngModel"
+                    maxlength="15" required pattern="[a-zA-ZäöüÄÖÜ]+\s[a-zA-ZäöüÄÖÜ]+" #fullNameField="ngModel"
                     [ngModelOptions]="{ updateOn: 'blur' }" (blur)="validateNameLength()"
                     [class.input-error-border]="fullNameField.invalid && (fullNameField.touched || fullNameField.dirty) && fullNameField.value !== ''" />
 

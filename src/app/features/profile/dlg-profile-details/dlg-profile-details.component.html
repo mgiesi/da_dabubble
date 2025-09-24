@@ -20,7 +20,9 @@
             [showStatus]="false"></app-profile-avatar>
         <div class="profile-name-state-content">
             <div class="profile-name-content">
-                <h1>{{ u.displayName }}</h1>
+                <div class="text-box">
+                    <h1>{{ u.displayName }}</h1>
+                </div>
                 <button class="btn-edit-profile-details" (click)="openEditProfile()" *ngIf="isSelf()"
                     [disabled]="u.readonly"><span>Bearbeiten</span></button>
             </div>
