@@ -113,12 +113,15 @@
     height: 30px;
     @include dFlexAllCenter();
 
-    svg path {
+    svg {
       fill: $black;
+      width: 25px;
+      aspect-ratio: 1 / 1;
     }
 
-    &:hover svg path {
+    &:hover svg {
       fill: $purple-1;
+
     }
 
     &:hover {
