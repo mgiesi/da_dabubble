@@ -25,6 +25,7 @@ import { User } from '../../../shared/models/user';
 export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   private chatNavigationService = inject(ChatNavigationService);
   private dmSubscription?: any;
+  private channelSubscription?: any;
   @Output() channelSelected = new EventEmitter<string>();
   @Output() directMessageSelected = new EventEmitter<string>();
 
@@ -52,16 +53,24 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Synchronisiere DM-Active-State mit globaler Navigation (z.B. Suche)
     this.dmSubscription = this.chatNavigationService.dmSelected$.subscribe(
       (userId: string) => {
         this.selectedUserId = userId;
+        this.selectedChannelId = null;
       }
     );
+    this.channelSubscription =
+      this.chatNavigationService.channelSelected$.subscribe(
+        (channelId: string) => {
+          this.selectedChannelId = channelId;
+          this.selectedUserId = null;
+        }
+      );
   }
 
   ngOnDestroy() {
     if (this.dmSubscription) this.dmSubscription.unsubscribe();
+    if (this.channelSubscription) this.channelSubscription.unsubscribe();
   }
 
   toggleChannels() {
@@ -78,14 +87,13 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
 
   onChannelClick(channelId: string) {
     this.selectedChannelId = channelId;
+    this.selectedUserId = null;
     this.channelSelected.emit(channelId);
   }
 
-  /**
-   * Handles direct message user click and sets active user
-   */
   onDirectMessageClick(userId: string) {
     this.selectedUserId = userId;
+    this.selectedChannelId = null;
     this.directMessageSelected.emit(userId);
   }
 
