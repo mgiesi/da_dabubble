@@ -19,7 +19,7 @@
     margin-top: clamp(0px, 200px + -10.929vw, 100px);
 
     @media screen and (max-width: $breakpoint-915) {
-        margin-top: unset;
+        margin-top: 100px;
     }
 
     h1 {

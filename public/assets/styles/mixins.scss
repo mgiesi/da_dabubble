@@ -13,14 +13,12 @@
   @media screen and (max-height: $breakpoint-height-850) {
     @include dFlexAllCenter($ai: flex-start, $jc: center);
     overflow-y: hidden;
-    margin-top: 35px;
     height: unset;
   }
 
   @media screen and (max-width: $breakpoint-915) {
     @include dFlexAllCenter($ai: flex-start, $jc: center);
     overflow-y: hidden;
-    margin-top: 100px;
     height: unset;
   }
 }
