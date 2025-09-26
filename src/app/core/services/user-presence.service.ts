@@ -15,7 +15,7 @@ import {
   get,
 } from '@angular/fire/database';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { Observable, shareReplay } from 'rxjs';
+import { EMPTY, Observable, of, shareReplay, switchMap } from 'rxjs';
 
 export type UserPresence = { isOnline: boolean; lastSeenAt: number | null };
 
@@ -157,14 +157,30 @@ export class UserPresenceService {
                 typeof v?.last_seen_at === 'number' ? v.last_seen_at : null,
             });
           },
-          (err) => subscriber.error(err)
+          (err: any) => {
+            if (err?.code === 'PERMISSION_DENIED') {
+              subscriber.complete();
+              return;
+            }
+            subscriber.error(err)
+          }
         );
       });
 
       return () => {
         if (unsubscribe) unsubscribe();
       };
-    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    }).pipe(
+      switchMap(value => 
+        new Observable<User | null>(sub => {
+          const off = onAuthStateChanged(this.auth, u => sub.next(u));
+          return () => off();
+        }).pipe(
+          switchMap(u => u ? of(value) : EMPTY)
+        )
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
 
     this.userPresenceCache.set(uid, obs);
     return obs;

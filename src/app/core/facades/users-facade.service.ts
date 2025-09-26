@@ -10,20 +10,21 @@ import { UsersService } from '../repositories/users.service';
 import { Auth } from '@angular/fire/auth';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
+  catchError,
   distinctUntilChanged,
+  EMPTY,
   map,
   Observable,
   of,
   shareReplay,
   switchMap,
+  throwError,
 } from 'rxjs';
 import { User } from '../../shared/models/user';
 import {
   UserPresence,
   UserPresenceService,
 } from '../services/user-presence.service';
-
-const EMPTY: UserPresence = { isOnline: false, lastSeenAt: null };
 
 @Injectable({
   providedIn: 'root',
@@ -172,18 +173,21 @@ export class UsersFacadeService {
     userSig: Signal<User | null>,
     injector: Injector
   ): Signal<UserPresence> {
-    const uid$ = toObservable(userSig).pipe(
+    const uid$ = toObservable(userSig, { injector }).pipe(
       map((u) => u?.uid ?? null),
       distinctUntilChanged()
     );
 
-    const presence$ = uid$.pipe(
-      switchMap((uid) =>
-        uid ? this.presence.watchUserPresence(uid) : of(EMPTY)
+    const presence$: Observable<UserPresence> = uid$.pipe(
+      switchMap(uid => uid ? this.presence.watchUserPresence(uid) : (EMPTY as Observable<UserPresence>)
+      ),
+      catchError(err => err?.code === 'PERMISSION_DENIED' ? (EMPTY as Observable<UserPresence>) : throwError(() => err)
       )
     );
 
-    return toSignal(presence$, { initialValue: EMPTY, injector });
+    const INITIAL: UserPresence = { isOnline: false, lastSeenAt: null };
+
+    return toSignal(presence$, { initialValue: INITIAL, injector });
   }
 
   /**

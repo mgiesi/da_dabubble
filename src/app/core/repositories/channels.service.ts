@@ -1,4 +1,5 @@
 import {
+  EnvironmentInjector,
   inject,
   Injectable,
   Injector,
@@ -18,12 +19,14 @@ import {
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { combineLatest, map, Observable, shareReplay, startWith, switchMap, of } from 'rxjs';
+import { combineLatest, map, Observable, shareReplay, startWith, switchMap, of, catchError, EMPTY, throwError, defer } from 'rxjs';
 import { Channel } from '../../shared/models/channel';
 import { where, getDocs } from '@angular/fire/firestore';
 import { User } from '../../shared/models/user';
 import { UsersFacadeService } from '../facades/users-facade.service';
 import { Member } from '../../shared/models/member';
+import { Auth, authState } from '@angular/fire/auth';
+import { FirestoreHelpers } from '../firebase/firestore-helper';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +44,9 @@ export class ChannelsService {
   private fs = inject(Firestore);
   private injector = inject(Injector);
   private userFacade = inject(UsersFacadeService);
+  private auth = inject(Auth);
+  private firestoreHelper = inject(FirestoreHelpers);
+  private env  = inject(EnvironmentInjector);
 
   constructor() { }
 
@@ -50,9 +56,10 @@ export class ChannelsService {
    * @returns Observable that emits a list of `Channel` objects.
    */
   channels$(): Observable<Channel[]> {
-    const ref = collection(this.fs, 'channels');
-    const q = query(ref, orderBy('name', 'asc'));
-    return collectionData(q, { idField: 'id' }) as Observable<Channel[]>;
+    return this.firestoreHelper.authedCollection$<Channel>(() => {
+      const ref = collection(this.fs, 'channels');
+      return query(ref, orderBy('name', 'asc'));
+    });
   }
 
   /**
@@ -138,27 +145,40 @@ export class ChannelsService {
    * @returns {Observable<User[]>} A shared, hot observable that emits the current list of members as `User[]`.
    */
   getChannelMembers$(channelId: string): Observable<User[]> {
-    return runInInjectionContext(this.injector, () => {
-      const membersRef = collection(this.fs, `channels/${channelId}/members`) as CollectionReference<Member>;
-      const qMembers = query(membersRef, orderBy('joinedAt', 'asc'));
+    return defer(() =>
+      runInInjectionContext(this.env, () => authState(this.auth))
+    ).pipe(
+      switchMap(user => {
+        if (!user) return of<User[]>([]);
 
-      return collectionData<Member>(qMembers, { idField: 'id' }).pipe(
-        switchMap((members) => {
-          if (!members.length) return of<User[]>([]);
+        // Firestore-Query + collectionData IM Injection Context UND zur Abo-Zeit
+        const members$ = defer(() =>
+          runInInjectionContext(this.env, () => {
+            const membersRef = collection(this.fs, `channels/${channelId}/members`) as CollectionReference<Member>;
+            const qMembers = query(membersRef, orderBy('joinedAt', 'asc'));
+            return collectionData<Member>(qMembers, { idField: 'id' }) as Observable<Member[]>;
+          })
+        );
 
-          const streams = members.map(m =>
-            this.userFacade.getUser$(m.id).pipe(
-              startWith(null as User | null)
-            )
-          );
-
-          return combineLatest(streams).pipe(
-            map(users => users.filter((u): u is User => !!u))
-          );
-        }),
-        shareReplay({ bufferSize: 1, refCount: true })
-      );
-    });
+        return members$.pipe(
+          switchMap(members => {
+            if (!members.length) return of<User[]>([]);
+            const streams = members.map(m =>
+              this.userFacade.getUser$(m.id).pipe(startWith(null as User | null))
+            );
+            return combineLatest(streams).pipe(
+              map(users => users.filter((u): u is User => !!u))
+            );
+          })
+        );
+      }),
+      catchError(err =>
+        (err?.code === 'permission-denied' || err?.code === 'unauthenticated')
+          ? of<User[]>([])
+          : throwError(() => err)
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
   }
 
   /**

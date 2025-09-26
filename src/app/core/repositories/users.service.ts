@@ -18,18 +18,22 @@ import {
   getDocs,
   getDoc
 } from '@angular/fire/firestore';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { User } from '../../shared/models/user';
 
 import { AuthService } from '../services/auth.service';
+import { Auth, authState } from '@angular/fire/auth';
+import { FirestoreHelpers } from '../firebase/firestore-helper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
   private fs = inject(Firestore);
-  private auth = inject(AuthService);
+  private authService = inject(AuthService);
   private env = inject(EnvironmentInjector);
+  private auth = inject(Auth);
+  private firestoreHelper = inject(FirestoreHelpers);
 
   constructor() { }
 
@@ -54,9 +58,10 @@ export class UsersService {
    * @returns Observable that emits arrays of `User` documents.
    */
   users$(): Observable<User[]> {
-    const ref = collection(this.fs, 'users');
-    const q = query(ref, orderBy('displayName', 'asc'));
-    return collectionData(q, { idField: 'id' }) as Observable<User[]>;
+    return this.firestoreHelper.authedCollection$<User>(() => {
+      const ref = collection(this.fs, 'users');
+      return query(ref, orderBy('displayName', 'asc'));
+    }); 
   }
 
   /**
@@ -69,20 +74,22 @@ export class UsersService {
    *          or `null` if not authenticated or no matching record is found.
    */
   currentUser$(): Observable<User | null> {
-    return this.auth.user$.pipe(
-      switchMap((firebaseUser) => {
-        if (!firebaseUser) {
-          return of(null);
-        }
+    return runInInjectionContext(this.env, () =>
+      authState(this.auth).pipe(
+        switchMap(u => {
+          if (!u) return of(null);
 
-        return runInInjectionContext(this.env, () => {
-          const ref = collection(this.fs, 'users');
-          const q = query(ref, where('uid', '==', firebaseUser.uid));
-          return collectionData(q, { idField: 'id' }).pipe(
-            map((users) => (users[0] as User) ?? null)
+          return this.firestoreHelper.authedCollection$<User>(() => {
+            const ref = collection(this.fs, 'users');
+            return query(ref, where('uid', '==', u.uid));
+          }).pipe(
+            map(users => (users[0] as User) ?? null)
           );
-        });
-      })
+        }),
+        catchError(err =>
+          err?.code === 'permission-denied' ? of(null) : throwError(() => err)
+        ),
+      )
     );
   }
 

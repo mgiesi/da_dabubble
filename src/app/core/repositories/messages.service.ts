@@ -18,9 +18,13 @@ import {
   updateDoc,
   getDocs,
   collectionData,
+  QuerySnapshot,
+  DocumentData,
 } from '@angular/fire/firestore';
-import { Observable, defer } from 'rxjs';
+import { EMPTY, Observable, catchError, defer, map, of, shareReplay, switchMap, throwError } from 'rxjs';
 import type { Message, Topic } from '../facades/messages-facade.service';
+import { Auth, authState } from '@angular/fire/auth';
+import { FirestoreHelpers } from '../firebase/firestore-helper';
 
 /**
  * Repository service for message-related database operations.
@@ -32,41 +36,73 @@ import type { Message, Topic } from '../facades/messages-facade.service';
 export class MessagesService {
   private fs = inject(Firestore);
   private injector = inject(Injector);
+  private firestoreHelper = inject(FirestoreHelpers);
 
   /**
    * Gets all topics for a channel as Observable
    */
   getTopicsForChannel$(channelId: string): Observable<Topic[]> {
-    return defer(() =>
+    return this.firestoreHelper.authedCollection$<Topic>(() => 
+      query(
+        collection(this.fs, `channels/${channelId}/topics`),
+        orderBy('lastMessageAt', 'desc')
+      )
+    );
+    /*return defer(() =>
       runInInjectionContext(this.injector, () => {
         const topicsRef = collection(this.fs, `channels/${channelId}/topics`);
         const topicsQuery = query(topicsRef, orderBy('lastMessageAt', 'desc'));
+
         return new Observable<Topic[]>((observer) => {
-          const unsubscribe = onSnapshot(topicsQuery, (snapshot) => {
-            const topics: Topic[] = [];
-            snapshot.forEach((doc) => {
-              topics.push({
-                id: doc.id,
-                channelId,
-                ...doc.data(),
-              } as Topic);
-            });
-            observer.next(topics);
-          });
-          return unsubscribe;
+          const unsubscribe = runInInjectionContext(this.injector, () =>
+            onSnapshot(
+              topicsQuery,
+              (snapshot) =>
+                runInInjectionContext(this.injector, () => {
+                  const topics: Topic[] = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    channelId,
+                    ...doc.data(),
+                  } as Topic));
+                  observer.next(topics);
+                }),
+              (err) =>
+                runInInjectionContext(this.injector, () => observer.error?.(err))
+            )
+          );
+          return () => runInInjectionContext(this.injector, () => unsubscribe());
         });
       })
-    ) as Observable<Topic[]>;
+    ).pipe(
+      catchError(err =>
+        (err?.code === 'permission-denied' || err?.code === 'unauthenticated')
+          ? of<Topic[]>([])
+          : throwError(() => err)
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );*/
   }
 
   /**
    * Gets all messages for a specific topic as Observable
    */
-  getMessagesForTopic$(
-    channelId: string,
-    topicId: string
-  ): Observable<Message[]> {
-    return defer(() =>
+  getMessagesForTopic$(channelId: string, topicId: string): Observable<Message[]> {
+    return this.firestoreHelper.authedCollection$<any>(() =>
+      query(
+        collection(this.fs, `channels/${channelId}/topics/${topicId}/messages`),
+        orderBy('timestamp', 'asc')
+      )
+    ).pipe(
+      map(rows => 
+        rows.map(r => ({
+          ...r,
+          channelId,
+          topicId,
+          timestamp: r.timestamp?.toDate?.() ?? new Date(),
+        } as Message))
+      )
+    );
+    /*return defer(() =>
       runInInjectionContext(this.injector, () => {
         const messagesRef = collection(
           this.fs,
@@ -91,7 +127,7 @@ export class MessagesService {
           return unsubscribe;
         });
       })
-    ) as Observable<Message[]>;
+    ) as Observable<Message[]>;*/
   }
 
   /**
@@ -300,12 +336,10 @@ export class MessagesService {
  * Gets direct messages between two users
  */
   getDMMessages$(userId1: string, userId2: string): Observable<Message[]> {
-    const dmId = this.createDMId(userId1, userId2);
-
-    return runInInjectionContext(this.injector, () => {
+    return this.firestoreHelper.authedCollection$<Message>(() => {
+      const dmId = this.createDMId(userId1, userId2);
       const ref = collection(this.fs, 'directMessages', dmId, 'messages');
-      const q = query(ref, orderBy('timestamp', 'asc'));
-      return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
+      return query(ref, orderBy('timestamp', 'asc'));
     });
   }
 
