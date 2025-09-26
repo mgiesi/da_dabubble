@@ -199,6 +199,10 @@ export class AppComponent {
     }
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => window.scrollTo(0, 0), 0.25);
+  }
+
   onDirectMessageClick(user: any) {
     const userId = user?.id || user;
     this.chatNavigationService.selectUser(userId);
