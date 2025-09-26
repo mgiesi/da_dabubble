@@ -54,20 +54,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           this.onChannelSelected(channelId);
         }
       );
-
-    // Listen for DM user online events and update name
-    const workspaceMenu = (window as any).workspaceMenuComponentInstance;
-    if (workspaceMenu && workspaceMenu.users) {
-      const usersSafe = () => workspaceMenu.users() ?? [];
-      this.dmOnlineLogger.watchDmUsersOnline(
-        usersSafe as any,
-        (name: string) => {
-          this.lastOnlineUserName = name;
-          this.userOnline = true;
-          this.messageHide = false;
-        }
-      );
-    }
   }
 
   ngOnDestroy() {
