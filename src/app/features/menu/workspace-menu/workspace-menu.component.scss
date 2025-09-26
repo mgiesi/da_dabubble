@@ -150,16 +150,18 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  scrollbar-gutter: stable;
-
-
 
   &::-webkit-scrollbar {
-    width: 0px;
+    width: 2px;
   }
 
   &:hover::-webkit-scrollbar {
     width: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 2px;
   }
 
   &:hover::-webkit-scrollbar-thumb {
@@ -224,6 +226,7 @@
 
   &:hover,
   &.active {
+    width: calc(90% + 3px);
     color: $purple-3;
     background: rgba($purple-3, 0.08);
   }
