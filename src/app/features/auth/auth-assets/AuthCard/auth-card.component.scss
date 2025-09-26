@@ -5,7 +5,7 @@
 :host {
     position: relative;
     max-width: 610px;
-    // width: clamp(300px, 238px + 19.375vw, 610px);
+    width: clamp(540px, 470px + 7.6503vw, 610px);
 }
 
 .auth-card-container {
@@ -16,6 +16,11 @@
     border-radius: 30px;
     box-shadow: $box-shadow;
     position: relative;
+    margin-top: clamp(0px, 200px + -10.929vw, 100px);
+
+    @media screen and (max-width: $breakpoint-915) {
+        margin-top: unset;
+    }
 
     h1 {
         @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
