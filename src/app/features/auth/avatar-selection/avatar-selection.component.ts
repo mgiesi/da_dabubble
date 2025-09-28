@@ -22,6 +22,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
 import { UserUtilService } from '../../../core/services/user-util.service';
+import { UserCredential } from 'firebase/auth';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -92,8 +93,19 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
     this.inProgress = true;
     this.setAvatarImgUrl();
     try {
-      await this.createUserInDb();
-      this.showSuccessMessageAndContinue();
+      const cred = await this.authService.signUp(
+        this.registerData.email(),
+        this.registerData.pwd()
+      );
+
+      await this.usersService.createUser(
+        cred.user.uid,
+        this.registerData.email(),
+        this.registerData.displayName(),
+        this.user.imgUrl
+      );
+
+      await this.showSuccessMessageAndContinue();
     } catch (error: any) {
       this.handleRegisterError(error);
     }
@@ -106,15 +118,6 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
         this.user.imgUrl = localu.imgUrl;
       }
     }
-  }
-
-  private async createUserInDb() {
-    await this.usersService.createUser(
-      '',
-      this.registerData.email(),
-      this.registerData.displayName(),
-      this.user.imgUrl
-    );
   }
 
   private showSuccessMessageAndContinue() {
@@ -131,16 +134,6 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
 
   private async finishRegistrationAndNavigate() {
     this.ngZone.run(async () => {
-      const userCredential = await this.authService.signUp(
-        this.registerData.email(),
-        this.registerData.pwd()
-      );
-      if (userCredential && userCredential.user && userCredential.user.uid) {
-        await this.userUtil.setUidByEmail(
-          this.registerData.email(),
-          userCredential.user.uid
-        );
-      }
       await this.router.navigate(['/chat']);
     });
   }
