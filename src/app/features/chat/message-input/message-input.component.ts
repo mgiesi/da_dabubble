@@ -1,15 +1,14 @@
 import { Component, Input, inject, ViewChild, ElementRef } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { NgFor, NgIf } from "@angular/common"
 import { BehaviorSubject, combineLatest, Observable } from "rxjs"
-import { map } from "rxjs/operators"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
+import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
 import { UsersService } from "../../../core/repositories/users.service"
 import { ChannelsService } from "../../../core/repositories/channels.service"
 
 @Component({
   selector: "app-message-input",
-  imports: [FormsModule, NgFor, NgIf],
+  imports: [FormsModule],
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
@@ -30,6 +29,7 @@ export class MessageInputComponent {
   private searchInput$ = new BehaviorSubject<string>('')
 
   private messagesFacade = inject(MessagesFacadeService)
+  private dmFacade = inject(DirectMessagesFacadeService)
   private usersService = inject(UsersService)
   private channelsService = inject(ChannelsService)
 
@@ -65,17 +65,14 @@ export class MessageInputComponent {
 
   /**
    * Sends a reply to a thread (parent message).
-   * Uses the parent message's topicId to avoid creating new topics.
    */
   private async sendThreadReply() {
     if (!this.channelId || !this.parentMessageId) return
 
-    // Use parent message's topicId if available, otherwise fall back to provided topicId
     let activeTopicId = this.parentMessage?.topicId || this.topicId
 
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
-    } else {
     }
 
     await this.messagesFacade.sendMessage(
@@ -84,7 +81,6 @@ export class MessageInputComponent {
       this.messageText,
       this.parentMessageId
     )
-
   }
 
   /**
@@ -103,11 +99,11 @@ export class MessageInputComponent {
   }
 
   /**
- * Sends direct message
- */
-private async sendDMMessage() {
-  if (!this.userId) return;
-  
-  await this.messagesFacade.sendDMMessage(this.userId, this.messageText);
-}
+   * Sends direct message using new DM facade
+   */
+  private async sendDMMessage() {
+    if (!this.userId) return;
+    
+    await this.dmFacade.sendDMMessage(this.userId, this.messageText);
+  }
 }

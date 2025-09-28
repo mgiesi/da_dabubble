@@ -19,10 +19,11 @@ import { NgFor, NgIf } from '@angular/common';
 import { MessageInputComponent } from '../message-input/message-input.component';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
-import {
-  MessagesFacadeService,
-  type Message,
-} from '../../../core/facades/messages-facade.service';
+import { MessagesFacadeService } from '../../../core/facades/messages-facade.service';
+import { DirectMessagesFacadeService } from '../../../core/facades/direct-messages-facade.service';
+import { ChatStateService } from '../../../core/services/chat-state.service';
+import { ChannelMessage } from '../../../shared/models/channel-message';
+import { DirectMessage } from '../../../shared/models/direct-message';
 import type { User } from '../../../shared/models/user';
 import type { Channel } from '../../../shared/models/channel';
 import { MessageItemComponent } from '../message-item/message-item.component';
@@ -69,6 +70,8 @@ export class ChatAreaComponent
   private channelsFacade = inject(ChannelsFacadeService);
   private usersFacade = inject(UsersFacadeService);
   private messagesFacade = inject(MessagesFacadeService);
+  private dmFacade = inject(DirectMessagesFacadeService);
+  private chatState = inject(ChatStateService);
   private cdr = inject(ChangeDetectorRef);
   private messagesService = inject(MessagesService);
   private renderer = inject(Renderer2);
@@ -86,7 +89,7 @@ export class ChatAreaComponent
   currentChannel: Channel | null = null;
   showMembersList = false;
   createdByName = '';
-  messages: Message[] = [];
+  messages: (ChannelMessage | DirectMessage)[] = [];
   isLoadingMessages = false;
   showSettings = false;
 
@@ -144,11 +147,6 @@ export class ChatAreaComponent
   }
 
   /**
-   * Gets DM user data when userId changes
-   */
-  // loadDMUser entfällt, da Signal genutzt wird
-
-  /**
    * Initializes channel with all data
    */
   private async initializeChannel() {
@@ -168,7 +166,7 @@ export class ChatAreaComponent
    */
   private async setupMessageSubscription() {
     if (this.isDM && this.userId) {
-      this.messageSubscription = this.messagesFacade.subscribeToDMMessages(
+      this.messageSubscription = this.dmFacade.subscribeToDMMessages(
         this.userId,
         (messages) => {
           this.messages = messages;
@@ -307,12 +305,26 @@ export class ChatAreaComponent
     return this.currentChannel?.description || '';
   }
 
-  trackByMessageId(index: number, message: Message): string {
+  trackByMessageId(index: number, message: ChannelMessage | DirectMessage): string {
     return message.id || index.toString();
   }
 
-  onReplyToMessage(message: Message) {
+  onReplyToMessage(message: ChannelMessage | DirectMessage) {
     this.threadOpened.emit(message);
+  }
+
+  /**
+   * Type guard to check if message is ChannelMessage
+   */
+  isChannelMessage(message: ChannelMessage | DirectMessage): message is ChannelMessage {
+    return 'channelId' in message && 'topicId' in message;
+  }
+
+  /**
+   * Type guard to check if message is DirectMessage
+   */
+  isDirectMessage(message: ChannelMessage | DirectMessage): message is DirectMessage {
+    return 'dmId' in message && 'senderName' in message;
   }
 
   onAddMember() {

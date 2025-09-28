@@ -9,26 +9,20 @@ import {
   query,
   collection,
   orderBy,
-  onSnapshot,
   addDoc,
   serverTimestamp,
-  collectionGroup,
   doc,
   getDoc,
   updateDoc,
   getDocs,
-  collectionData,
-  QuerySnapshot,
-  DocumentData,
 } from '@angular/fire/firestore';
-import { EMPTY, Observable, catchError, defer, map, of, shareReplay, switchMap, throwError } from 'rxjs';
-import type { Message, Topic } from '../facades/messages-facade.service';
-import { Auth, authState } from '@angular/fire/auth';
+import { Observable, map } from 'rxjs';
+import { ChannelMessage, Topic } from '../../shared/models/channel-message';
 import { FirestoreHelpers } from '../firebase/firestore-helper';
 
 /**
- * Repository service for message-related database operations.
- * Handles all Firestore interactions for messages and topics.
+ * Repository service for channel message operations.
+ * Handles all Firestore interactions for channel messages and topics.
  */
 @Injectable({
   providedIn: 'root',
@@ -48,45 +42,12 @@ export class MessagesService {
         orderBy('lastMessageAt', 'desc')
       )
     );
-    /*return defer(() =>
-      runInInjectionContext(this.injector, () => {
-        const topicsRef = collection(this.fs, `channels/${channelId}/topics`);
-        const topicsQuery = query(topicsRef, orderBy('lastMessageAt', 'desc'));
-
-        return new Observable<Topic[]>((observer) => {
-          const unsubscribe = runInInjectionContext(this.injector, () =>
-            onSnapshot(
-              topicsQuery,
-              (snapshot) =>
-                runInInjectionContext(this.injector, () => {
-                  const topics: Topic[] = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    channelId,
-                    ...doc.data(),
-                  } as Topic));
-                  observer.next(topics);
-                }),
-              (err) =>
-                runInInjectionContext(this.injector, () => observer.error?.(err))
-            )
-          );
-          return () => runInInjectionContext(this.injector, () => unsubscribe());
-        });
-      })
-    ).pipe(
-      catchError(err =>
-        (err?.code === 'permission-denied' || err?.code === 'unauthenticated')
-          ? of<Topic[]>([])
-          : throwError(() => err)
-      ),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );*/
   }
 
   /**
    * Gets all messages for a specific topic as Observable
    */
-  getMessagesForTopic$(channelId: string, topicId: string): Observable<Message[]> {
+  getMessagesForTopic$(channelId: string, topicId: string): Observable<ChannelMessage[]> {
     return this.firestoreHelper.authedCollection$<any>(() =>
       query(
         collection(this.fs, `channels/${channelId}/topics/${topicId}/messages`),
@@ -99,35 +60,9 @@ export class MessagesService {
           channelId,
           topicId,
           timestamp: r.timestamp?.toDate?.() ?? new Date(),
-        } as Message))
+        } as ChannelMessage))
       )
     );
-    /*return defer(() =>
-      runInInjectionContext(this.injector, () => {
-        const messagesRef = collection(
-          this.fs,
-          `channels/${channelId}/topics/${topicId}/messages`
-        );
-        const messagesQuery = query(messagesRef, orderBy('timestamp', 'asc'));
-        return new Observable<Message[]>((observer) => {
-          const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-            const messages: Message[] = [];
-            snapshot.forEach((doc) => {
-              const data = doc.data();
-              messages.push({
-                id: doc.id,
-                channelId,
-                topicId,
-                ...data,
-                timestamp: data['timestamp']?.toDate() || new Date(),
-              } as Message);
-            });
-            observer.next(messages);
-          });
-          return unsubscribe;
-        });
-      })
-    ) as Observable<Message[]>;*/
   }
 
   /**
@@ -136,7 +71,7 @@ export class MessagesService {
   async createMessage(
     channelId: string,
     topicId: string,
-    messageData: Partial<Message>
+    messageData: Partial<ChannelMessage>
   ): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       const messagesRef = collection(
@@ -214,16 +149,11 @@ export class MessagesService {
     userId: string
   ): any {
     const updatedReactions = { ...reactions };
-
-    // Remove user from any existing emoji
     this.removeUserFromAllEmojis(updatedReactions, userId);
-
-    // Add user to new emoji (if different from their previous one)
     const hadThisEmoji = reactions[newEmoji]?.users?.includes(userId);
     if (!hadThisEmoji) {
       this.addUserToEmoji(updatedReactions, newEmoji, userId);
     }
-
     return updatedReactions;
   }
 
@@ -236,7 +166,6 @@ export class MessagesService {
       if (reaction?.users?.includes(userId)) {
         reaction.users = reaction.users.filter((id: string) => id !== userId);
         reaction.count = reaction.users.length;
-
         if (reaction.count === 0) {
           delete reactions[emoji];
         }
@@ -251,7 +180,6 @@ export class MessagesService {
     if (!reactions[emoji]) {
       reactions[emoji] = { count: 0, users: [] };
     }
-
     reactions[emoji].users.push(userId);
     reactions[emoji].count = reactions[emoji].users.length;
   }
@@ -306,7 +234,6 @@ export class MessagesService {
    */
   private async migrateMessageReactions(messageDoc: any): Promise<void> {
     const data = messageDoc.data();
-
     if (Array.isArray(data['reactions']) && data['reactions'].length > 0) {
       const newReactions = this.convertOldReactionsFormat(data['reactions']);
       await updateDoc(messageDoc.ref, { reactions: newReactions });
@@ -318,7 +245,6 @@ export class MessagesService {
    */
   private convertOldReactionsFormat(oldReactions: any[]): any {
     const newReactions: any = {};
-
     oldReactions.forEach((r: any) => {
       if (!newReactions[r.emoji]) {
         newReactions[r.emoji] = { count: 0, users: [] };
@@ -328,91 +254,6 @@ export class MessagesService {
         newReactions[r.emoji].count = newReactions[r.emoji].users.length;
       }
     });
-
     return newReactions;
-  }
-
-  /**
- * Gets direct messages between two users
- */
-  getDMMessages$(userId1: string, userId2: string): Observable<Message[]> {
-    return this.firestoreHelper.authedCollection$<Message>(() => {
-      const dmId = this.createDMId(userId1, userId2);
-      const ref = collection(this.fs, 'directMessages', dmId, 'messages');
-      return query(ref, orderBy('timestamp', 'asc'));
-    });
-  }
-
-  /**
-   * Creates consistent DM ID from two user IDs
-   */
-  private createDMId(userId1: string, userId2: string): string {
-    return [userId1, userId2].sort().join('_');
-  }
-
-  /**
- * Creates a direct message between two users
- */
-  async createDMMessage(userId1: string, userId2: string, messageData: Partial<Message>): Promise<void> {
-    return runInInjectionContext(this.injector, async () => {
-      const dmId = this.createDMId(userId1, userId2);
-      const ref = collection(this.fs, 'directMessages', dmId, 'messages');
-
-      await addDoc(ref, {
-        ...messageData,
-        timestamp: serverTimestamp(),
-        dmId: dmId
-      });
-    });
-  }
-
-  /**
- * Adds reaction to direct message
- */
-  async addReactionToDMMessage(dmId: string, messageId: string, emoji: string, userId: string): Promise<void> {
-    return runInInjectionContext(this.injector, async () => {
-      const messageRef = doc(this.fs, 'directMessages', dmId, 'messages', messageId);
-      const messageSnap = await getDoc(messageRef);
-
-      if (!messageSnap.exists()) return;
-
-      const currentReactions = messageSnap.data()?.['reactions'] || {};
-      const updatedReactions = this.updateReactions(currentReactions, emoji, userId);
-
-      await updateDoc(messageRef, { reactions: updatedReactions });
-    });
-  }
-
-  /**
- * Updates reactions with single-emoji-per-user logic
- */
-  private updateReactions(currentReactions: any, emoji: string, userId: string): any {
-    const reactions = { ...currentReactions };
-
-    // Remove user from any existing emoji
-    for (const [existingEmoji, data] of Object.entries(reactions)) {
-      const entry = data as { users: string[], count: number };
-      const userIndex = entry.users.indexOf(userId);
-      if (userIndex > -1) {
-        entry.users.splice(userIndex, 1);
-        entry.count = Math.max(0, entry.count - 1);
-        if (entry.count === 0) {
-          delete reactions[existingEmoji];
-        }
-      }
-    }
-
-    // Add user to new emoji
-    if (!reactions[emoji]) {
-      reactions[emoji] = { count: 0, users: [] };
-    }
-
-    const entry = reactions[emoji];
-    if (!entry.users.includes(userId)) {
-      entry.users.push(userId);
-      entry.count += 1;
-    }
-
-    return reactions;
   }
 }

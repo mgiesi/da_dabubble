@@ -4,7 +4,8 @@ import { NgFor } from '@angular/common';
 import { MessageItemComponent } from '../message-item/message-item.component';
 import { MessageInputComponent } from '../message-input/message-input.component';
 import { LogoStateService } from '../../../core/services/logo-state.service';
-import { MessagesFacadeService, Message } from '../../../core/facades/messages-facade.service';
+import { MessagesFacadeService } from '../../../core/facades/messages-facade.service';
+import { ChannelMessage } from '../../../shared/models/channel-message';
 
 @Component({
   selector: 'app-thread-panel',
@@ -22,7 +23,7 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
   private messagesFacade = inject(MessagesFacadeService);
   private cdr = inject(ChangeDetectorRef);
   
-  threadMessages: Message[] = [];
+  threadMessages: ChannelMessage[] = [];
   private threadSubscription: (() => void) | null = null;
 
   ngOnInit() {
@@ -36,7 +37,6 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
 
   /**
    * Sets up real-time subscription for thread messages.
-   * Uses the dedicated thread subscription method.
    */
   private setupThreadSubscription() {
     if (!this.selectedChannelId || !this.message?.id) return;
