@@ -11,7 +11,6 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
-import { ChatNavigationService } from './core/services/chat-navigation.service';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './features/profile/profile-menu/profile-menu.component';
@@ -22,6 +21,8 @@ import { firstValueFrom } from 'rxjs';
 import { UserPresenceService } from './core/services/user-presence.service';
 import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-landscape.component';
 import { fadeInOut } from './core/animations/fade-in-out.animation';
+import { DmNavigationService } from './core/services/dm-navigation.service';
+import { ChannelNavigationService } from './core/services/channel-navigation.service';
 
 @Component({
   selector: 'app-root',
@@ -51,7 +52,8 @@ export class AppComponent {
     inject(UserPresenceService);
   private usersService = inject(UsersService);
   private channelsService = inject(ChannelsService);
-  private chatNavigationService = inject(ChatNavigationService);
+  private dmNavigationService = inject(DmNavigationService)
+  private channelNavigationService = inject(ChannelNavigationService)
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
   readonly showBackArrow = this.logoState.showBackArrow;
@@ -85,7 +87,7 @@ export class AppComponent {
     ),
     startWith(
       !window.location.pathname.includes('imprint') &&
-        !window.location.pathname.includes('privacy-policy')
+      !window.location.pathname.includes('privacy-policy')
     )
   );
 
@@ -98,7 +100,7 @@ export class AppComponent {
     ),
     startWith(
       window.location.pathname.includes('imprint') &&
-        window.location.pathname.includes('privacy-policy')
+      window.location.pathname.includes('privacy-policy')
     )
   );
 
@@ -204,15 +206,15 @@ export class AppComponent {
   }
 
   onDirectMessageClick(user: any) {
-    const userId = user?.id || user;
-    this.chatNavigationService.selectUser(userId);
-    this.clearSearchInput();
+    const userId = user?.id || user
+    this.dmNavigationService.selectUser(userId)
+    this.clearSearchInput()
   }
 
   onChannelClick(channel: any) {
-    const channelId = channel?.id || channel;
-    this.chatNavigationService.selectChannel(channelId);
-    this.clearSearchInput();
+    const channelId = channel?.id || channel
+    this.channelNavigationService.selectChannel(channelId)
+    this.clearSearchInput()
   }
 
   private clearSearchInput() {
