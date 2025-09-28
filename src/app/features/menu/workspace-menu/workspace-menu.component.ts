@@ -1,119 +1,129 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  Output,
-  EventEmitter,
-  OnDestroy,
-} from '@angular/core';
-import { ChatNavigationService } from '../../../core/services/chat-navigation.service';
-import { NgFor } from '@angular/common';
-import { DmOnlineLoggerService } from '../../../core/services/dm-online-logger.service';
-import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
-import { ChannelCreateComponent } from '../../channels/channel-create/channel-create.component';
-import { UsersFacadeService } from '../../../core/facades/users-facade.service';
-import { ProfileBadgeComponent } from '../../profile/profile-badge/profile-badge.component';
-import { Router } from '@angular/router';
-import { LogoStateService } from '../../../core/services/logo-state.service';
-import { User } from '../../../shared/models/user';
+import { Component, inject, type OnInit, Output, EventEmitter, type OnDestroy } from "@angular/core"
+import { DmNavigationService } from "../../../core/services/dm-navigation.service"
+import { ChannelNavigationService } from "../../../core/services/channel-navigation.service"
+import { NgFor } from "@angular/common"
+import { DmOnlineLoggerService } from "../../../core/services/dm-online-logger.service"
+import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
+import { ChannelCreateComponent } from "../../channels/channel-create/channel-create.component"
+import { UsersFacadeService } from "../../../core/facades/users-facade.service"
+import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component"
+import { Router } from "@angular/router"
+import { LogoStateService } from "../../../core/services/logo-state.service"
+import type { User } from "../../../shared/models/user"
 
 @Component({
-  selector: 'app-workspace-menu',
+  selector: "app-workspace-menu",
   imports: [NgFor, ChannelCreateComponent, ProfileBadgeComponent],
-  templateUrl: './workspace-menu.component.html',
-  styleUrl: './workspace-menu.component.scss',
+  templateUrl: "./workspace-menu.component.html",
+  styleUrl: "./workspace-menu.component.scss",
 })
 export class WorkspaceMenuComponent implements OnInit, OnDestroy {
-  private dmOnlineLogger = inject(DmOnlineLoggerService);
-  private chatNavigationService = inject(ChatNavigationService);
-  private dmSubscription?: any;
-  private channelSubscription?: any;
-  @Output() channelSelected = new EventEmitter<string>();
-  @Output() directMessageSelected = new EventEmitter<string>();
+  private dmOnlineLogger = inject(DmOnlineLoggerService)
+  private dmNavigationService = inject(DmNavigationService)
+  private channelNavigationService = inject(ChannelNavigationService)
+  private dmSubscription?: any
+  private channelSubscription?: any
 
-  private router = inject(Router);
-  private logoState = inject(LogoStateService);
-  private channelsFacade = inject(ChannelsFacadeService);
-  private usersFacade = inject(UsersFacadeService);
+  @Output() channelSelected = new EventEmitter<string>()
+  @Output() directMessageSelected = new EventEmitter<string>()
 
-  workspaceName = 'Devspace';
-  channelsClosed = false;
-  dmClosed = false;
-  showChannelForm = false;
-  readonly users = this.usersFacade.users;
-  trackById = (_: number, u: User) => u.id;
+  private router = inject(Router)
+  private logoState = inject(LogoStateService)
+  private channelsFacade = inject(ChannelsFacadeService)
+  private usersFacade = inject(UsersFacadeService)
 
-  selectedChannelId: string | null = null;
-  selectedUserId: string | null = null;
+  workspaceName = "Devspace"
+  channelsClosed = false
+  dmClosed = false
+  showChannelForm = false
+  readonly users = this.usersFacade.users
+  trackById = (_: number, u: User) => u.id
+
+  selectedChannelId: string | null = null
+  selectedUserId: string | null = null
 
   get channels() {
-    const user = this.usersFacade.currentUserSig();
+    const user = this.usersFacade.currentUserSig()
     if (!user?.email || user.readonly) {
-      return this.channelsFacade.channels();
+      return this.channelsFacade.channels()
     }
-    return this.channelsFacade.visibleChannelsSig();
+    return this.channelsFacade.visibleChannelsSig()
   }
 
   ngOnInit() {
-    // Log when a DM user comes online
-    const usersSafe = () => this.users() ?? [];
-    this.dmOnlineLogger.watchDmUsersOnline(usersSafe as any);
-    this.dmSubscription = this.chatNavigationService.dmSelected$.subscribe(
-      (userId: string) => {
-        this.selectedUserId = userId;
-        this.selectedChannelId = null;
-      }
-    );
-    this.channelSubscription =
-      this.chatNavigationService.channelSelected$.subscribe(
-        (channelId: string) => {
-          this.selectedChannelId = channelId;
-          this.selectedUserId = null;
-        }
-      );
+    this.initializeDmOnlineLogger()
+    this.setupDmSubscription()
+    this.setupChannelSubscription()
   }
 
   ngOnDestroy() {
-    if (this.dmSubscription) this.dmSubscription.unsubscribe();
-    if (this.channelSubscription) this.channelSubscription.unsubscribe();
+    this.cleanupSubscriptions()
+  }
+
+  private initializeDmOnlineLogger() {
+    const usersSafe = () => this.users() ?? []
+    this.dmOnlineLogger.watchDmUsersOnline(usersSafe as any)
+  }
+
+  private setupDmSubscription() {
+    this.dmSubscription = this.dmNavigationService.dmSelected$.subscribe((userId: string) => {
+      this.handleDmSelection(userId)
+    })
+  }
+
+  private setupChannelSubscription() {
+    this.channelSubscription = this.channelNavigationService.channelSelected$.subscribe((channelId: string) => {
+      this.handleChannelSelection(channelId)
+    })
+  }
+
+  private cleanupSubscriptions() {
+    if (this.dmSubscription) this.dmSubscription.unsubscribe()
+    if (this.channelSubscription) this.channelSubscription.unsubscribe()
+  }
+
+  private handleDmSelection(userId: string) {
+    this.selectedUserId = userId
+    this.selectedChannelId = null
+  }
+
+  private handleChannelSelection(channelId: string) {
+    this.selectedChannelId = channelId
+    this.selectedUserId = null
   }
 
   toggleChannels() {
-    this.channelsClosed = !this.channelsClosed;
+    this.channelsClosed = !this.channelsClosed
   }
 
   toggleDirectMessages() {
-    this.dmClosed = !this.dmClosed;
+    this.dmClosed = !this.dmClosed
   }
 
   onAddChannel() {
-    this.showChannelForm = true;
+    this.showChannelForm = true
   }
 
   onChannelClick(channelId: string) {
-    this.selectedChannelId = channelId;
-    this.selectedUserId = null;
-    this.channelSelected.emit(channelId);
+    this.handleChannelSelection(channelId)
+    this.channelSelected.emit(channelId)
   }
 
   onDirectMessageClick(userId: string) {
-    this.selectedUserId = userId;
-    this.selectedChannelId = null;
-    this.directMessageSelected.emit(userId);
+    this.handleDmSelection(userId)
+    this.directMessageSelected.emit(userId)
   }
 
   onChannelCreated(channelId: string) {
-    this.showChannelForm = false;
+    this.showChannelForm = false
     if (channelId) {
-      this.channelSelected.emit(channelId);
+      this.channelSelected.emit(channelId)
     }
   }
 
   onCloseChannelForm() {
-    this.showChannelForm = false;
+    this.showChannelForm = false
   }
-
-  // (Removed duplicate onDirectMessageClick)
 
   onEditWorkspace() {
     // TODO: Implement workspace edit functionality

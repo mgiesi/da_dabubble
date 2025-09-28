@@ -1,167 +1,171 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { DmOnlineLoggerService } from '../../../features/menu/workspace-menu/dm-online-logger.service';
-import { ChatNavigationService } from '../../../core/services/chat-navigation.service';
-import { WorkspaceMenuComponent } from '../../../features/menu/workspace-menu/workspace-menu.component';
-import { WorkspaceMenuTogglerComponent } from '../workspace-menu-toggler/workspace-menu-toggler.component';
-import { ChatAreaComponent } from '../../chat/chat-area/chat-area.component';
-import { ThreadPanelComponent } from '../../chat/thread-panel/thread-panel.component';
-import { NgIf } from '@angular/common';
-import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
-import { LogoStateService } from '../../../core/services/logo-state.service';
+import { Component, inject, type OnInit, type OnDestroy } from "@angular/core"
+import { DmOnlineLoggerService } from "../../../features/menu/workspace-menu/dm-online-logger.service"
+import { DmNavigationService } from "../../../core/services/dm-navigation.service"
+import { ChannelNavigationService } from "../../../core/services/channel-navigation.service"
+import { WorkspaceMenuComponent } from "../../../features/menu/workspace-menu/workspace-menu.component"
+import { WorkspaceMenuTogglerComponent } from "../workspace-menu-toggler/workspace-menu-toggler.component"
+import { ChatAreaComponent } from "../../chat/chat-area/chat-area.component"
+import { ThreadPanelComponent } from "../../chat/thread-panel/thread-panel.component"
+import { NgIf } from "@angular/common"
+import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
+import { LogoStateService } from "../../../core/services/logo-state.service"
 
 @Component({
-  selector: 'app-main-layout',
-  imports: [
-    WorkspaceMenuComponent,
-    WorkspaceMenuTogglerComponent,
-    ChatAreaComponent,
-    ThreadPanelComponent,
-    NgIf,
-  ],
-  templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.scss',
+  selector: "app-main-layout",
+  imports: [WorkspaceMenuComponent, WorkspaceMenuTogglerComponent, ChatAreaComponent, ThreadPanelComponent, NgIf],
+  templateUrl: "./main-layout.component.html",
+  styleUrl: "./main-layout.component.scss",
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
-  private dmOnlineLogger = inject(DmOnlineLoggerService);
-  private chatNavigationService = inject(ChatNavigationService);
-  private dmSubscription?: any;
-  private channelSubscription?: any;
-  selectedChannelId: string | null = null;
-  selectedThread: any = null;
-  currentView: 'workspace' | 'chat' | 'thread' = 'chat';
-  isWorkspaceMenuOpen = true;
-  userOnline: boolean = false;
-  lastOnlineUserName: string | null = null;
-  messageHide: boolean = false;
+  private dmOnlineLogger = inject(DmOnlineLoggerService)
+  private dmNavigationService = inject(DmNavigationService)
+  private channelNavigationService = inject(ChannelNavigationService)
+  private dmSubscription?: any
+  private channelSubscription?: any
 
-  private channelsFacade = inject(ChannelsFacadeService);
-  private logoState = inject(LogoStateService);
-  logo = inject(LogoStateService);
+  selectedChannelId: string | null = null
+  selectedUserId: string | null = null
+  chatType: "channel" | "dm" = "channel"
 
-  selectedUserId: string | null = null;
-  chatType: 'channel' | 'dm' = 'channel';
+  selectedThread: any = null
+  currentView: "workspace" | "chat" | "thread" = "chat"
+  isWorkspaceMenuOpen = true
+  userOnline = false
+  lastOnlineUserName: string | null = null
+  messageHide = false
+
+  private channelsFacade = inject(ChannelsFacadeService)
+  private logoState = inject(LogoStateService)
+  logo = inject(LogoStateService)
 
   ngOnInit() {
-    this.initializeDefaultState();
-    this.dmSubscription = this.chatNavigationService.dmSelected$.subscribe(
-      (userId: string) => {
-        this.onDirectMessageSelected(userId);
-      }
-    );
-    this.channelSubscription =
-      this.chatNavigationService.channelSelected$.subscribe(
-        (channelId: string) => {
-          this.onChannelSelected(channelId);
-        }
-      );
+    this.initializeDefaultState()
+    this.setupDmSubscription()
+    this.setupChannelSubscription()
   }
 
   ngOnDestroy() {
-    if (this.dmSubscription) this.dmSubscription.unsubscribe();
-    if (this.channelSubscription) this.channelSubscription.unsubscribe();
+    this.cleanupSubscriptions()
   }
 
-  /**
-   * Sets up default layout with workspace menu and first channel
-   */
+  private setupDmSubscription() {
+    this.dmSubscription = this.dmNavigationService.dmSelected$.subscribe((userId: string) => {
+      this.handleDirectMessageSelection(userId)
+    })
+  }
+
+  private setupChannelSubscription() {
+    this.channelSubscription = this.channelNavigationService.channelSelected$.subscribe((channelId: string) => {
+      this.handleChannelSelection(channelId)
+    })
+  }
+
+  private cleanupSubscriptions() {
+    if (this.dmSubscription) this.dmSubscription.unsubscribe()
+    if (this.channelSubscription) this.channelSubscription.unsubscribe()
+  }
+
+  private handleDirectMessageSelection(userId: string) {
+    this.resetChannelState()
+    this.setDmState(userId)
+    this.switchToChatView()
+  }
+
+  private handleChannelSelection(channelId: string) {
+    if (channelId === "back-to-workspace") {
+      this.switchToWorkspaceView()
+      return
+    }
+
+    this.resetDmState()
+    this.setChannelState(channelId)
+    this.switchToChatView()
+    this.updateChannelName()
+  }
+
+  private resetChannelState() {
+    this.selectedChannelId = null
+  }
+
+  private resetDmState() {
+    this.selectedUserId = null
+  }
+
+  private setDmState(userId: string) {
+    this.selectedUserId = userId
+    this.chatType = "dm"
+  }
+
+  private setChannelState(channelId: string) {
+    this.selectedChannelId = channelId
+    this.chatType = "channel"
+  }
+
+  private switchToChatView() {
+    this.currentView = "chat"
+    this.logoState.setCurrentView("chat")
+  }
+
+  private switchToWorkspaceView() {
+    this.currentView = "workspace"
+    this.logoState.setCurrentView("workspace")
+  }
+
+  private updateChannelName() {
+    this.logoState.setCurrentChannelName(this.currentChannelName)
+  }
+
   private initializeDefaultState() {
-    // Set initial view state
-    this.logoState.setCurrentView('chat');
-
-    // Auto-select first available channel
-    this.selectFirstAvailableChannel();
+    this.logoState.setCurrentView("chat")
+    this.selectFirstAvailableChannel()
   }
 
-  /**
-   * Auto-selects first channel if available
-   */
   private selectFirstAvailableChannel() {
-    const channels = this.channelsFacade.channels();
+    const channels = this.channelsFacade.channels()
     if (channels && channels.length > 0) {
-      const firstChannel = channels[0];
-      this.selectedChannelId = firstChannel.id || null;
+      const firstChannel = channels[0]
+      this.selectedChannelId = firstChannel.id || null
       if (firstChannel.name) {
-        this.logoState.setCurrentChannelName(firstChannel.name);
+        this.logoState.setCurrentChannelName(firstChannel.name)
       }
     }
   }
 
-  /**
-   * Toggles workspace menu visibility on desktop.
-   * Closes thread when workspace opens.
-   */
   onToggleWorkspaceMenu() {
-    this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen;
+    this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen
 
-    // Workspace öffnen schließt Thread
-    if (this.isWorkspaceMenuOpen && this.currentView === 'thread') {
-      this.currentView = 'chat';
-      this.selectedThread = null;
-      this.logoState.setCurrentView('chat');
+    if (this.isWorkspaceMenuOpen && this.currentView === "thread") {
+      this.currentView = "chat"
+      this.selectedThread = null
+      this.logoState.setCurrentView("chat")
     }
   }
 
-  /**
-   * Handles direct message selection from workspace menu
-   */
   onDirectMessageSelected(userId: string) {
-    this.selectedUserId = userId;
-    this.selectedChannelId = null;
-    this.chatType = 'dm';
-    this.currentView = 'chat';
-    this.logoState.setCurrentView('chat');
+    this.handleDirectMessageSelection(userId)
   }
 
-  /**
-   * Handles channel selection from workspace menu.
-   * Switches to chat view and sets selected channel.
-   */
   onChannelSelected(channelId: string) {
-    if (channelId === 'back-to-workspace') {
-      this.currentView = 'workspace';
-      this.logoState.setCurrentView('workspace');
-      return;
-    }
-
-    this.selectedChannelId = channelId;
-    this.selectedUserId = null;
-    this.chatType = 'channel';
-    this.currentView = 'chat';
-    this.logoState.setCurrentView('chat');
-    this.logoState.setCurrentChannelName(this.currentChannelName);
+    this.handleChannelSelection(channelId)
   }
 
-  /**
-   * Handles thread opening from chat area.
-   * Switches to thread view and sets selected thread.
-   */
   onThreadOpened(message: any) {
-    this.selectedThread = message;
-    this.currentView = 'thread';
-    this.logoState.setCurrentView('thread');
+    this.selectedThread = message
+    this.currentView = "thread"
+    this.logoState.setCurrentView("thread")
   }
 
-  /**
-   * Handles back navigation from thread to chat.
-   * Only used on mobile/tablet layouts.
-   */
   onBackToChat() {
-    this.currentView = 'chat';
-    this.selectedThread = null;
-    this.logoState.setCurrentView('chat');
+    this.currentView = "chat"
+    this.selectedThread = null
+    this.logoState.setCurrentView("chat")
   }
 
-  /**
-   * Gets the current channel name for thread panel.
-   * Returns channel name or empty string if no channel selected.
-   */
   get currentChannelName(): string {
-    if (!this.selectedChannelId) return '';
+    if (!this.selectedChannelId) return ""
 
-    const channels = this.channelsFacade.channels();
-    const currentChannel = channels.find(
-      (c) => c.id === this.selectedChannelId
-    );
-    return currentChannel?.name || '';
+    const channels = this.channelsFacade.channels()
+    const currentChannel = channels.find((c) => c.id === this.selectedChannelId)
+    return currentChannel?.name || ""
   }
 }

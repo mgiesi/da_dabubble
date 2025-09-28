@@ -1,19 +1,21 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, inject } from "@angular/core"
+import { DmNavigationService } from "./dm-navigation.service"
+import { ChannelNavigationService } from "./channel-navigation.service"
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ChatNavigationService {
-  private dmSelectedSource = new Subject<string>();
-  dmSelected$ = this.dmSelectedSource.asObservable();
+  private dmNavigation = inject(DmNavigationService)
+  private channelNavigation = inject(ChannelNavigationService)
 
-  private channelSelectedSource = new Subject<string>();
-  channelSelected$ = this.channelSelectedSource.asObservable();
+  // Expose observables from separate services
+  dmSelected$ = this.dmNavigation.dmSelected$
+  channelSelected$ = this.channelNavigation.channelSelected$
 
   selectUser(userId: string) {
-    this.dmSelectedSource.next(userId);
+    this.dmNavigation.selectUser(userId)
   }
 
   selectChannel(channelId: string) {
-    this.channelSelectedSource.next(channelId);
+    this.channelNavigation.selectChannel(channelId)
   }
 }
