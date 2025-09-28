@@ -111,8 +111,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     if (!this.isFormValid()) return;
     this.inProgress = true;
     try {
-      await this.checkIfEmailExists();
-      if (this.emailExists) return;
+      /*await this.checkIfEmailExists();
+      if (this.emailExists) return;*/
       this.saveRegisterData();
       await this.router.navigate(['/avatar-selection']);
     } finally {
