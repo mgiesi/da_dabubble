@@ -42,19 +42,12 @@ export class DirectMessagesService {
       this.normalizeToAuthUid(userId1).then(normalizedUserId1 => {
         return this.normalizeToAuthUid(userId2).then(normalizedUserId2 => {
           const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
-          
-          console.log('🔍 Repository Debug - getDMMessages$:');
-          console.log('Input User1:', userId1, '→ Auth UID:', normalizedUserId1);
-          console.log('Input User2:', userId2, '→ Auth UID:', normalizedUserId2);
-          console.log('Generated DM ID:', dmId);
-          console.log('Firestore Path:', `direct-messages/${dmId}/chat-messages`);
-
+        
           const subscription = this.firestoreHelper.authedCollection$<any>(() => {
             const ref = collection(this.fs, 'direct-messages', dmId, 'chat-messages');
             return query(ref, orderBy('timestamp', 'asc'));
           }).pipe(
             map(rows => {
-              console.log('📦 Raw messages from Firestore:', rows);
               return rows.map(r => ({
                 ...r,
                 timestamp: r.timestamp?.toDate?.() ?? new Date(),
@@ -90,12 +83,10 @@ export class DirectMessagesService {
       if (userDoc.exists()) {
         const authUid = userDoc.data()?.['uid'];
         if (authUid) {
-          console.log(`🔄 Normalized Document ID ${userIdOrDocId} → Auth UID ${authUid}`);
           return authUid;
         }
       }
     } catch (error) {
-      console.warn('Failed to lookup user document:', error);
     }
 
     // Fallback: return as-is

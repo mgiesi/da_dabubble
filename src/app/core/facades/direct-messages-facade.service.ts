@@ -23,16 +23,10 @@ export class DirectMessagesFacadeService {
     callback: (messages: DirectMessage[]) => void
   ): () => void {
     const currentUser = this.getCurrentUser();
-    
-    console.log('📡 DM Subscription Debug:');
-    console.log('Current User UID (subscription):', currentUser.uid);
-    console.log('Target User ID (subscription):', targetUserId);
 
     const subscription = this.directMessagesRepo
       .getDMMessages$(currentUser.uid, targetUserId)
       .subscribe(messages => {
-        console.log('📨 Received DM messages:', messages.length);
-        console.log('Messages:', messages);
         
         const messagesWithOwnership = this.addOwnershipToMessages(messages);
         callback(messagesWithOwnership);
@@ -48,11 +42,6 @@ export class DirectMessagesFacadeService {
     const currentUser = this.getCurrentUser();
     const currentUserData = this.usersFacade.currentUserSig();
     
-    console.log('🔍 DM Debug Info:');
-    console.log('Current User UID:', currentUser.uid);
-    console.log('Target User ID:', targetUserId);
-    console.log('Current User Data:', currentUserData);
-    
     if (!currentUserData) {
       throw new Error('User data not available');
     }
@@ -66,12 +55,9 @@ export class DirectMessagesFacadeService {
 
     try {
       const dmId = await this.directMessagesRepo.ensureDMConversation(currentUser.uid, targetUserId);
-      console.log('Created/Found DM ID:', dmId);
       
       await this.directMessagesRepo.createDMMessage(currentUser.uid, targetUserId, messageData);
-      console.log('✅ DM sent successfully');
     } catch (error) {
-      console.error("Error sending DM:", error);
       throw error;
     }
   }
@@ -90,7 +76,6 @@ export class DirectMessagesFacadeService {
         currentUser.uid
       );
     } catch (error) {
-      console.error("Failed to add DM reaction:", error);
       throw error;
     }
   }
