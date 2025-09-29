@@ -153,7 +153,6 @@ export class MessageItemComponent implements OnInit, OnDestroy {
         emoji
       )
     } catch (error) {
-      console.error("Failed to add reaction:", error)
     }
   }
 

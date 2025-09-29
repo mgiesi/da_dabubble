@@ -1,4 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,8 @@ export class LogoStateService {
   private isMobileSignal = signal<boolean>(false);
   private currentChannelNameSignal = signal<string>('');
   private workspaceNameSignal = signal<string>('Devspace');
+  private backToWorkspace$ = new Subject<void>();
+  readonly backToWorkspace = this.backToWorkspace$.asObservable();
 
   readonly shouldShowWorkspaceLogo = computed(() => {
     const isMobile = this.isMobileSignal();
@@ -59,6 +62,10 @@ export class LogoStateService {
     this.workspaceNameSignal.set(name);
   }
 
+  triggerBackToWorkspace() {
+    this.backToWorkspace$.next();
+  }
+
   private checkScreenSize() {
     this.isMobileSignal.set(window.innerWidth < 768);
   }
@@ -68,4 +75,6 @@ export class LogoStateService {
       this.checkScreenSize();
     });
   }
+
+
 }

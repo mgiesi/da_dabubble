@@ -41,8 +41,31 @@
     pointer-events: none;
     @include dFlexAllCenter($jc: flex-start, $g: 10px);
 
-    // width: 203.05px;
     height: clamp(56px, 52.7152px + 1.0265vw, 71.5px);
+
+    .back-arrow {
+        pointer-events: auto;
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease-in-out;
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
 
     img {
         height: 100%;
@@ -323,5 +346,6 @@
         height: 100%;
         aspect-ratio: 1 / 1;
     }
+
 
 }

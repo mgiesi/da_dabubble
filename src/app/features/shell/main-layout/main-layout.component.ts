@@ -42,6 +42,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.initializeDefaultState()
     this.setupDmSubscription()
     this.setupChannelSubscription()
+    this.setupBackToWorkspaceSubscription()
   }
 
   ngOnDestroy() {
@@ -167,5 +168,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const channels = this.channelsFacade.channels()
     const currentChannel = channels.find((c) => c.id === this.selectedChannelId)
     return currentChannel?.name || ""
+  }
+
+  private setupBackToWorkspaceSubscription() {
+    this.logoState.backToWorkspace.subscribe(() => {
+      this.handleBackToWorkspace()
+    })
+  }
+
+  private handleBackToWorkspace() {
+    this.selectedChannelId = null
+    this.selectedUserId = null
+    this.currentView = 'workspace'
   }
 }

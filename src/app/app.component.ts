@@ -445,9 +445,14 @@ export class AppComponent {
   }
 
   onBackClick() {
-    const isMobile = window.innerWidth < 768; // prüfe < $main_layout_mobile
+    const isMobile = window.innerWidth < 768;
+
+    this.logoState.triggerBackToWorkspace();
     this.logoState.setCurrentView('workspace');
-    if (isMobile) this.router.navigate(['/m/workspace'], { replaceUrl: true });
+
+    if (isMobile) {
+      this.router.navigate(['/m/workspace'], { replaceUrl: true });
+    }
   }
 
   onSearchBlur() {
