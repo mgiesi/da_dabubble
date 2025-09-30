@@ -21,16 +21,17 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   private dmOnlineLogger = inject(DmOnlineLoggerService)
   private dmNavigationService = inject(DmNavigationService)
   private channelNavigationService = inject(ChannelNavigationService)
+  private logoState = inject(LogoStateService)
+  private router = inject(Router)
+  private channelsFacade = inject(ChannelsFacadeService)
+  private usersFacade = inject(UsersFacadeService)
+
   private dmSubscription?: any
   private channelSubscription?: any
+  private backToWorkspaceSubscription?: any
 
   @Output() channelSelected = new EventEmitter<string>()
   @Output() directMessageSelected = new EventEmitter<string>()
-
-  private router = inject(Router)
-  private logoState = inject(LogoStateService)
-  private channelsFacade = inject(ChannelsFacadeService)
-  private usersFacade = inject(UsersFacadeService)
 
   workspaceName = "Devspace"
   channelsClosed = false
@@ -54,6 +55,7 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.initializeDmOnlineLogger()
     this.setupDmSubscription()
     this.setupChannelSubscription()
+    this.setupBackToWorkspaceSubscription()
   }
 
   ngOnDestroy() {
@@ -77,9 +79,16 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     })
   }
 
+  private setupBackToWorkspaceSubscription() {
+    this.backToWorkspaceSubscription = this.logoState.backToWorkspace.subscribe(() => {
+      this.showChannelForm = false
+    })
+  }
+
   private cleanupSubscriptions() {
     if (this.dmSubscription) this.dmSubscription.unsubscribe()
     if (this.channelSubscription) this.channelSubscription.unsubscribe()
+    if (this.backToWorkspaceSubscription) this.backToWorkspaceSubscription.unsubscribe()
   }
 
   private handleDmSelection(userId: string) {
