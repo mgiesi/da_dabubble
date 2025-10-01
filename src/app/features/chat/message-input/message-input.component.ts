@@ -44,22 +44,26 @@ export class MessageInputComponent {
     if (!this.messageText.trim()) return;
 
     try {
-      if (this.isDM && this.userId) {
-        await this.sendDMMessage();
-      } else if (this.channelId) {
-        if (this.parentMessageId) {
-          await this.sendThreadReply();
-        } else {
-          await this.sendChannelMessage();
-        }
-      } else {
-        console.error("No channel or user selected");
-        return;
-      }
-
+      await this.handleSend();
       this.messageText = "";
     } catch (error) {
-      console.error("Failed to send message:", error);
+    }
+  }
+
+  private async handleSend() {
+    if (this.isDM && this.userId) {
+      await this.sendDMMessage();
+    } else if (this.channelId) {
+      await this.handleChannelSend();
+    } else {
+    }
+  }
+
+  private async handleChannelSend() {
+    if (this.parentMessageId) {
+      await this.sendThreadReply();
+    } else {
+      await this.sendChannelMessage();
     }
   }
 

@@ -93,7 +93,6 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     if (!uid) return
 
     const reactions = { ...(this.message.reactions || {}) }
-    
     const userCurrentEmoji = this.findUserCurrentEmoji(reactions, uid)
     
     if (userCurrentEmoji) {
@@ -101,9 +100,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     }
     
     this.addUserToEmoji(reactions, newEmoji, uid)
-    
     this.message = { ...this.message, reactions }
-    
     this.persistReaction(newEmoji)
   }
 

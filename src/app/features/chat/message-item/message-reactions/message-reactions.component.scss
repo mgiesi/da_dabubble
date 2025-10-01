@@ -1,5 +1,6 @@
 @use "../../../../../../public/assets/styles/mixins.scss" as *;
 @use "../../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .message-reactions {
   margin-top: 8px;
@@ -13,8 +14,8 @@
 
 .reactions-flex {
   display: flex;
-  flex-wrap: wrap; // <-- sorgt für Umbruch in die nächste Zeile
-  gap: 8px; // Abstand zwischen Pills
+  flex-wrap: wrap;
+  gap: 8px; 
 }
 
 .reaction-button {
@@ -53,7 +54,7 @@
 }
 
 
-@media (min-width: 768px) {
+@include tablet_md {
   .reactions-flex {
     gap: 10px;
   }

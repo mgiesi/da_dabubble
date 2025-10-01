@@ -8,7 +8,7 @@
   transition: $transition-0-3-ease-in-out;
   position: relative;
   margin: 0 -45px;
-  overflow-x: visible; // Added overflow-x: visible to prevent clipping of hover actions
+  overflow-x: visible;
 
   &:hover {
     background-color: $bg-color;
@@ -36,9 +36,9 @@
       text-align: right;
 
       .message-hover-actions {
-        left: 0; // Changed positioning for owner messages to be left-aligned without causing overflow
+        left: 0;
         right: auto;
-        transform-origin: left center; // Added transform-origin for better animation
+        transform-origin: left center;
       }
     }
 
@@ -71,7 +71,7 @@
   .message-hover-actions {
     position: absolute;
     top: 30px;
-    right: 0; // Changed positioning for normal messages to be right-aligned without overflow
+    right: 0;
     @include dFlexAllCenter($ai: center, $jc: center, $g: 4px);
     background-color: $white;
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -84,7 +84,7 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     z-index: 10;
     white-space: nowrap;
-    transform-origin: right center; // Added transform-origin for better animation
+    transform-origin: right center;
 
     .quick-reaction-btn {
       background: none;
@@ -182,7 +182,6 @@
   }
 }
 
-// RESPONSIVE BREAKPOINTS
 @include main_mobile_only {
   .message-wrapper {
     padding: 8px 20px;
