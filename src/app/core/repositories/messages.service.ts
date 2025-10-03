@@ -169,11 +169,14 @@ export class MessagesService {
     userId: string
   ): any {
     const updatedReactions = { ...reactions };
-    this.removeUserFromAllEmojis(updatedReactions, userId);
     const hadThisEmoji = reactions[newEmoji]?.users?.includes(userId);
+
+    this.removeUserFromAllEmojis(updatedReactions, userId);
+
     if (!hadThisEmoji) {
       this.addUserToEmoji(updatedReactions, newEmoji, userId);
     }
+
     return updatedReactions;
   }
 
