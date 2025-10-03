@@ -36,7 +36,7 @@ export class MessagesService {
    * Gets all topics for a channel as Observable
    */
   getTopicsForChannel$(channelId: string): Observable<Topic[]> {
-    return this.firestoreHelper.authedCollection$<Topic>(() => 
+    return this.firestoreHelper.authedCollection$<Topic>(() =>
       query(
         collection(this.fs, `channels/${channelId}/topics`),
         orderBy('lastMessageAt', 'desc')
@@ -54,7 +54,7 @@ export class MessagesService {
         orderBy('timestamp', 'asc')
       )
     ).pipe(
-      map(rows => 
+      map(rows =>
         rows.map(r => ({
           ...r,
           channelId,
@@ -85,6 +85,26 @@ export class MessagesService {
         topicId,
       });
     });
+  }
+
+  /**
+ * Updates message text in Firestore
+ */
+  async updateMessageText(
+    channelId: string,
+    topicId: string,
+    messageId: string,
+    newText: string
+  ): Promise<void> {
+    const messageRef = doc(
+      this.fs,
+      `channels/${channelId}/topics/${topicId}/messages/${messageId}`
+    )
+
+    await updateDoc(messageRef, {
+      text: newText,
+      editedAt: serverTimestamp()
+    })
   }
 
   /**

@@ -4,6 +4,7 @@
 .message-input-wrapper {
     width: 100%;
     padding: 20px;
+
     .input-container {
         @include dFlexAllCenter($ai: end, $g: 12px);
         background: $white;
@@ -58,6 +59,20 @@
                     fill: $purple-2;
                 }
             }
+        }
+    }
+
+    .edit-indicator {
+        margin-bottom: 8px;
+
+        .btn-cancel-edit {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 12px;
+            font-size: 14px;
+            color: $purple-1;
+            transition: $transition-0-3-ease-in-out;
         }
     }
 }

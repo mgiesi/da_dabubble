@@ -1,37 +1,40 @@
-import { Component, Input, inject, ViewChild, ElementRef } from "@angular/core"
+import { Component, Input, inject, ViewChild, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { BehaviorSubject, combineLatest, Observable } from "rxjs"
+import { NgIf } from "@angular/common"  // NgIf importieren!
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
 import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
-import { UsersService } from "../../../core/repositories/users.service"
-import { ChannelsService } from "../../../core/repositories/channels.service"
 
 @Component({
   selector: "app-message-input",
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf],  // NgIf hinzufügen!
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
-export class MessageInputComponent {
+export class MessageInputComponent implements OnChanges {  // OnChanges implementieren!
   @Input() channelId: string | null = null
   @Input() topicId: string | null = null
   @Input() parentMessageId: string | null = null
-  @Input() parentMessage: any = null 
+  @Input() parentMessage: any = null
   @Input() placeholder = "Nachricht schreiben..."
   @Input() userId: string | null = null
   @Input() isDM: boolean = false
+  @Input() editingMessage: any = null  // HINZUFÜGEN!
+
+  @Output() editComplete = new EventEmitter<void>()  // HINZUFÜGEN!
 
   @ViewChild('messageTextarea', { static: false })
   messageTextarea?: ElementRef<HTMLTextAreaElement>
 
   messageText = ""
-  showDropdown = false
-  private searchInput$ = new BehaviorSubject<string>('')
 
   private messagesFacade = inject(MessagesFacadeService)
   private dmFacade = inject(DirectMessagesFacadeService)
-  private usersService = inject(UsersService)
-  private channelsService = inject(ChannelsService)
+
+  ngOnChanges(changes: SimpleChanges) {  // HINZUFÜGEN!
+    if (changes['editingMessage'] && this.editingMessage) {
+      this.messageText = this.editingMessage.text || ''
+    }
+  }
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -41,40 +44,58 @@ export class MessageInputComponent {
   }
 
   async onSendMessage() {
-    if (!this.messageText.trim()) return;
+    if (!this.messageText.trim()) return
 
     try {
-      await this.handleSend();
-      this.messageText = "";
+      if (this.editingMessage) {
+        await this.handleEdit()
+      } else {
+        await this.handleSend()
+      }
+      this.messageText = ""
     } catch (error) {
     }
   }
 
+  private async handleEdit() {
+    if (this.isDM && this.userId) {
+      console.log('Edit DM not yet implemented')
+    } else if (this.channelId && this.editingMessage.id) {
+      await this.messagesFacade.updateMessage(
+        this.channelId,
+        this.editingMessage.topicId,
+        this.editingMessage.id,
+        this.messageText
+      )
+    }
+    this.editComplete.emit()
+  }
+
+  cancelEdit() {
+    this.messageText = ''
+    this.editComplete.emit()
+  }
+
   private async handleSend() {
     if (this.isDM && this.userId) {
-      await this.sendDMMessage();
+      await this.sendDMMessage()
     } else if (this.channelId) {
-      await this.handleChannelSend();
-    } else {
+      await this.handleChannelSend()
     }
   }
 
   private async handleChannelSend() {
     if (this.parentMessageId) {
-      await this.sendThreadReply();
+      await this.sendThreadReply()
     } else {
-      await this.sendChannelMessage();
+      await this.sendChannelMessage()
     }
   }
 
-  /**
-   * Sends a reply to a thread (parent message).
-   */
   private async sendThreadReply() {
     if (!this.channelId || !this.parentMessageId) return
 
     let activeTopicId = this.parentMessage?.topicId || this.topicId
-
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
     }
@@ -87,14 +108,10 @@ export class MessageInputComponent {
     )
   }
 
-  /**
-   * Sends a regular channel message.
-   */
   private async sendChannelMessage() {
     if (!this.channelId) return
 
     let activeTopicId = this.topicId
-
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
     }
@@ -102,12 +119,8 @@ export class MessageInputComponent {
     await this.messagesFacade.sendMessage(this.channelId, activeTopicId, this.messageText)
   }
 
-  /**
-   * Sends direct message using new DM facade
-   */
   private async sendDMMessage() {
-    if (!this.userId) return;
-    
-    await this.dmFacade.sendDMMessage(this.userId, this.messageText);
+    if (!this.userId) return
+    await this.dmFacade.sendDMMessage(this.userId, this.messageText)
   }
 }

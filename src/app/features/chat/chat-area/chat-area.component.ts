@@ -57,8 +57,7 @@ import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.
   styleUrl: './chat-area.component.scss',
 })
 export class ChatAreaComponent
-  implements OnInit, OnChanges, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   private destroyed = false;
   @Input() channelId: string | null = null;
   @Output() threadOpened = new EventEmitter<any>();
@@ -85,6 +84,7 @@ export class ChatAreaComponent
   @Input() userId: string | null = null;
   @Input() isDM = false;
 
+  editingMessage: any = null;
   dmUserSig: Signal<User | null> | null = null;
   currentChannel: Channel | null = null;
   showMembersList = false;
@@ -93,7 +93,7 @@ export class ChatAreaComponent
   isLoadingMessages = false;
   showSettings = false;
 
-  constructor(private globalReactions: GlobalReactionService) {}
+  constructor(private globalReactions: GlobalReactionService) { }
 
   async ngOnInit() {
     if (this.isDM && this.userId) {
@@ -132,6 +132,14 @@ export class ChatAreaComponent
   ngOnDestroy() {
     this.destroyed = true;
     this.cleanupSubscription();
+  }
+
+  onEditMessage(message: any) {
+    this.editingMessage = message;
+  }
+
+  onEditComplete() {
+    this.editingMessage = null
   }
 
   /**

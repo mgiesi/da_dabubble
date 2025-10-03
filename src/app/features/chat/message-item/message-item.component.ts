@@ -1,7 +1,15 @@
-import { Component, EventEmitter, computed, inject, ChangeDetectorRef, type OnInit, OnDestroy } from "@angular/core"
+import {
+  Component,
+  EventEmitter,
+  computed,
+  inject,
+  ChangeDetectorRef,
+  type OnInit,
+  type OnDestroy,
+} from "@angular/core"
 import { Input, Output } from "@angular/core"
 import { NgClass, NgIf } from "@angular/common"
-import { Subscription } from "rxjs"
+import type { Subscription } from "rxjs"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { MessageBubbleComponent } from "./message-bubble/message-bubble.component"
@@ -10,6 +18,7 @@ import { MessageReactionsComponent } from "./message-reactions/message-reactions
 import { MessageThreadLinkComponent } from "./message-thread-link/message-thread-link.component"
 import { formatMessageTime } from "../../../shared/utils/timestamp"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
+import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
 import { GlobalReactionService } from "../../../core/reactions/global-reaction.service"
 import { Auth } from "@angular/fire/auth"
 
@@ -29,12 +38,16 @@ import { Auth } from "@angular/fire/auth"
 })
 export class MessageItemComponent implements OnInit, OnDestroy {
   @Input() isThreadView = false
+  @Input() isDM = false
   @Input() message!: any
+  @Output() editComplete = new EventEmitter<void>()
   @Output() replyClicked = new EventEmitter<any>()
+  @Output() editClicked = new EventEmitter<any>()
 
   private usersFacade = inject(UsersFacadeService)
   private cdr = inject(ChangeDetectorRef)
   private messagesFacade = inject(MessagesFacadeService)
+  private dmFacade = inject(DirectMessagesFacadeService)
   private globalReactions = inject(GlobalReactionService)
   private auth = inject(Auth)
 
@@ -59,32 +72,32 @@ export class MessageItemComponent implements OnInit, OnDestroy {
   })
 
   get currentUserId(): string {
-    return this.auth.currentUser?.uid || ''
+    return this.auth.currentUser?.uid || ""
   }
 
   ngOnInit() {
     if (this.globalReactions) {
-      this.sub = this.globalReactions.topN$(2).subscribe(list => this.quickReactions = list)
+      this.sub = this.globalReactions.topN$(2).subscribe((list) => (this.quickReactions = list))
     }
   }
 
-  ngOnDestroy(): void { 
-    this.sub?.unsubscribe() 
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe()
   }
 
-  getTopEmoji(i: number): string { 
-    return this.quickReactions[i] || "" 
+  getTopEmoji(i: number): string {
+    return this.quickReactions[i] || ""
   }
 
-  addQuickReaction(emoji: string): void { 
+  addQuickReaction(emoji: string): void {
     this.handleUserEmojiReaction(emoji)
   }
 
   onEmojiSelected(emoji: string) {
     this.viewEmojiPicker = false
-    
+
     if (!this.message?.id) return
-    
+
     this.handleUserEmojiReaction(emoji)
   }
 
@@ -94,11 +107,11 @@ export class MessageItemComponent implements OnInit, OnDestroy {
 
     const reactions = { ...(this.message.reactions || {}) }
     const userCurrentEmoji = this.findUserCurrentEmoji(reactions, uid)
-    
+
     if (userCurrentEmoji) {
       this.removeUserFromEmoji(reactions, userCurrentEmoji, uid)
     }
-    
+
     this.addUserToEmoji(reactions, newEmoji, uid)
     this.message = { ...this.message, reactions }
     this.persistReaction(newEmoji)
@@ -117,12 +130,12 @@ export class MessageItemComponent implements OnInit, OnDestroy {
   private removeUserFromEmoji(reactions: any, emoji: string, uid: string) {
     const entry = reactions[emoji]
     if (!entry) return
-    
+
     const userIndex = entry.users.indexOf(uid)
     if (userIndex > -1) {
       entry.users.splice(userIndex, 1)
       entry.count = Math.max(0, entry.count - 1)
-      
+
       if (entry.count === 0) {
         delete reactions[emoji]
       }
@@ -133,7 +146,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     if (!reactions[emoji]) {
       reactions[emoji] = { count: 0, users: [] }
     }
-    
+
     const entry = reactions[emoji]
     if (!entry.users.includes(uid)) {
       entry.users.push(uid)
@@ -143,18 +156,28 @@ export class MessageItemComponent implements OnInit, OnDestroy {
 
   private async persistReaction(emoji: string) {
     try {
-      await this.messagesFacade.addReaction(
-        this.message.channelId,
-        this.message.topicId,
-        this.message.id!,
-        emoji
-      )
+      if (this.isDM) {
+        // For direct messages, use dmFacade
+        if (!this.message.dmId || !this.message.id) {
+          console.error("Missing dmId or message id for DM reaction")
+          return
+        }
+        await this.dmFacade.addDMReaction(this.message.dmId, this.message.id, emoji)
+      } else {
+        // For channel messages, use messagesFacade
+        await this.messagesFacade.addReaction(this.message.channelId, this.message.topicId, this.message.id!, emoji)
+      }
     } catch (error) {
+      console.error("Failed to persist reaction:", error)
     }
   }
 
   onReplyClick() {
     this.replyClicked.emit(this.message)
+  }
+
+  onEditClick() {
+    this.editClicked.emit(this.message)
   }
 
   onEmojiPickerToggle(event: MouseEvent) {
@@ -170,7 +193,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
 
   onReactionClicked(e: { emoji: string; data: any }) {
     if (!this.message?.id) return
-    
+
     const emoji = e.emoji
     const uid = this.currentUserId
     if (!uid) return
@@ -179,7 +202,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     const entry = reactions[emoji] ?? { count: 0, users: [] as string[] }
 
     const isUserReaction = entry.users.includes(uid)
-    
+
     if (isUserReaction) {
       this.removeUserFromEmoji(reactions, emoji, uid)
     } else {
@@ -187,7 +210,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
       if (currentEmoji) {
         this.removeUserFromEmoji(reactions, currentEmoji, uid)
       }
-      
+
       this.addUserToEmoji(reactions, emoji, uid)
     }
 

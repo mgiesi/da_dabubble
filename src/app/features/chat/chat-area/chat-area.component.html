@@ -1,5 +1,3 @@
-<!-- src/app/features/chat/chat-area/chat-area.component.html -->
-
 <mat-card class="chat-area">
   <!-- Header Section -->
   <div class="chat-header">
@@ -39,9 +37,9 @@
 
   <!-- Message Area -->
   <div class="messages-container" #messagesContainer *ngIf="!isLoadingMessages">
-    <!-- Show real messages from Firebase -->
-    <app-message-item *ngFor="let message of messages; trackBy: trackByMessageId" [message]="message"
-      (replyClicked)="onReplyToMessage($event)">
+    <!-- Pass isDM to message-item component -->
+    <app-message-item *ngFor="let message of messages; trackBy: trackByMessageId" [message]="message" [isDM]="isDM"
+      (replyClicked)="onReplyToMessage($event)" (editClicked)="onEditMessage($event)">
     </app-message-item>
 
     <!-- No messages state -->
@@ -50,9 +48,9 @@
     </div>
   </div>
 
-  <!-- Message Input -->
   <div class="message-input-container">
-    <app-message-input [channelId]="channelId" [userId]="userId" [isDM]="isDM">
+    <app-message-input [channelId]="channelId" [userId]="userId" [isDM]="isDM" [editingMessage]="editingMessage"
+      (editComplete)="onEditComplete()">
     </app-message-input>
   </div>
 

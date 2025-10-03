@@ -42,6 +42,23 @@ export class MessagesFacadeService {
   }
 
   /**
+ * Updates an existing message text
+ */
+  async updateMessage(
+    channelId: string,
+    topicId: string,
+    messageId: string,
+    newText: string
+  ): Promise<void> {
+    try {
+      await this.messagesRepo.updateMessageText(channelId, topicId, messageId, newText)
+    } catch (error) {
+      console.error('Error updating message:', error)
+      throw error
+    }
+  }
+
+  /**
    * Creates default topic for channel
    */
   async createDefaultTopic(channelId: string): Promise<string> {
