@@ -105,15 +105,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     const uid = this.currentUserId
     if (!uid) return
 
-    const reactions = { ...(this.message.reactions || {}) }
-    const userCurrentEmoji = this.findUserCurrentEmoji(reactions, uid)
-
-    if (userCurrentEmoji) {
-      this.removeUserFromEmoji(reactions, userCurrentEmoji, uid)
-    }
-
-    this.addUserToEmoji(reactions, newEmoji, uid)
-    this.message = { ...this.message, reactions }
+    // Just persist to Firestore - the subscription will update the UI
     this.persistReaction(newEmoji)
   }
 
@@ -198,23 +190,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     const uid = this.currentUserId
     if (!uid) return
 
-    const reactions = { ...(this.message.reactions || {}) }
-    const entry = reactions[emoji] ?? { count: 0, users: [] as string[] }
-
-    const isUserReaction = entry.users.includes(uid)
-
-    if (isUserReaction) {
-      this.removeUserFromEmoji(reactions, emoji, uid)
-    } else {
-      const currentEmoji = this.findUserCurrentEmoji(reactions, uid)
-      if (currentEmoji) {
-        this.removeUserFromEmoji(reactions, currentEmoji, uid)
-      }
-
-      this.addUserToEmoji(reactions, emoji, uid)
-    }
-
-    this.message = { ...this.message, reactions }
+    // Just persist to Firestore - the subscription will update the UI
     this.persistReaction(emoji)
   }
 
