@@ -4,7 +4,7 @@ import { NgIf } from "@angular/common"
 @Component({
   selector: "app-message-bubble",
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: "./message-bubble.component.html",
   styleUrls: ["./message-bubble.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -4,16 +4,19 @@ import { ChannelNavigationService } from "../../../core/services/channel-navigat
 import { NgFor } from "@angular/common"
 import { DmOnlineLoggerService } from "../../../core/services/dm-online-logger.service"
 import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
-import { ChannelCreateComponent } from "../../channels/channel-create/channel-create.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component"
 import { Router } from "@angular/router"
 import { LogoStateService } from "../../../core/services/logo-state.service"
 import type { User } from "../../../shared/models/user"
+import { MatDialog } from "@angular/material/dialog"
+import { BreakpointObserver } from "@angular/cdk/layout"
+import { DlgCreateChannelComponent } from "../../channels/dlg-create-channel/dlg-create-channel.component"
+import { MatBottomSheet, MatBottomSheetRef } from "@angular/material/bottom-sheet"
 
 @Component({
   selector: "app-workspace-menu",
-  imports: [NgFor, ChannelCreateComponent, ProfileBadgeComponent],
+  imports: [NgFor, ProfileBadgeComponent],
   templateUrl: "./workspace-menu.component.html",
   styleUrl: "./workspace-menu.component.scss",
 })
@@ -22,9 +25,12 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   private dmNavigationService = inject(DmNavigationService)
   private channelNavigationService = inject(ChannelNavigationService)
   private logoState = inject(LogoStateService)
-  private router = inject(Router)
-  private channelsFacade = inject(ChannelsFacadeService)
-  private usersFacade = inject(UsersFacadeService)
+  private channelsFacade = inject(ChannelsFacadeService);
+  private usersFacade = inject(UsersFacadeService);
+  desktopDialog = inject(MatDialog);
+  mobileDialog = inject(MatBottomSheet);
+  mobileDialogRef: MatBottomSheetRef | undefined = undefined;
+  private breakpointObserver = inject(BreakpointObserver);
 
   private dmSubscription?: any
   private channelSubscription?: any
@@ -36,7 +42,6 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   workspaceName = "Devspace"
   channelsClosed = false
   dmClosed = false
-  showChannelForm = false
   readonly users = this.usersFacade.users
   trackById = (_: number, u: User) => u.id
 
@@ -81,7 +86,6 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
 
   private setupBackToWorkspaceSubscription() {
     this.backToWorkspaceSubscription = this.logoState.backToWorkspace.subscribe(() => {
-      this.showChannelForm = false
     })
   }
 
@@ -109,10 +113,6 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.dmClosed = !this.dmClosed
   }
 
-  onAddChannel() {
-    this.showChannelForm = true
-  }
-
   onChannelClick(channelId: string) {
     this.handleChannelSelection(channelId)
     this.channelSelected.emit(channelId)
@@ -124,17 +124,49 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   onChannelCreated(channelId: string) {
-    this.showChannelForm = false
     if (channelId) {
       this.channelSelected.emit(channelId)
     }
   }
 
-  onCloseChannelForm() {
-    this.showChannelForm = false
-  }
-
   onEditWorkspace() {
     // TODO: Implement workspace edit functionality
+  }
+
+  
+  /**
+   * Opens the profile details overlay.
+   */
+  openCreateChannelDialog() {
+    const desktopDialogRef = this.desktopDialog.getDialogById('btnCreateChannelDialog');
+    if (desktopDialogRef) {
+      desktopDialogRef.close();
+    } else if (this.mobileDialogRef) {
+      this.mobileDialogRef.dismiss();
+    } else {
+      const isMobile = this.breakpointObserver.isMatched([
+        '(max-width: 768px)',
+      ]);
+      if (isMobile) {
+        this.openMobileDialog();
+      } else {
+        this.openDesktopDialog();
+      }
+    }
+  }
+
+  private openMobileDialog() {
+    this.mobileDialogRef = this.mobileDialog.open(DlgCreateChannelComponent, {
+      panelClass: 'full-screen-bottom-sheet',
+    });
+    this.mobileDialogRef.afterDismissed().subscribe(() => {
+      this.mobileDialogRef = undefined;
+    });
+  }
+
+  private openDesktopDialog() {
+    this.desktopDialog.open(DlgCreateChannelComponent, {
+      id: 'btnCreateChannelDialog',
+    });
   }
 }

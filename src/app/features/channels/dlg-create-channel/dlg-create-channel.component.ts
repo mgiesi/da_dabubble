@@ -1,21 +1,27 @@
-import { Component, Output, EventEmitter, inject } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service'
-import { MatDialog } from '@angular/material/dialog'
-import { BreakpointObserver } from '@angular/cdk/layout'
-import { DlgAssignMembersComponent } from '../dlg-assign-members/dlg-assign-members.component'
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
+import { FormsModule } from '@angular/forms';
+import { DlgAssignMembersComponent } from '../dlg-assign-members/dlg-assign-members.component';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
-  selector: 'app-channel-create',
-  imports: [FormsModule],
-  templateUrl: './channel-create.component.html',
-  styleUrl: './channel-create.component.scss'
+  selector: 'app-dlg-create-channel',
+  imports: [MatDialogContent, FormsModule],
+  templateUrl: './dlg-create-channel.component.html',
+  styleUrl: './dlg-create-channel.component.scss'
 })
-export class ChannelCreateComponent {
+export class DlgCreateChannelComponent {
   @Output() close = new EventEmitter<void>()
   @Output() channelCreated = new EventEmitter<string>()
 
   private dialog = inject(MatDialog);
+  parentDesktopDialogRef = inject(MatDialogRef<DlgCreateChannelComponent>, {
+    optional: true,
+  });
+  parentMobileDialogRef = inject(MatBottomSheetRef<DlgCreateChannelComponent>, {
+    optional: true,
+  });
   private breakpointObserver = inject(BreakpointObserver);
 
   // Form-Felder für Channel-Erstellung
@@ -38,9 +44,11 @@ export class ChannelCreateComponent {
     this.description = ''
   }
 
-  private closeDialog() {
+  public closeDialog() {
     this.resetForm();
-    this.close.emit();
+    this.close.emit();    
+    this.parentDesktopDialogRef?.close(false);
+    this.parentMobileDialogRef?.dismiss(false);
   }
 
   /**
