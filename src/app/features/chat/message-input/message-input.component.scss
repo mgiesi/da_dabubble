@@ -6,7 +6,7 @@
     padding: 20px;
 
     .input-container {
-        @include dFlexAllCenter($ai: end, $g: 12px);
+        @include dFlexAllCenter($ai: center, $g: 12px);
         background: $white;
         border: 1px solid $light-purple;
         border-radius: 20px;
@@ -16,6 +16,32 @@
         &:focus-within {
             border-color: $purple-1;
             box-shadow: 0 0 0 2px rgba($purple-1, 0.1);
+        }
+
+        .input-buttons {
+            @include dFlexAllCenter($g: 4px);
+            flex-shrink: 0;
+
+            .hover-action-btn {
+                @include dFlexAllCenter($ai: center, $jc: center);
+                background: none;
+                border: none;
+                padding: 6px 8px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: $transition-0-3-ease-in-out;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                    color: $text-gray;
+                    fill: currentColor;
+                }
+
+                &:hover svg path {
+                    fill: $purple-3;
+                }
+            }
         }
 
         textarea {
@@ -31,14 +57,11 @@
             &::placeholder {
                 color: $text-gray;
             }
-
-            &:focus {
-                outline: none;
-            }
         }
 
         .input-actions {
             @include dFlexAllCenter();
+            flex-shrink: 0;
 
             .send-btn {
                 background: none;

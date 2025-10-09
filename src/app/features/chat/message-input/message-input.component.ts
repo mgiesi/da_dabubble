@@ -1,16 +1,17 @@
 import { Component, Input, inject, ViewChild, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { NgIf } from "@angular/common"  // NgIf importieren!
+import { NgIf } from "@angular/common"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
 import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
+import { MessageEmojiPickerComponent } from "../message-item/message-emoji-picker/message-emoji-picker.component"
 
 @Component({
   selector: "app-message-input",
-  imports: [FormsModule, NgIf],  // NgIf hinzufügen!
+  imports: [FormsModule, NgIf, MessageEmojiPickerComponent],
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
-export class MessageInputComponent implements OnChanges {  // OnChanges implementieren!
+export class MessageInputComponent implements OnChanges {
   @Input() channelId: string | null = null
   @Input() topicId: string | null = null
   @Input() parentMessageId: string | null = null
@@ -18,22 +19,37 @@ export class MessageInputComponent implements OnChanges {  // OnChanges implemen
   @Input() placeholder = "Nachricht schreiben..."
   @Input() userId: string | null = null
   @Input() isDM: boolean = false
-  @Input() editingMessage: any = null  // HINZUFÜGEN!
+  @Input() editingMessage: any = null
 
-  @Output() editComplete = new EventEmitter<void>()  // HINZUFÜGEN!
+  @Output() editComplete = new EventEmitter<void>()
 
   @ViewChild('messageTextarea', { static: false })
   messageTextarea?: ElementRef<HTMLTextAreaElement>
 
   messageText = ""
+  showEmojiPicker = false
 
   private messagesFacade = inject(MessagesFacadeService)
   private dmFacade = inject(DirectMessagesFacadeService)
 
-  ngOnChanges(changes: SimpleChanges) {  // HINZUFÜGEN!
+  ngOnChanges(changes: SimpleChanges) {
     if (changes['editingMessage'] && this.editingMessage) {
       this.messageText = this.editingMessage.text || ''
     }
+  }
+
+  onEmojiPickerToggle(event: MouseEvent) {
+    event.stopPropagation()
+    this.showEmojiPicker = !this.showEmojiPicker
+  }
+
+  onEmojiSelected(emoji: string) {
+    this.messageText += emoji
+    this.showEmojiPicker = false
+  }
+
+  onEmojiPickerClosed() {
+    this.showEmojiPicker = false
   }
 
   onKeyDown(event: KeyboardEvent) {
