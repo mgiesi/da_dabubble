@@ -4,9 +4,10 @@
 .message-input-wrapper {
     width: 100%;
     padding: 20px;
+    position: relative;
 
     .input-container {
-        @include dFlexAllCenter($ai: center, $g: 12px);
+        @include dFlexAllCenter($ai: stretch, $jc: flex-start, $fld: column, $g: 0);
         background: $white;
         border: 1px solid $light-purple;
         border-radius: 20px;
@@ -18,34 +19,8 @@
             box-shadow: 0 0 0 2px rgba($purple-1, 0.1);
         }
 
-        .input-buttons {
-            @include dFlexAllCenter($g: 4px);
-            flex-shrink: 0;
-
-            .hover-action-btn {
-                @include dFlexAllCenter($ai: center, $jc: center);
-                background: none;
-                border: none;
-                padding: 6px 8px;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: $transition-0-3-ease-in-out;
-
-                svg {
-                    width: 18px;
-                    height: 18px;
-                    color: $text-gray;
-                    fill: currentColor;
-                }
-
-                &:hover svg path {
-                    fill: $purple-3;
-                }
-            }
-        }
-
         textarea {
-            flex: 1;
+            width: 100%;
             border: none;
             outline: none;
             resize: none;
@@ -53,33 +28,63 @@
             max-height: 120px;
             @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
             background: transparent;
+            margin-bottom: 12px;
 
             &::placeholder {
                 color: $text-gray;
             }
         }
 
-        .input-actions {
-            @include dFlexAllCenter();
-            flex-shrink: 0;
+        .input-footer {
+            @include dFlexAllCenter($ai: center, $jc: space-between);
+            width: 100%;
 
-            .send-btn {
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 8px;
-                border-radius: 50%;
-                transition: $transition-0-3-ease-in-out;
-                @include dFlexAllCenter();
-                width: 46px;
-                height: 46px;
+            .input-buttons {
+                @include dFlexAllCenter($g: 4px);
 
-                svg path {
+                .hover-action-btn {
+                    @include dFlexAllCenter($ai: center, $jc: center);
+                    background: none;
+                    border: none;
+                    padding: 6px 8px;
+                    border-radius: 8px;
+                    cursor: pointer;
                     transition: $transition-0-3-ease-in-out;
-                }
 
-                &:hover svg path {
-                    fill: $purple-2;
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                        color: $text-gray;
+                        fill: currentColor;
+                    }
+
+                    &:hover svg path {
+                        fill: $purple-3;
+                    }
+                }
+            }
+
+            .input-actions {
+                @include dFlexAllCenter();
+
+                .send-btn {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    padding: 8px;
+                    border-radius: 50%;
+                    transition: $transition-0-3-ease-in-out;
+                    @include dFlexAllCenter();
+                    width: 46px;
+                    height: 46px;
+
+                    svg path {
+                        transition: $transition-0-3-ease-in-out;
+                    }
+
+                    &:hover svg path {
+                        fill: $purple-2;
+                    }
                 }
             }
         }
@@ -96,6 +101,45 @@
             font-size: 14px;
             color: $purple-1;
             transition: $transition-0-3-ease-in-out;
+        }
+    }
+
+    .mention-dropdown {
+        position: absolute;
+        bottom: 80%;
+        left: 20px;
+        right: 20px;
+        margin-bottom: 8px;
+        background: $white;
+        border: 1px solid $light-purple;
+        border-radius: 20px 20px 20px 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        max-height: 300px;
+        max-width: 250px;
+        overflow: hidden;
+        z-index: 1000;
+
+        .mention-list {
+            padding: 16px;
+            overflow-y: auto;
+            max-height: 384px;
+
+            .mention-item {
+                @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 12px);
+                padding: 12px 16px;
+                border-radius: 100px;
+                cursor: pointer;
+                transition: $transition-0-3-ease-in-out;
+                margin-bottom: 4px;
+
+                &:hover {
+                    background-color: $bg-color;
+                }
+
+                .user-name {
+                    @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
+                }
+            }
         }
     }
 }

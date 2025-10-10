@@ -1,13 +1,15 @@
 import { Component, Input, inject, ViewChild, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { NgIf } from "@angular/common"
+import { NgIf, NgFor } from "@angular/common"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
 import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
 import { MessageEmojiPickerComponent } from "../message-item/message-emoji-picker/message-emoji-picker.component"
+import { UsersFacadeService } from "../../../core/facades/users-facade.service"
+import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 
 @Component({
   selector: "app-message-input",
-  imports: [FormsModule, NgIf, MessageEmojiPickerComponent],
+  imports: [FormsModule, NgIf, NgFor, MessageEmojiPickerComponent, ProfileAvatarComponent],
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
@@ -28,9 +30,12 @@ export class MessageInputComponent implements OnChanges {
 
   messageText = ""
   showEmojiPicker = false
+  showMentionDropdown = false
+  availableUsers: any[] = []
 
   private messagesFacade = inject(MessagesFacadeService)
   private dmFacade = inject(DirectMessagesFacadeService)
+  private usersFacade = inject(UsersFacadeService)
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingMessage'] && this.editingMessage) {
@@ -50,6 +55,22 @@ export class MessageInputComponent implements OnChanges {
 
   onEmojiPickerClosed() {
     this.showEmojiPicker = false
+  }
+
+  onMentionClick(event: MouseEvent) {
+    event.stopPropagation()
+    this.showMentionDropdown = !this.showMentionDropdown
+    if (this.showMentionDropdown) {
+      const users = this.usersFacade.users()
+      this.availableUsers = users || []
+    }
+  }
+
+  onUserSelected(user: any) {
+    const mention = `@${user.displayName} `
+    this.messageText += mention
+    this.showMentionDropdown = false
+    this.messageTextarea?.nativeElement.focus()
   }
 
   onKeyDown(event: KeyboardEvent) {
