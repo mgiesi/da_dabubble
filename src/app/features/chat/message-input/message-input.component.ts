@@ -1,4 +1,15 @@
-import { Component, Input, inject, ViewChild, ElementRef, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core"
+import {
+  Component,
+  Input,
+  inject,
+  ViewChild,
+  ElementRef,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  HostListener,
+} from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { NgIf, NgFor } from "@angular/common"
 import { MessagesFacadeService } from "../../../core/facades/messages-facade.service"
@@ -9,6 +20,7 @@ import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-ava
 
 @Component({
   selector: "app-message-input",
+  standalone: true,
   imports: [FormsModule, NgIf, NgFor, MessageEmojiPickerComponent, ProfileAvatarComponent],
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
@@ -25,8 +37,12 @@ export class MessageInputComponent implements OnChanges {
 
   @Output() editComplete = new EventEmitter<void>()
 
-  @ViewChild('messageTextarea', { static: false })
+  @ViewChild("messageTextarea", { static: false })
   messageTextarea?: ElementRef<HTMLTextAreaElement>
+
+  // Refs, um Klicks korrekt zu unterscheiden
+  @ViewChild("mentionDropdown") mentionDropdown?: ElementRef<HTMLElement>
+  @ViewChild("mentionButton") mentionButton?: ElementRef<HTMLElement>
 
   messageText = ""
   showEmojiPicker = false
@@ -38,9 +54,31 @@ export class MessageInputComponent implements OnChanges {
   private usersFacade = inject(UsersFacadeService)
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['editingMessage'] && this.editingMessage) {
-      this.messageText = this.editingMessage.text || ''
+    if (changes["editingMessage"] && this.editingMessage) {
+      this.messageText = this.editingMessage.text || ""
     }
+  }
+
+  // ========== Global: außerhalb klicken schließt Dropdown ==========
+  @HostListener("document:click", ["$event"])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement
+
+    // Mentions schließen, wenn Klick NICHT in Dropdown und NICHT auf Button
+    if (this.showMentionDropdown) {
+      const clickedInsideDropdown = this.mentionDropdown?.nativeElement.contains(target)
+      const clickedOnButton = this.mentionButton?.nativeElement.contains(target)
+      if (!clickedInsideDropdown && !clickedOnButton) {
+        this.showMentionDropdown = false
+      }
+    }
+  }
+
+  // ========== Global: ESC schließt Dropdown ==========
+  @HostListener("document:keydown.escape")
+  onEscape() {
+    if (this.showMentionDropdown) this.showMentionDropdown = false
+    if (this.showEmojiPicker) this.showEmojiPicker = false
   }
 
   onEmojiPickerToggle(event: MouseEvent) {
@@ -91,13 +129,15 @@ export class MessageInputComponent implements OnChanges {
       }
       this.messageText = ""
     } catch (error) {
+      // optional: error handling / toast
+      console.error(error)
     }
   }
 
   private async handleEdit() {
     if (this.isDM && this.userId) {
-      console.log('Edit DM not yet implemented')
-    } else if (this.channelId && this.editingMessage.id) {
+      console.log("Edit DM not yet implemented")
+    } else if (this.channelId && this.editingMessage?.id) {
       await this.messagesFacade.updateMessage(
         this.channelId,
         this.editingMessage.topicId,
@@ -109,7 +149,7 @@ export class MessageInputComponent implements OnChanges {
   }
 
   cancelEdit() {
-    this.messageText = ''
+    this.messageText = ""
     this.editComplete.emit()
   }
 
