@@ -71,16 +71,10 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.setupDmSubscription();
     this.setupChannelSubscription();
     this.setupBackToWorkspaceSubscription();
-    // Restore last selected channel or user from localStorage
     const lastChannelId = localStorage.getItem('lastSelectedChannelId');
     const lastUserId = localStorage.getItem('lastSelectedUserId');
-    const channelsClosed = localStorage.getItem('channelsClosed');
-    if (channelsClosed !== null) {
-      this.channelsClosed = channelsClosed === 'true';
-    }
     if (lastChannelId) {
       this.handleChannelSelection(lastChannelId);
-      this.channelsClosed = false;
     } else if (lastUserId) {
       this.handleDmSelection(lastUserId);
     }
@@ -140,8 +134,7 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   toggleChannels() {
-  this.channelsClosed = !this.channelsClosed;
-  localStorage.setItem('channelsClosed', String(this.channelsClosed));
+    this.channelsClosed = !this.channelsClosed;
   }
 
   toggleDirectMessages() {
@@ -149,10 +142,8 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   onChannelClick(channelId: string) {
-  this.handleChannelSelection(channelId);
-  this.channelsClosed = false;
-  localStorage.setItem('channelsClosed', 'false');
-  this.channelSelected.emit(channelId);
+    this.handleChannelSelection(channelId);
+    this.channelSelected.emit(channelId);
   }
 
   onDirectMessageClick(userId: string) {
