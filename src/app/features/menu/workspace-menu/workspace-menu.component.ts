@@ -71,13 +71,57 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.setupDmSubscription();
     this.setupChannelSubscription();
     this.setupBackToWorkspaceSubscription();
-    const lastChannelId = localStorage.getItem('lastSelectedChannelId');
-    const lastUserId = localStorage.getItem('lastSelectedUserId');
+    this.restoreLastSessionSelection();
+  }
+
+  private restoreLastSessionSelection() {
+    const lastChannelId = sessionStorage.getItem('lastSelectedChannelId');
+    const lastUserId = sessionStorage.getItem('lastSelectedUserId');
     if (lastChannelId) {
-      this.handleChannelSelection(lastChannelId);
+      this.restoreSelection(lastChannelId, 'channel');
     } else if (lastUserId) {
-      this.handleDmSelection(lastUserId);
+      this.restoreSelection(lastUserId, 'dm');
     }
+  }
+
+  private restoreSelection(id: string, type: 'channel' | 'dm'): void {
+    const checkAndEmit = () =>
+      type === 'channel'
+        ? this.tryEmitChannelSelection(id)
+        : this.tryEmitDirectMessageSelection(id);
+    if (!checkAndEmit()) {
+      this.startRestoreInterval(checkAndEmit);
+    }
+  }
+
+  private tryEmitChannelSelection(id: string): boolean {
+    const channels = this.channels;
+    if (
+      channels &&
+      channels.length > 0 &&
+      channels.some((c: any) => c.id === id)
+    ) {
+      this.handleChannelSelection(id);
+      this.channelSelected.emit(id);
+      return true;
+    }
+    return false;
+  }
+
+  private tryEmitDirectMessageSelection(id: string): boolean {
+    const users = this.users();
+    if (users && users.length > 0 && users.some((u: any) => u.id === id)) {
+      this.handleDmSelection(id);
+      this.directMessageSelected.emit(id);
+      return true;
+    }
+    return false;
+  }
+
+  private startRestoreInterval(checkAndEmit: () => boolean): void {
+    const interval = setInterval(() => {
+      if (checkAndEmit()) clearInterval(interval);
+    }, 100);
   }
 
   ngOnDestroy() {
@@ -122,15 +166,15 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   private handleDmSelection(userId: string) {
     this.selectedUserId = userId;
     this.selectedChannelId = null;
-    localStorage.setItem('lastSelectedUserId', userId);
-    localStorage.removeItem('lastSelectedChannelId');
+    sessionStorage.setItem('lastSelectedUserId', userId);
+    sessionStorage.removeItem('lastSelectedChannelId');
   }
 
   private handleChannelSelection(channelId: string) {
     this.selectedChannelId = channelId;
     this.selectedUserId = null;
-    localStorage.setItem('lastSelectedChannelId', channelId);
-    localStorage.removeItem('lastSelectedUserId');
+    sessionStorage.setItem('lastSelectedChannelId', channelId);
+    sessionStorage.removeItem('lastSelectedUserId');
   }
 
   toggleChannels() {
