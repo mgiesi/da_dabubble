@@ -193,7 +193,7 @@
 .add-channel-container {
   @include dFlexAllCenter($jc: start, $g: 12px);
   padding: 6px 8px;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
   cursor: pointer;
   @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
   transition: color 0.3s ease-in-out;
