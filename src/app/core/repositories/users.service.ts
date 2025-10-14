@@ -18,7 +18,7 @@ import {
   getDocs,
   getDoc
 } from '@angular/fire/firestore';
-import { catchError, EMPTY, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, combineLatest, EMPTY, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { User } from '../../shared/models/user';
 
 import { AuthService } from '../services/auth.service';
@@ -62,6 +62,28 @@ export class UsersService {
       const ref = collection(this.fs, 'users');
       return query(ref, orderBy('displayName', 'asc'));
     }); 
+  }
+
+  usersWithCurrentFirst$(): Observable<User[]> {
+    return combineLatest([
+      this.users$(),
+      this.currentUser$()
+    ]).pipe(
+      map(([users, currentUser]) => {
+        if (!currentUser) return users; 
+
+        const currentUid = currentUser.uid;
+        const sorted = users.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        const index = sorted.findIndex(u => u.uid === currentUid);
+        
+        if (index > -1) {
+          const [current] = sorted.splice(index, 1);
+          sorted.unshift(current);
+        }
+
+        return sorted;
+      })
+    );
   }
 
   /**

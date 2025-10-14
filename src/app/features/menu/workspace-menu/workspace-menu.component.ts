@@ -52,7 +52,7 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   workspaceName = 'Devspace';
   channelsClosed = false;
   dmClosed = false;
-  readonly users = this.usersFacade.users;
+  readonly users = this.usersFacade.usersWithCurrentFirst;
   trackById = (_: number, u: User) => u.id;
 
   selectedChannelId: string | null = null;

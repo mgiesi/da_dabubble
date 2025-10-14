@@ -49,6 +49,13 @@ export class UsersFacadeService {
   /** Converts the shared users$ observable into an Angular Signal. */
   readonly users = toSignal<User[]>(this.users$, { initialValue: [] as any });
 
+  /** A shared observable of all users from the Firestore (current user is first in the list). */
+  private readonly usersWithCurrentFirst$ = this.data
+    .usersWithCurrentFirst$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  /** Converts the shared usersWithCurrentFirst$ observable into an Angular Signal. */
+  readonly usersWithCurrentFirst = toSignal<User[]>(this.usersWithCurrentFirst$, { initialValue: [] as any });
+
   private readonly currentUser$ = this.currentUser();
   readonly currentUserSig = toSignal<User | null>(this.currentUser$, {
     initialValue: null,

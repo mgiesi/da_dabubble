@@ -55,8 +55,8 @@
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
 
     svg path {
       fill: $black;
@@ -134,15 +134,26 @@
       background: $bg-color;
     }
   }
+
+  &.collapsed {
+    margin: 0;
+  }
+}
+
+.channels-section {
+  max-height: 50vh;
+}
+
+.dm-section {
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .channels-section,
 .dm-section {
   width: 100%;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 .channels-content,
@@ -173,6 +184,7 @@
 
   &.collapsed {
     max-height: 0;
+    padding: 0;
     opacity: 0;
     flex: 0;
   }
@@ -180,14 +192,20 @@
 
 .add-channel-container {
   @include dFlexAllCenter($jc: start, $g: 12px);
-  padding: 6px 12px;
+  padding: 6px 8px;
+  margin-bottom: 8px;
   cursor: pointer;
   @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-  border-radius: 25px;
-  margin-bottom: 13px;
+  transition: color 0.3s ease-in-out;
+
+  svg {    
+    width: 24px;
+    height: 24px;
+  }
 
   svg path {
     fill: black;
+    transition: $transition-0-3-ease-in-out;
   }
 
   &.active svg path {
@@ -195,13 +213,18 @@
   }
 
   &:hover {
-    background: rgba($purple-3, 0.08);
-
     color: $purple-1;
 
     svg path {
       fill: $purple-1;
     }
+  }
+
+  &.collapsed {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+    flex: 0;
   }
 }
 
@@ -213,9 +236,9 @@
   width: 90%;
 
   .hashtag-icon {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
 
     path {
       fill: currentColor;
