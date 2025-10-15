@@ -72,3 +72,7 @@ app-profile-avatar {
     @include fontSizeWeightColor($si: 18px, $we: 700, $co: $white);
     padding: 12px 25px;
 }
+
+app-choose-avatar {
+    width: 100%;
+}
