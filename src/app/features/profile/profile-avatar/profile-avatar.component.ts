@@ -24,7 +24,7 @@ export class ProfileAvatarComponent {
   /** Input variable for the Firebase user object which should be used with this component */
   user: InputSignal<User | null> = input<User | null>(null);
 
-  isOnline = this.facade.isOnline(this.user, this.injector);
+  presenceState = this.facade.presenceState(this.user, this.injector);
 
   @Input() imgSize: number | string = 70;
   isClamp(val: any): val is string {

@@ -25,9 +25,9 @@ export class DmOnlineLoggerService {
     usersSig().forEach((user) => {
       if (!user?.id) return;
       const userSig: Signal<User | null> = computed(() => user);
-      const isOnlineSig = this.usersFacade.isOnline(userSig, this.injector);
+      const presenceState = this.usersFacade.presenceState(userSig, this.injector);
       effect(() => {
-        if (isOnlineSig() && this.lastOnlineUserId !== user.id) {
+        if (presenceState() === 'online' && this.lastOnlineUserId !== user.id) {
           this.lastOnlineUserId = user.id;
           this.lastOnlineUserName = user.displayName;
           if (this.setOnlineUser) {

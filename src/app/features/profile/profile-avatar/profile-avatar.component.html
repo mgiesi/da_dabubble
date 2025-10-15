@@ -2,7 +2,7 @@
     <div class="profile-avatar" [style.width]="isClamp(imgSize) ? imgSize : imgSize + 'px'"
         [style.height]="isClamp(imgSize) ? imgSize : imgSize + 'px'">
         <img [resolvedImg]="user.imgUrl">
-        <div *ngIf="showStatus" [ngClass]="isOnline() ? 'profile-state-online' : 'profile-state-offline'"></div>
+        <div *ngIf="showStatus" [ngClass]="{'profile-state-online': presenceState() === 'online', 'profile-state-offline': presenceState() === 'offline', 'profile-state-away': presenceState() === 'away'}"></div>
         <div *ngIf="showAddAvatar" class="add-avatar">
             <img src="icons/add_photo.svg">
         </div>

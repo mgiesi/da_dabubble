@@ -15,10 +15,10 @@ export class DmOnlineLoggerService {
       
       runInInjectionContext(this.injector, () => {
         const userSig: Signal<User | null> = computed(() => user);
-        const isOnlineSig = this.usersFacade.isOnline(userSig, this.injector);
+        const presenceState = this.usersFacade.presenceState(userSig, this.injector);
         
         effect(() => {
-          if (isOnlineSig()) {
+          if (presenceState() === 'online') {
           }
         });
       });

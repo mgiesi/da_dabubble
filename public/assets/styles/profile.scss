@@ -9,12 +9,20 @@
     @include profile-state($border-color: $bg-color, $bg-color: $text-gray);
 }
 
+.profile-state-away {
+    @include profile-state($border-color: $bg-color, $bg-color: $orange);
+}
+
 .profile-state-online-white-bg {
     @include profile-state($border-color: $white, $bg-color: $green);
 }
 
 .profile-state-offline-white-bg {
     @include profile-state($border-color: $white, $bg-color: $text-gray);
+}
+
+.profile-state-away-white-bg {
+    @include profile-state($border-color: $white, $bg-color: $orange);
 }
 
 .profile-avatar {
@@ -34,7 +42,9 @@
     .profile-state-online,
     .profile-state-online-white-bg,
     .profile-state-offline,
-    .profile-state-offline-white-bg {
+    .profile-state-offline-white-bg,
+    .profile-state-away,
+    .profile-state-away-white-bg {
         position: absolute;
         right: 0;
         bottom: 0;

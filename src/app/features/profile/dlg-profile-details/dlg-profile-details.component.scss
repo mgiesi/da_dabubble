@@ -96,6 +96,10 @@
     color: $text-gray;
 }
 
+.state-text-away {
+    color: $orange;
+}
+
 .profile-email {
     @include dFlexAllCenter($fld: column, $ai: flex-start, $jc: flex-start, $g: 15px);
     width: 100%;

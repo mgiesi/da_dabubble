@@ -13,6 +13,7 @@ import {
   catchError,
   distinctUntilChanged,
   EMPTY,
+  interval,
   map,
   Observable,
   of,
@@ -25,6 +26,19 @@ import {
   UserPresence,
   UserPresenceService,
 } from '../services/user-presence.service';
+
+function nowSignal(injector: Injector, everyMs = 30_000): Signal<number> {
+  // tickt alle 30s (reicht für Presence)
+  return toSignal(
+    interval(everyMs).pipe(map(() => Date.now())),
+    { initialValue: Date.now(), injector }
+  );
+}
+
+type UiPresence = 'online' | 'away' | 'offline';
+
+const AWAY_AFTER_MS  = 30_000; // 30 seconds
+const OFF_AFTER_MS   = 10 * 60_000;  // 10 min
 
 @Injectable({
   providedIn: 'root',
@@ -204,9 +218,20 @@ export class UsersFacadeService {
    * @param injector  Angular `Injector` used by `toSignal` in `getUserPresence`.
    * @returns         `Signal<boolean>` that is `true` when the user is online.
    */
-  isOnline(userSig: Signal<User | null>, injector: Injector): Signal<boolean> {
+  presenceState(userSig: Signal<User | null>, injector: Injector): Signal<UiPresence> {
     const p = this.getUserPresence(userSig, injector);
-    return computed(() => p().isOnline);
+    const now = nowSignal(injector);
+
+    return computed<UiPresence>(() => {
+      const pres = p();
+      if (!pres.isOnline) return 'offline';
+      if (!pres.lastSeenAt) return 'online';
+
+      const age = now() - pres.lastSeenAt;
+      if (age >= OFF_AFTER_MS) return 'offline';
+      if (age >= AWAY_AFTER_MS) return 'away';
+      return 'online';
+    });
   }
 
   /**

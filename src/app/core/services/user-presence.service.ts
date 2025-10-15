@@ -12,7 +12,7 @@ import {
   onDisconnect,
   ref,
   set,
-  get,
+  update,
 } from '@angular/fire/database';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { EMPTY, Observable, of, shareReplay, switchMap } from 'rxjs';
@@ -50,6 +50,11 @@ export class UserPresenceService {
   private initialized = false;
   /** Unsubscribe function for `.info/connected` listener when user changes. */
   private connectedUnsub: (() => void) | null = null;
+
+  /** Heartbeat Timer-ID */
+  private hbId: any = null;
+  /** Cleanup für Visibility/Focus-Handler */
+  private visibilityCleanup: (() => void) | null = null;
 
   constructor() {}
 
@@ -92,6 +97,7 @@ export class UserPresenceService {
    * Called when auth state changes or during re-initialization.
    */
   private checkConnectedUnsubscription() {
+    this.stopHeartbeat();
     if (this.connectedUnsub) {
       this.connectedUnsub();
       this.connectedUnsub = null;
@@ -123,8 +129,11 @@ export class UserPresenceService {
             })
           );
         })
+        .then(() => {
+          this.startHeartbeat(statusRef);
+        })
         .catch((e) => {
-          console.error('[Presence] failed to set presence:', e);
+          console.error('[Presence] failed to set presence:', e?.code, e);
         });
     });
   }
@@ -159,6 +168,7 @@ export class UserPresenceService {
           },
           (err: any) => {
             if (err?.code === 'PERMISSION_DENIED') {
+              subscriber.next({ isOnline: false, lastSeenAt: null });
               subscriber.complete();
               return;
             }
@@ -191,6 +201,7 @@ export class UserPresenceService {
    */
   async signOutWithPresence(): Promise<void> {
     await runInInjectionContext(this.env, async () => {
+      this.stopHeartbeat();
       const user = this.auth.currentUser;
       if (user) {
         const statusRef = ref(this.rtdb, `status/${user.uid}`);
@@ -206,5 +217,38 @@ export class UserPresenceService {
       }
       await this.auth.signOut();
     });
+  }
+
+  private startHeartbeat(statusRef: ReturnType<typeof ref>) {
+    this.stopHeartbeat();
+ 
+    const HEARTBEAT_MS = 5_000;//60_000;
+    const beat = () => this.inCtx(() => update(statusRef, { last_seen_at: serverTimestamp() })).catch(() => {});
+ 
+    beat();
+    this.hbId = setInterval(beat, HEARTBEAT_MS);
+ 
+    const onVisible = () => {
+      if (!document.hidden) {
+        this.inCtx(() => update(statusRef, {
+          state: 'online',
+          last_seen_at: serverTimestamp(),
+        })).catch(() => {});
+      }
+    };
+    const onFocus = () => {
+      this.inCtx(() => update(statusRef, { last_seen_at: serverTimestamp() })).catch(() => {});
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onFocus);
+    this.visibilityCleanup = () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onFocus);
+    };
+  }
+ 
+  private stopHeartbeat() {
+    if (this.hbId) { clearInterval(this.hbId); this.hbId = null; }
+    if (this.visibilityCleanup) { this.visibilityCleanup(); this.visibilityCleanup = null; }
   }
 }

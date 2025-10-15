@@ -38,7 +38,7 @@ export class DlgProfileDetailsComponent {
   readonly dialogData = inject<{ userId: string | undefined }>(MAT_DIALOG_DATA);
   readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null});
   readonly isSelf = this.facade.isCurrentUser(this.userSig);
-  readonly isOnline = this.facade.isOnline(this.userSig, this.injector);
+  readonly presenceState = this.facade.presenceState(this.userSig, this.injector);
   
   closeDialog() {
     this.dialogRef.close(false);
