@@ -23,6 +23,8 @@ import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-la
 import { fadeInOut } from './core/animations/fade-in-out.animation';
 import { DmNavigationService } from './core/services/dm-navigation.service';
 import { ChannelNavigationService } from './core/services/channel-navigation.service';
+import { ProfileBadgeComponent } from "./features/profile/profile-badge/profile-badge.component";
+import { ChannelBadgeComponent } from "./features/channels/channel-badge/channel-badge.component";
 
 @Component({
   selector: 'app-root',
@@ -31,7 +33,9 @@ import { ChannelNavigationService } from './core/services/channel-navigation.ser
     CommonModule,
     ProfileMenuComponent,
     OverlayLandscapeComponent,
-  ],
+    ProfileBadgeComponent,
+    ChannelBadgeComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [fadeInOut],

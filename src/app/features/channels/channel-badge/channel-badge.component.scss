@@ -1,0 +1,32 @@
+@use "../../../../../public/assets/styles/variables.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
+
+.channel-item {
+  @include dFlexAllCenter($ai: center, $jc: start, $g: 8px);
+  padding: 6px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 90%;
+
+  .hashtag-icon {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+
+    path {
+      fill: currentColor;
+    }
+  }
+
+  span {
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: inherit);
+  }
+
+  &:hover,
+  &.active {
+    width: calc(90% + 3px);
+    color: $purple-3;
+    background: rgba($purple-3, 0.08);
+  }
+}

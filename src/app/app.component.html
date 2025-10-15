@@ -42,7 +42,7 @@
 
     <div class="search-input-box">
       <label *ngIf="showSearchLabel$ | async" class="label-input-field-white-img-right" for="searchInput">
-        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen"
+        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" autocomplete="off"
           (input)="onSearchInput($event)" />
         <img src="icons/search.svg" alt="Suchen Icon" />
       </label>
@@ -51,9 +51,8 @@
           <ul class="user-search-list">
             <li *ngFor="let item of users" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
               (mouseleave)="onSearchResultHoverEnd()">
-              <span *ngIf="item.displayName" (click)="onDirectMessageClick(item)">&#64;{{ item.displayName }}</span>
-              <span *ngIf="!item.displayName && item.name" class="channel-result" (click)="onChannelClick(item)">#{{
-                item.name }}</span>
+              <app-profile-badge *ngIf="item.displayName" class="" [user]="item" (click)="onDirectMessageClick(item)" [openProfileDetailsOnClick]="false"/>
+              <app-channel-badge *ngIf="!item.displayName && item.name" [channel]="item" (click)="onChannelClick(item)"/>
             </li>
           </ul>
         </ng-container>
