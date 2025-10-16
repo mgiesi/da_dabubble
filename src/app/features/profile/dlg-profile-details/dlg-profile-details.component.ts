@@ -8,6 +8,7 @@ import {
   Signal,
   effect,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -36,10 +37,10 @@ export class DlgProfileDetailsComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
   readonly dialogData = inject<{ userId: string | undefined }>(MAT_DIALOG_DATA);
-  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null});
+  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null });
   readonly isSelf = this.facade.isCurrentUser(this.userSig);
   readonly presenceState = this.facade.presenceState(this.userSig, this.injector);
-  
+
   closeDialog() {
     this.dialogRef.close(false);
   }
@@ -81,4 +82,15 @@ export class DlgProfileDetailsComponent {
       data: { userId: this.userSig()?.id },
     });
   }
+
+  openDirectMessage(): void {
+    const user = this.userSig()
+    if (user?.id) {
+      this.router.navigate(['/workspace/dm', user.id])
+      this.closeDialog()
+    }
+  }
+
+  private router = inject(Router)
+
 }
