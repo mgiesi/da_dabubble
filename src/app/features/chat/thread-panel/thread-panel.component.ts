@@ -92,4 +92,14 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
   onBackToChat() {
     this.backToChat.emit()
   }
+
+  editingMessage: any = null;
+
+  onEditMessage(message: any) {
+    this.editingMessage = message;
+  }
+
+  onEditComplete() {
+    this.editingMessage = null;
+  }
 }

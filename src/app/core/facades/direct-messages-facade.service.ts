@@ -19,7 +19,7 @@ export class DirectMessagesFacadeService {
    * Subscribes to direct messages between current user and target user
    */
   subscribeToDMMessages(
-    targetUserId: string, 
+    targetUserId: string,
     callback: (messages: DirectMessage[]) => void
   ): () => void {
     const currentUser = this.getCurrentUser();
@@ -27,7 +27,7 @@ export class DirectMessagesFacadeService {
     const subscription = this.directMessagesRepo
       .getDMMessages$(currentUser.uid, targetUserId)
       .subscribe(messages => {
-        
+
         const messagesWithOwnership = this.addOwnershipToMessages(messages);
         callback(messagesWithOwnership);
       });
@@ -41,13 +41,13 @@ export class DirectMessagesFacadeService {
   async sendDMMessage(targetUserId: string, messageText: string): Promise<void> {
     const currentUser = this.getCurrentUser();
     const currentUserData = this.usersFacade.currentUserSig();
-    
+
     if (!currentUserData) {
       throw new Error('User data not available');
     }
 
     const messageData = this.createDMMessageData(
-      messageText, 
+      messageText,
       currentUser.uid,
       currentUserData.displayName,
       currentUserData.imgUrl
@@ -55,7 +55,7 @@ export class DirectMessagesFacadeService {
 
     try {
       const dmId = await this.directMessagesRepo.ensureDMConversation(currentUser.uid, targetUserId);
-      
+
       await this.directMessagesRepo.createDMMessage(currentUser.uid, targetUserId, messageData);
     } catch (error) {
       throw error;
@@ -119,5 +119,17 @@ export class DirectMessagesFacadeService {
       ...message,
       isOwnMessage: message.senderId === currentUserId,
     }));
+  }
+
+  /**
+ * Updates a direct message text
+ */
+  async updateDMMessage(dmId: string, messageId: string, newText: string): Promise<void> {
+    try {
+      await this.directMessagesRepo.updateDMMessageText(dmId, messageId, newText);
+    } catch (error) {
+      console.error('Error updating DM message:', error);
+      throw error;
+    }
   }
 }

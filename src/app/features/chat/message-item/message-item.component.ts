@@ -37,6 +37,9 @@ import { Auth } from "@angular/fire/auth"
   styleUrl: "./message-item.component.scss",
 })
 export class MessageItemComponent implements OnInit, OnDestroy {
+
+  @Input() isOriginalMessage = false;
+
   @Input() isThreadView = false
   @Input() isDM = false
   @Input() message!: any

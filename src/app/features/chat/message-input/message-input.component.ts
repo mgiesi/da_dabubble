@@ -135,17 +135,26 @@ export class MessageInputComponent implements OnChanges {
   }
 
   private async handleEdit() {
-    if (this.isDM && this.userId) {
-      console.log("Edit DM not yet implemented")
+    if (this.isDM && this.userId && this.editingMessage?.id) {
+      // DM Edit
+      if (!this.editingMessage.dmId) {
+        return;
+      }
+      await this.dmFacade.updateDMMessage(
+        this.editingMessage.dmId,
+        this.editingMessage.id,
+        this.messageText
+      );
     } else if (this.channelId && this.editingMessage?.id) {
+      // Channel/Thread Edit
       await this.messagesFacade.updateMessage(
         this.channelId,
         this.editingMessage.topicId,
         this.editingMessage.id,
         this.messageText
-      )
+      );
     }
-    this.editComplete.emit()
+    this.editComplete.emit();
   }
 
   cancelEdit() {

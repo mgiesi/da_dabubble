@@ -42,7 +42,7 @@ export class DirectMessagesService {
       this.normalizeToAuthUid(userId1).then(normalizedUserId1 => {
         return this.normalizeToAuthUid(userId2).then(normalizedUserId2 => {
           const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
-        
+
           const subscription = this.firestoreHelper.authedCollection$<any>(() => {
             const ref = collection(this.fs, 'direct-messages', dmId, 'chat-messages');
             return query(ref, orderBy('timestamp', 'asc'));
@@ -105,8 +105,8 @@ export class DirectMessagesService {
    * Creates a direct message between two users
    */
   async createDMMessage(
-    userId1: string, 
-    userId2: string, 
+    userId1: string,
+    userId2: string,
     messageData: Partial<DirectMessage>
   ): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
@@ -127,9 +127,9 @@ export class DirectMessagesService {
    * Adds reaction to direct message
    */
   async addReactionToDMMessage(
-    dmId: string, 
-    messageId: string, 
-    emoji: string, 
+    dmId: string,
+    messageId: string,
+    emoji: string,
     userId: string
   ): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
@@ -198,6 +198,20 @@ export class DirectMessagesService {
       }
 
       return dmId;
+    });
+  }
+
+  /**
+ * Updates the text of a direct message
+ */
+  async updateDMMessageText(
+    dmId: string,
+    messageId: string,
+    newText: string
+  ): Promise<void> {
+    return runInInjectionContext(this.injector, async () => {
+      const messageRef = doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId);
+      await updateDoc(messageRef, { text: newText });
     });
   }
 }

@@ -14,7 +14,11 @@
 
   <div class="thread-content">
     <div class="original-message">
-      <app-message-item [message]="message" [isThreadView]="true"></app-message-item>
+      <app-message-item 
+        [message]="message" 
+        [isThreadView]="true"
+        [isOriginalMessage]="true">
+      </app-message-item>
     </div>
 
     <div class="thread-messages">
@@ -25,7 +29,8 @@
       <app-message-item 
         *ngFor="let threadMsg of threadMessages" 
         [message]="threadMsg"
-        [isThreadView]="true">
+        [isThreadView]="true"
+        (editClicked)="onEditMessage($event)">
       </app-message-item>
     </div>
   </div>
@@ -33,8 +38,11 @@
   <div class="thread-input">
     <app-message-input 
       [channelId]="selectedChannelId"
+      [topicId]="message?.topicId"
       [parentMessageId]="message?.id"
       [parentMessage]="message"
+      [editingMessage]="editingMessage"
+      (editComplete)="onEditComplete()"
       placeholder="Antworten...">
     </app-message-input>
   </div>
