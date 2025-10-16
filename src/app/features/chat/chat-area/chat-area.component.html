@@ -44,7 +44,8 @@
 
     <!-- No messages state -->
     <div *ngIf="messages.length === 0" class="no-messages">
-      <p>Noch keine Nachrichten in diesem Channel. Sei der Erste der schreibt! 💬</p>
+      <p *ngIf="!isDM">Noch keine Nachrichten in diesem Channel. Sei der Erste der schreibt! 💬</p>
+      <p *ngIf="isDM">Diese Unterhaltung findet nur zwischen {{ dmUserDisplayName }} und dir statt</p>
     </div>
   </div>
 

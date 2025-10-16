@@ -378,4 +378,9 @@ export class ChatAreaComponent
       data: { userId: user.id },
     });
   }
+
+  get dmUserDisplayName(): string {
+    const user = this.dmUserSig?.()
+    return user?.displayName || 'Unbekannt'
+  }
 }
