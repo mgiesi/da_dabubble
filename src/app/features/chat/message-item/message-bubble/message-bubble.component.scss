@@ -19,3 +19,7 @@
   line-height: 1.4;
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
 }
+
+:host-context(.own-message) .message-text {
+  color: $white;
+}
