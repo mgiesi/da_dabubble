@@ -104,7 +104,8 @@
         }
     }
 
-    .mention-dropdown {
+    .mention-dropdown,
+    .channel-dropdown {
         position: absolute;
         bottom: 80%;
         left: 20px;
@@ -118,28 +119,37 @@
         max-width: 250px;
         overflow: hidden;
         z-index: 1000;
+    }
 
-        .mention-list {
-            padding: 16px;
-            overflow-y: auto;
-            max-height: 384px;
+    .mention-list,
+    .channel-list {
+        padding: 16px;
+        overflow-y: auto;
+        max-height: 384px;
+    }
 
-            .mention-item {
-                @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 12px);
-                padding: 12px 16px;
-                border-radius: 100px;
-                cursor: pointer;
-                transition: $transition-0-3-ease-in-out;
-                margin-bottom: 4px;
+    .mention-item,
+    .channel-item {
+        @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 12px);
+        padding: 12px 16px;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: $transition-0-3-ease-in-out;
+        margin-bottom: 4px;
 
-                &:hover {
-                    background-color: $bg-color;
-                }
+        &:hover {
+            background-color: $bg-color;
+        }
 
-                .user-name {
-                    @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
-                }
-            }
+        svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .user-name,
+        .channel-name {
+            @include fontSizeWeightColor($si: $font-size-16, $we: 500, $co: $black);
         }
     }
 }

@@ -16,6 +16,7 @@ import { MessagesFacadeService } from "../../../core/facades/messages-facade.ser
 import { DirectMessagesFacadeService } from "../../../core/facades/direct-messages-facade.service"
 import { MessageEmojiPickerComponent } from "../message-item/message-emoji-picker/message-emoji-picker.component"
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
+import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 
 @Component({
@@ -39,19 +40,21 @@ export class MessageInputComponent implements OnChanges {
 
   @ViewChild("messageTextarea", { static: false })
   messageTextarea?: ElementRef<HTMLTextAreaElement>
-
-  // Refs, um Klicks korrekt zu unterscheiden
   @ViewChild("mentionDropdown") mentionDropdown?: ElementRef<HTMLElement>
+  @ViewChild("channelDropdown") channelDropdown?: ElementRef<HTMLElement>
   @ViewChild("mentionButton") mentionButton?: ElementRef<HTMLElement>
 
   messageText = ""
   showEmojiPicker = false
   showMentionDropdown = false
+  showChannelDropdown = false
   availableUsers: any[] = []
+  availableChannels: any[] = []
 
   private messagesFacade = inject(MessagesFacadeService)
   private dmFacade = inject(DirectMessagesFacadeService)
   private usersFacade = inject(UsersFacadeService)
+  private channelsFacade = inject(ChannelsFacadeService)
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["editingMessage"] && this.editingMessage) {
@@ -59,26 +62,56 @@ export class MessageInputComponent implements OnChanges {
     }
   }
 
-  // ========== Global: außerhalb klicken schließt Dropdown ==========
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement
-
-    // Mentions schließen, wenn Klick NICHT in Dropdown und NICHT auf Button
-    if (this.showMentionDropdown) {
-      const clickedInsideDropdown = this.mentionDropdown?.nativeElement.contains(target)
-      const clickedOnButton = this.mentionButton?.nativeElement.contains(target)
-      if (!clickedInsideDropdown && !clickedOnButton) {
-        this.showMentionDropdown = false
-      }
+    const clickedInsideDropdown = this.mentionDropdown?.nativeElement.contains(target) || 
+                                   this.channelDropdown?.nativeElement.contains(target)
+    const clickedOnButton = this.mentionButton?.nativeElement.contains(target)
+    
+    if (!clickedInsideDropdown && !clickedOnButton) {
+      this.showMentionDropdown = false
+      this.showChannelDropdown = false
     }
   }
 
-  // ========== Global: ESC schließt Dropdown ==========
   @HostListener("document:keydown.escape")
   onEscape() {
-    if (this.showMentionDropdown) this.showMentionDropdown = false
-    if (this.showEmojiPicker) this.showEmojiPicker = false
+    this.showMentionDropdown = false
+    this.showChannelDropdown = false
+    this.showEmojiPicker = false
+  }
+
+  onInput(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement
+    const cursorPos = textarea.selectionStart
+    const textBeforeCursor = textarea.value.substring(0, cursorPos)
+    const lastChar = textBeforeCursor[textBeforeCursor.length - 1]
+
+    if (lastChar === '@') {
+      this.openMentionDropdown()
+    } else if (lastChar === '#') {
+      this.openChannelDropdown()
+    }
+  }
+
+  openMentionDropdown() {
+    this.showChannelDropdown = false
+    this.showMentionDropdown = true
+    const users = this.usersFacade.users()
+    this.availableUsers = users || []
+  }
+
+  openChannelDropdown() {
+    this.showMentionDropdown = false
+    this.showChannelDropdown = true
+    const allChannels = this.channelsFacade.channels()
+    this.usersFacade.currentUser().subscribe(currentUser => {
+      const currentUserId = currentUser?.id
+      this.availableChannels = allChannels?.filter(ch => 
+        ch.members?.includes(currentUserId)
+      ) || []
+    })
   }
 
   onEmojiPickerToggle(event: MouseEvent) {
@@ -97,17 +130,18 @@ export class MessageInputComponent implements OnChanges {
 
   onMentionClick(event: MouseEvent) {
     event.stopPropagation()
-    this.showMentionDropdown = !this.showMentionDropdown
-    if (this.showMentionDropdown) {
-      const users = this.usersFacade.users()
-      this.availableUsers = users || []
-    }
+    this.openMentionDropdown()
   }
 
   onUserSelected(user: any) {
-    const mention = `@${user.displayName} `
-    this.messageText += mention
+    this.messageText = this.messageText.replace(/@$/, `@${user.displayName} `)
     this.showMentionDropdown = false
+    this.messageTextarea?.nativeElement.focus()
+  }
+
+  onChannelSelected(channel: any) {
+    this.messageText = this.messageText.replace(/#$/, `#${channel.name} `)
+    this.showChannelDropdown = false
     this.messageTextarea?.nativeElement.focus()
   }
 
@@ -129,32 +163,27 @@ export class MessageInputComponent implements OnChanges {
       }
       this.messageText = ""
     } catch (error) {
-      // optional: error handling / toast
       console.error(error)
     }
   }
 
   private async handleEdit() {
     if (this.isDM && this.userId && this.editingMessage?.id) {
-      // DM Edit
-      if (!this.editingMessage.dmId) {
-        return;
-      }
+      if (!this.editingMessage.dmId) return
       await this.dmFacade.updateDMMessage(
         this.editingMessage.dmId,
         this.editingMessage.id,
         this.messageText
-      );
+      )
     } else if (this.channelId && this.editingMessage?.id) {
-      // Channel/Thread Edit
       await this.messagesFacade.updateMessage(
         this.channelId,
         this.editingMessage.topicId,
         this.editingMessage.id,
         this.messageText
-      );
+      )
     }
-    this.editComplete.emit();
+    this.editComplete.emit()
   }
 
   cancelEdit() {
@@ -180,12 +209,10 @@ export class MessageInputComponent implements OnChanges {
 
   private async sendThreadReply() {
     if (!this.channelId || !this.parentMessageId) return
-
     let activeTopicId = this.parentMessage?.topicId || this.topicId
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
     }
-
     await this.messagesFacade.sendMessage(
       this.channelId,
       activeTopicId,
@@ -196,12 +223,10 @@ export class MessageInputComponent implements OnChanges {
 
   private async sendChannelMessage() {
     if (!this.channelId) return
-
     let activeTopicId = this.topicId
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
     }
-
     await this.messagesFacade.sendMessage(this.channelId, activeTopicId, this.messageText)
   }
 
