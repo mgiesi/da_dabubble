@@ -18,8 +18,25 @@
   margin: 0;
   line-height: 1.4;
   @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+
+  ::ng-deep .mention-link {
+    color: $purple-1;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: $transition-0-3-ease-in-out;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 :host-context(.own-message) .message-text {
   color: $white;
+
+  ::ng-deep .mention-link {
+    color: $white;
+    font-weight: 700;
+  }
 }
