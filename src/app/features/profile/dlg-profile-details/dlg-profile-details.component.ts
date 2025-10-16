@@ -8,7 +8,6 @@ import {
   Signal,
   effect,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -23,6 +22,7 @@ import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { DlgProfileEditComponent } from '../dlg-profile-edit/dlg-profile-edit.component';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { DmNavigationService } from '../../../core/services/dm-navigation.service';
 
 @Component({
   selector: 'app-dlg-profile-details',
@@ -36,13 +36,26 @@ export class DlgProfileDetailsComponent {
   private injector = inject(Injector);
   private breakpointObserver = inject(BreakpointObserver);
   private dialog = inject(MatDialog);
+  private dmNavigationService = inject(DmNavigationService);
+  
   readonly dialogData = inject<{ userId: string | undefined }>(MAT_DIALOG_DATA);
-  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null });
+  readonly userSig = toSignal(this.facade.getUser$(this.dialogData.userId!), { initialValue: null});
   readonly isSelf = this.facade.isCurrentUser(this.userSig);
   readonly presenceState = this.facade.presenceState(this.userSig, this.injector);
-
+  
   closeDialog() {
     this.dialogRef.close(false);
+  }
+
+  /**
+   * Opens direct message chat with the user
+   */
+  openDirectMessage(): void {
+    const user = this.userSig()
+    if (user?.id) {
+      this.dmNavigationService.selectUser(user.id)
+      this.closeDialog()
+    }
   }
 
   /**
@@ -82,15 +95,4 @@ export class DlgProfileDetailsComponent {
       data: { userId: this.userSig()?.id },
     });
   }
-
-  openDirectMessage(): void {
-    const user = this.userSig()
-    if (user?.id) {
-      this.router.navigate(['/workspace/dm', user.id])
-      this.closeDialog()
-    }
-  }
-
-  private router = inject(Router)
-
 }
