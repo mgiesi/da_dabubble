@@ -3,11 +3,11 @@ import {
   Input,
   inject,
   ViewChild,
-  ElementRef,
+  type ElementRef,
   Output,
   EventEmitter,
-  OnChanges,
-  SimpleChanges,
+  type OnChanges,
+  type SimpleChanges,
   HostListener,
 } from "@angular/core"
 import { FormsModule } from "@angular/forms"
@@ -33,7 +33,7 @@ export class MessageInputComponent implements OnChanges {
   @Input() parentMessage: any = null
   @Input() placeholder = "Nachricht schreiben..."
   @Input() userId: string | null = null
-  @Input() isDM: boolean = false
+  @Input() isDM = false
   @Input() editingMessage: any = null
 
   @Output() editComplete = new EventEmitter<void>()
@@ -65,10 +65,10 @@ export class MessageInputComponent implements OnChanges {
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement
-    const clickedInsideDropdown = this.mentionDropdown?.nativeElement.contains(target) || 
-                                   this.channelDropdown?.nativeElement.contains(target)
+    const clickedInsideDropdown =
+      this.mentionDropdown?.nativeElement.contains(target) || this.channelDropdown?.nativeElement.contains(target)
     const clickedOnButton = this.mentionButton?.nativeElement.contains(target)
-    
+
     if (!clickedInsideDropdown && !clickedOnButton) {
       this.showMentionDropdown = false
       this.showChannelDropdown = false
@@ -88,9 +88,9 @@ export class MessageInputComponent implements OnChanges {
     const textBeforeCursor = textarea.value.substring(0, cursorPos)
     const lastChar = textBeforeCursor[textBeforeCursor.length - 1]
 
-    if (lastChar === '@') {
+    if (lastChar === "@") {
       this.openMentionDropdown()
-    } else if (lastChar === '#') {
+    } else if (lastChar === "#") {
       this.openChannelDropdown()
     }
   }
@@ -105,13 +105,7 @@ export class MessageInputComponent implements OnChanges {
   openChannelDropdown() {
     this.showMentionDropdown = false
     this.showChannelDropdown = true
-    const allChannels = this.channelsFacade.channels()
-    this.usersFacade.currentUser().subscribe(currentUser => {
-      const currentUserId = currentUser?.id
-      this.availableChannels = allChannels?.filter(ch => 
-        ch.members?.includes(currentUserId)
-      ) || []
-    })
+    this.availableChannels = this.channelsFacade.visibleChannelsSig() || []
   }
 
   onEmojiPickerToggle(event: MouseEvent) {
@@ -170,17 +164,13 @@ export class MessageInputComponent implements OnChanges {
   private async handleEdit() {
     if (this.isDM && this.userId && this.editingMessage?.id) {
       if (!this.editingMessage.dmId) return
-      await this.dmFacade.updateDMMessage(
-        this.editingMessage.dmId,
-        this.editingMessage.id,
-        this.messageText
-      )
+      await this.dmFacade.updateDMMessage(this.editingMessage.dmId, this.editingMessage.id, this.messageText)
     } else if (this.channelId && this.editingMessage?.id) {
       await this.messagesFacade.updateMessage(
         this.channelId,
         this.editingMessage.topicId,
         this.editingMessage.id,
-        this.messageText
+        this.messageText,
       )
     }
     this.editComplete.emit()
@@ -213,12 +203,7 @@ export class MessageInputComponent implements OnChanges {
     if (!activeTopicId) {
       activeTopicId = await this.messagesFacade.createDefaultTopic(this.channelId)
     }
-    await this.messagesFacade.sendMessage(
-      this.channelId,
-      activeTopicId,
-      this.messageText,
-      this.parentMessageId
-    )
+    await this.messagesFacade.sendMessage(this.channelId, activeTopicId, this.messageText, this.parentMessageId)
   }
 
   private async sendChannelMessage() {
