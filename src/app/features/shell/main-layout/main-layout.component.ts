@@ -80,8 +80,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.resetDmState()
     this.setChannelState(channelId)
+    this.updateChannelNameInService()
     this.switchToChatView()
-    this.updateChannelName()
   }
 
   private resetChannelState() {
@@ -112,8 +112,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.logoState.setCurrentView("workspace")
   }
 
-  private updateChannelName() {
-    this.logoState.setCurrentChannelName(this.currentChannelName)
+  private updateChannelNameInService() {
+    if (!this.selectedChannelId) return
+    
+    const channels = this.channelsFacade.channels()
+    const channel = channels.find((c) => c.id === this.selectedChannelId)
+    
+    if (channel?.name) {
+      this.logoState.setCurrentChannelName(channel.name)
+    }
   }
 
   private initializeDefaultState() {
@@ -123,9 +130,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private selectFirstAvailableChannel() {
     const channels = this.channelsFacade.channels()
+    
     if (channels && channels.length > 0) {
       const firstChannel = channels[0]
       this.selectedChannelId = firstChannel.id || null
+      
       if (firstChannel.name) {
         this.logoState.setCurrentChannelName(firstChannel.name)
       }
@@ -180,5 +189,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.selectedChannelId = null
     this.selectedUserId = null
     this.currentView = 'workspace'
+    this.logoState.setCurrentView('workspace')
   }
 }

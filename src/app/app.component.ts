@@ -35,7 +35,7 @@ import { ChannelBadgeComponent } from "./features/channels/channel-badge/channel
     OverlayLandscapeComponent,
     ProfileBadgeComponent,
     ChannelBadgeComponent
-],
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [fadeInOut],
@@ -449,14 +449,8 @@ export class AppComponent {
   }
 
   onBackClick() {
-    const isMobile = window.innerWidth < 768;
-
     this.logoState.triggerBackToWorkspace();
     this.logoState.setCurrentView('workspace');
-
-    if (isMobile) {
-      this.router.navigate(['/m/workspace'], { replaceUrl: true });
-    }
   }
 
   onSearchBlur() {

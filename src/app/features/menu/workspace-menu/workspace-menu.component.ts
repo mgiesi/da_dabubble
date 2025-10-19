@@ -71,7 +71,10 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.setupDmSubscription();
     this.setupChannelSubscription();
     this.setupBackToWorkspaceSubscription();
-    this.restoreLastSessionSelection();
+
+    if (!this.logoState.isReturningFromBackButton()) {
+      this.restoreLastSessionSelection();
+    }
   }
 
   private restoreLastSessionSelection() {
@@ -152,7 +155,7 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
 
   private setupBackToWorkspaceSubscription() {
     this.backToWorkspaceSubscription = this.logoState.backToWorkspace.subscribe(
-      () => {}
+      () => { }
     );
   }
 

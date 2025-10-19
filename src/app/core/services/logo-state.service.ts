@@ -5,20 +5,19 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class LogoStateService {
-  private currentViewSignal = signal<'workspace' | 'chat' | 'thread'>(
-    'workspace'
-  );
+  private currentViewSignal = signal<'workspace' | 'chat' | 'thread'>('workspace');
   private isMobileSignal = signal<boolean>(false);
   private currentChannelNameSignal = signal<string>('');
   private workspaceNameSignal = signal<string>('Devspace');
   private backToWorkspace$ = new Subject<void>();
+  private isReturningFromBackButtonSignal = signal<boolean>(false);
+  
   readonly backToWorkspace = this.backToWorkspace$.asObservable();
+  readonly isReturningFromBackButton = computed(() => this.isReturningFromBackButtonSignal());
 
   readonly shouldShowWorkspaceLogo = computed(() => {
     const isMobile = this.isMobileSignal();
     const currentView = this.currentViewSignal();
-
-    // Only on mobile (under 768px) and in chat/thread view
     return isMobile && (currentView === 'chat' || currentView === 'thread');
   });
 
@@ -38,9 +37,7 @@ export class LogoStateService {
     return this.shouldShowWorkspaceLogo();
   });
 
-  readonly isWorkspaceView = computed(
-    () => this.currentViewSignal() === 'workspace'
-  );
+  readonly isWorkspaceView = computed(() => this.currentViewSignal() === 'workspace');
   readonly isChatView = computed(() => this.currentViewSignal() === 'chat');
   readonly isThreadView = computed(() => this.currentViewSignal() === 'thread');
   readonly isMobile = computed(() => this.isMobileSignal());
@@ -52,6 +49,10 @@ export class LogoStateService {
 
   setCurrentView(view: 'workspace' | 'chat' | 'thread') {
     this.currentViewSignal.set(view);
+    
+    if (view === 'chat') {
+      this.isReturningFromBackButtonSignal.set(false);
+    }
   }
 
   setCurrentChannelName(name: string) {
@@ -63,6 +64,7 @@ export class LogoStateService {
   }
 
   triggerBackToWorkspace() {
+    this.isReturningFromBackButtonSignal.set(true);
     this.backToWorkspace$.next();
   }
 
@@ -75,6 +77,4 @@ export class LogoStateService {
       this.checkScreenSize();
     });
   }
-
-
 }
