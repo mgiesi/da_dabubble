@@ -54,10 +54,4 @@
       (editComplete)="onEditComplete()">
     </app-message-input>
   </div>
-
-  <!-- Settings-Card Overlay -->
-  <app-channel-settings *ngIf="showSettings" [channelId]="currentChannel?.id || ''" [channelName]="currentChatName"
-    [channelDescription]="currentChannel?.description || ''" [createdByName]="createdByName" (close)="closeSettings()"
-    (saved)="onSettingsSaved()" (left)="onChannelLeft()">
-  </app-channel-settings>
 </mat-card>

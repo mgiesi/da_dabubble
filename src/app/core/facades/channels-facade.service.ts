@@ -53,6 +53,16 @@ export class ChannelsFacadeService {
   }
 
   /**
+   * Returns a channel object from the cached channel list by its id.
+   * 
+   * @param channelId The ID of the channel to look for.
+   * @returns The matching channel object if found, otherwise `undefined`.
+   */
+  getChannelById(channelId: string): Channel | undefined {
+    return this.channels().find(c => c.id === channelId);
+  }
+
+  /**
    * Lists only the visible channels for the current user.
    * 
    * 

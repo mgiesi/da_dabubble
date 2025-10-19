@@ -1,0 +1,94 @@
+<mat-dialog-content class="dlg-channel-settings-container">
+    <ng-container *ngIf="dialogData; else loading">
+        <div class="header">
+            <h2># {{ dialogData.channelName }}</h2>
+            <button class="btn-close" (click)="closeDialog()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <mask id="mask0_813_12181" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+                        height="24">
+                        <rect width="24" height="24" fill="#D9D9D9" />
+                    </mask>
+                    <g mask="url(#mask0_813_12181)">
+                        <path
+                            d="M11.9998 13.4L7.0998 18.3C6.91647 18.4834 6.68314 18.575 6.3998 18.575C6.11647 18.575 5.88314 18.4834 5.6998 18.3C5.51647 18.1167 5.4248 17.8834 5.4248 17.6C5.4248 17.3167 5.51647 17.0834 5.6998 16.9L10.5998 12L5.6998 7.10005C5.51647 6.91672 5.4248 6.68338 5.4248 6.40005C5.4248 6.11672 5.51647 5.88338 5.6998 5.70005C5.88314 5.51672 6.11647 5.42505 6.3998 5.42505C6.68314 5.42505 6.91647 5.51672 7.0998 5.70005L11.9998 10.6L16.8998 5.70005C17.0831 5.51672 17.3165 5.42505 17.5998 5.42505C17.8831 5.42505 18.1165 5.51672 18.2998 5.70005C18.4831 5.88338 18.5748 6.11672 18.5748 6.40005C18.5748 6.68338 18.4831 6.91672 18.2998 7.10005L13.3998 12L18.2998 16.9C18.4831 17.0834 18.5748 17.3167 18.5748 17.6C18.5748 17.8834 18.4831 18.1167 18.2998 18.3C18.1165 18.4834 17.8831 18.575 17.5998 18.575C17.3165 18.575 17.0831 18.4834 16.8998 18.3L11.9998 13.4Z"
+                            fill="#1C1B1F" />
+                    </g>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Channel-Name Block -->
+        <section class="block">
+        <div class="block-head">
+            <h3>Channel-Name</h3>
+            <button class="link" type="button" (click)="editChannelName()" *ngIf="!editingName">Bearbeiten</button>
+        </div>
+        <div class="view" *ngIf="!editingName">
+            <span class="pill"># {{ dialogData.channelName }}</span>
+        </div>
+        <div class="edit" *ngIf="editingName">
+            <input 
+            type="text" 
+            [(ngModel)]="tempChannelName" 
+            class="edit-input"
+            placeholder="Channel-Name eingeben"
+            maxlength="50"
+            (keydown.enter)="saveChannelName()"
+            (keydown.escape)="cancelNameEdit()">
+            <div class="edit-actions">
+            <button class="btn-cancel" (click)="cancelNameEdit()" [disabled]="isUpdating">Abbrechen</button>
+            <button class="btn-save" (click)="saveChannelName()" [disabled]="!tempChannelName.trim() || isUpdating">
+                {{ isUpdating ? 'Speichere...' : 'Speichern' }}
+            </button>
+            </div>
+        </div>
+        </section>
+
+        <!-- Beschreibung Block -->
+        <section class="block">
+            <div class="block-head">
+                <h3>Beschreibung</h3>
+                <button class="link" type="button" (click)="editDescription()" *ngIf="!editingDescription">Bearbeiten</button>
+            </div>
+            <div class="view" *ngIf="!editingDescription">
+                <p class="description">
+                {{ dialogData.channelDescription || 'Keine Beschreibung hinzugefügt.' }}
+                </p>
+            </div>
+            <div class="edit" *ngIf="editingDescription">
+                <textarea 
+                [(ngModel)]="tempChannelDescription" 
+                class="edit-textarea"
+                placeholder="Beschreibung eingeben"
+                maxlength="200"
+                rows="3"
+                (keydown.escape)="cancelDescriptionEdit()">
+                </textarea>
+                <div class="edit-actions">
+                <button class="btn-cancel" (click)="cancelDescriptionEdit()" [disabled]="isUpdating">Abbrechen</button>
+                <button class="btn-save" (click)="saveDescription()" [disabled]="isUpdating">
+                    {{ isUpdating ? 'Speichere...' : 'Speichern' }}
+                </button>
+                </div>
+            </div>
+            <div class="line"></div>
+            <!-- Erstellt von -->
+            <div class="block-head">
+                <h3>Erstellt von</h3>
+            </div>
+            <div class="view" *ngIf="!editingDescription">
+                <p class="creator">
+                {{ dialogData.createdByName || 'Unbekannt' }}
+                </p>
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn-primary" type="button" (click)="onLeaveChannel()">Channel verlassen</button>
+        </div>
+
+    </ng-container>
+
+    <ng-template #loading>Lade Dialoginhalt...</ng-template>
+</mat-dialog-content>

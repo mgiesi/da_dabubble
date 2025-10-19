@@ -30,7 +30,6 @@ import { MessageItemComponent } from '../message-item/message-item.component';
 import { Router } from '@angular/router';
 import { LogoStateService } from '../../../core/services/logo-state.service';
 import { MessagesService } from '../../../core/repositories/messages.service';
-import { ChannelSettingsComponent } from '../../channels/channel-settings/channel-settings.component';
 import { MembersMiniaturInfoComponent } from '../../channels/members-miniatur-info/members-miniatur-info.component';
 import { BtnAddMembersComponent } from '../../channels/btn-add-members/btn-add-members.component';
 import { ProfileAvatarComponent } from '../../profile/profile-avatar/profile-avatar.component';
@@ -39,6 +38,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { GlobalReactionService } from '../../../core/reactions/global-reaction.service';
 import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.util';
+import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings/dlg-channel-settings.component';
 
 @Component({
   selector: 'app-chat-area',
@@ -48,7 +48,6 @@ import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.
     NgIf,
     MessageInputComponent,
     MessageItemComponent,
-    ChannelSettingsComponent,
     MembersMiniaturInfoComponent,
     BtnAddMembersComponent,
     ProfileAvatarComponent,
@@ -87,11 +86,9 @@ export class ChatAreaComponent
   editingMessage: any = null;
   dmUserSig: Signal<User | null> | null = null;
   currentChannel: Channel | null = null;
-  showMembersList = false;
   createdByName = '';
   messages: (ChannelMessage | DirectMessage)[] = [];
   isLoadingMessages = false;
-  showSettings = false;
 
   constructor(private globalReactions: GlobalReactionService) { }
 
@@ -335,10 +332,6 @@ export class ChatAreaComponent
     return 'dmId' in message && 'senderName' in message;
   }
 
-  onAddMember() {
-    console.log('Add member to channel:', this.channelId);
-  }
-
   openThread(threadId: string) {
     this.logoState.setCurrentView('thread');
     if (this.logoState.showBackArrow()) {
@@ -350,22 +343,29 @@ export class ChatAreaComponent
     if (this.isDM) {
       this.openProfileDetails();
     } else {
-      this.showSettings = true;
+      this.openChannelSettings();
     }
   }
 
-  closeSettings() {
-    this.showSettings = false;
-  }
-
   onSettingsSaved() {
-    this.closeSettings();
     this.loadChannelData();
   }
 
-  onChannelLeft() {
-    this.closeSettings();
-    this.router.navigate(['/workspace']);
+  openChannelSettings() {
+    const ref = this.dialog.open(DlgChannelSettingsComponent, {
+      data: { 
+        channelId: this.currentChannel?.id, 
+        channelName: this.currentChannel?.name, 
+        channelDescription: this.currentChannel?.description, 
+        createdByName: this.createdByName 
+      }
+    });
+
+    const sub = ref.componentInstance.saved.subscribe(() => {
+      this.onSettingsSaved();
+    });
+
+    ref.afterClosed().subscribe(() => sub.unsubscribe());
   }
 
   /**

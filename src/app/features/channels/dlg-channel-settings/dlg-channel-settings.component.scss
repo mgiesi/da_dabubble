@@ -1,78 +1,55 @@
-@use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../public/assets/styles/btn-style.scss" as *;
+@use "../../../../../public/assets/styles/profile.scss" as *;
+@use "../../../../../public/assets/styles/breakpoints.scss" as *;
 
-.channel-settings-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .35);
-  backdrop-filter: blur(2px);
-  display: grid;
-  place-items: center;
-  z-index: 10;
+.dlg-channel-settings-container {
+    @include dFlexAllCenter($fld: column, $ai: center, $jc: center);
+    background-color: white;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: clamp(360px, 460px + 12.5vw, 514px);
+    overflow: hidden;
+
+    @include main_mobile_only {
+        border-radius: 0;
+        padding: 20px;
+        width: 100%;
+        height: 100%;
+    }
 }
 
-.card {
-  width: 872px;
-  height: 616px;
-  background: $white;
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 30px;
-  border-bottom-left-radius: 30px;
-  border-top-left-radius: 0;
-  box-shadow: $box-shadow;
-  padding: 40px;
-  @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
+h1 {
+    @include fontSizeWeightColor($si: 32px, $we: 700, $co: $black);
+}
+
+h2 {
+    @include fontSizeWeightColor($si: 24px, $we: 700, $co: $black);
+}
+
+h3 {
+    @include fontSizeWeightColor($si: 18px, $we: 700, $co: $black);
+
+    >span {
+        @include fontSizeWeightColor($si: 18px, $we: 400, $co: $text-gray);
+    }
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+    @include dFlexAllCenter($ai: center, $jc: space-between);
+    width: 100%;
+    margin-bottom: 5px;
+    flex-grow: 1;
 
-  .title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .hash {
-      width: 24px;
-      height: 24px;
-      fill: $black;
+    .btn-close {
+        position: unset;
     }
+}
 
-    h3 {
-      margin: 0;
-      @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
-    }
-  }
-
-  .close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    transition: $transition-0-3-ease-in-out;
-
-    svg {
-      width: 24px;
-      height: 24px;
-      fill: $black;
-    }
-
-    &:hover {
-      background: $bg-color;
-
-      svg {
-        fill: $purple-1;
-      }
-    }
-  }
+section {
+  width: 100%;
 }
 
 .block {
@@ -86,10 +63,6 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
-
-    .label {
-      @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $text-gray);
-    }
 
     .link {
       background: none;
@@ -110,10 +83,7 @@
 
   .pill {
     display: inline-block;
-    padding: 8px 16px;
-    border-radius: 999px;
-    background: $bg-color;
-    @include fontSizeWeightColor($si: $font-size-18, $we: 600, $co: $black);
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
   }
 
   .edit {
@@ -170,19 +140,20 @@
   }
 
   .description {
-    margin: 8px 0 0;
-    @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
-    line-height: 1.5;
+    margin: 16px 0;
+    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
   }
 
   .creator {
-    @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $purple-1);
-    text-decoration: none;
-    cursor: pointer;
+    @include fontSizeWeightColor($si: $font-size-24, $we: 400, $co: $purple-1);
+    margin: 16px 0 0 0;
+  }
 
-    &:hover {
-      color: $purple-2;
-    }
+  .line {
+    width: 100%;
+    height: 1px;
+    background-color: $light-purple;
+    margin: 16px 0;
   }
 }
 
@@ -192,6 +163,7 @@
   justify-content: flex-end;
   margin-top: auto;
   padding-top: 20px;
+  width: 100%;
 
   button {
     @include buttonStyle();
