@@ -93,7 +93,6 @@ export class MessageBubbleComponent {
 
     const user = users.find((u) => u.displayName === username)
     if (user?.id) {
-      console.log("Opening profile for:", username, user.id)
       this.dialog.open(DlgProfileDetailsComponent, {
         data: { userId: user.id },
       })
