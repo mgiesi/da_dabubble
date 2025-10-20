@@ -1,6 +1,6 @@
 <app-overlay-landscape></app-overlay-landscape>
 
-<!-- @if (shouldShowAnimation$ | async) {
+@if (shouldShowAnimation$ | async) {
 <div class="animation-overlay">
   <div class="overlay-box">
     <div class="animation-overlay-content">
@@ -13,7 +13,7 @@
     </div>
   </div>
 </div>
-} -->
+}
 
 <div class="app-container" #appContainer [ngClass]="{'animation-active': shouldShowAnimation$ | async}"
   (scroll)="onAppContainerScroll()">
@@ -51,8 +51,10 @@
           <ul class="user-search-list">
             <li *ngFor="let item of users" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
               (mouseleave)="onSearchResultHoverEnd()">
-              <app-profile-badge *ngIf="item.displayName" class="" [user]="item" (click)="onDirectMessageClick(item)" [openProfileDetailsOnClick]="false"/>
-              <app-channel-badge *ngIf="!item.displayName && item.name" [channel]="item" (click)="onChannelClick(item)"/>
+              <app-profile-badge *ngIf="item.displayName" class="" [user]="item" (click)="onDirectMessageClick(item)"
+                [openProfileDetailsOnClick]="false" />
+              <app-channel-badge *ngIf="!item.displayName && item.name" [channel]="item"
+                (click)="onChannelClick(item)" />
             </li>
           </ul>
         </ng-container>
