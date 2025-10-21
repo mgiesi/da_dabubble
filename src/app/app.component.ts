@@ -23,8 +23,8 @@ import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-la
 import { fadeInOut } from './core/animations/fade-in-out.animation';
 import { DmNavigationService } from './core/services/dm-navigation.service';
 import { ChannelNavigationService } from './core/services/channel-navigation.service';
-import { ProfileBadgeComponent } from "./features/profile/profile-badge/profile-badge.component";
-import { ChannelBadgeComponent } from "./features/channels/channel-badge/channel-badge.component";
+import { ProfileBadgeComponent } from './features/profile/profile-badge/profile-badge.component';
+import { ChannelBadgeComponent } from './features/channels/channel-badge/channel-badge.component';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +34,7 @@ import { ChannelBadgeComponent } from "./features/channels/channel-badge/channel
     ProfileMenuComponent,
     OverlayLandscapeComponent,
     ProfileBadgeComponent,
-    ChannelBadgeComponent
+    ChannelBadgeComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -56,8 +56,8 @@ export class AppComponent {
     inject(UserPresenceService);
   private usersService = inject(UsersService);
   private channelsService = inject(ChannelsService);
-  private dmNavigationService = inject(DmNavigationService)
-  private channelNavigationService = inject(ChannelNavigationService)
+  private dmNavigationService = inject(DmNavigationService);
+  private channelNavigationService = inject(ChannelNavigationService);
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
   readonly showBackArrow = this.logoState.showBackArrow;
@@ -91,7 +91,7 @@ export class AppComponent {
     ),
     startWith(
       !window.location.pathname.includes('imprint') &&
-      !window.location.pathname.includes('privacy-policy')
+        !window.location.pathname.includes('privacy-policy')
     )
   );
 
@@ -104,7 +104,7 @@ export class AppComponent {
     ),
     startWith(
       window.location.pathname.includes('imprint') &&
-      window.location.pathname.includes('privacy-policy')
+        window.location.pathname.includes('privacy-policy')
     )
   );
 
@@ -206,19 +206,52 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
+    // keep existing behavior: ensure window at top on first render
     setTimeout(() => window.scrollTo(0, 0), 0.25);
+
+    // After each navigation, check whether an <app-auth-card> was rendered
+    // and if so scroll the app container (or window) to top so the auth UI
+    // is visible at the top of the viewport.
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        // small timeout to allow child components to render into the DOM
+        setTimeout(() => this.scrollAuthCardToTopIfPresent(), 50);
+      });
+  }
+
+  private scrollAuthCardToTopIfPresent(): void {
+    try {
+      const appContainer = this.appContainerRef?.nativeElement as
+        | HTMLElement
+        | undefined;
+      const authCardElement: Element | null = appContainer
+        ? appContainer.querySelector('app-auth-card')
+        : document.querySelector('app-auth-card');
+
+      if (authCardElement) {
+        if (appContainer) {
+          appContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0 });
+        }
+      }
+    } catch (err) {
+      // non-fatal, best-effort scrolling
+      console.warn('scrollAuthCardToTopIfPresent error', err);
+    }
   }
 
   onDirectMessageClick(user: any) {
-    const userId = user?.id || user
-    this.dmNavigationService.selectUser(userId)
-    this.clearSearchInput()
+    const userId = user?.id || user;
+    this.dmNavigationService.selectUser(userId);
+    this.clearSearchInput();
   }
 
   onChannelClick(channel: any) {
-    const channelId = channel?.id || channel
-    this.channelNavigationService.selectChannel(channelId)
-    this.clearSearchInput()
+    const channelId = channel?.id || channel;
+    this.channelNavigationService.selectChannel(channelId);
+    this.clearSearchInput();
   }
 
   private clearSearchInput() {
