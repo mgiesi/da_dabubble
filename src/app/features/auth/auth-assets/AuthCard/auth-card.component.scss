@@ -24,6 +24,7 @@
 
     h1 {
         @include fontSizeWeightColor($si: $font-size-32-46, $we: 700, $co: $purple-1);
+        padding-top: 25px;
     }
 
     form {
