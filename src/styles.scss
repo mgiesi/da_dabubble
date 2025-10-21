@@ -145,7 +145,7 @@ mat-dialog-content {
   span {
     display: inline-block;
     padding-left: 50%;
-    animation: marquee-bounce 3s linear infinite alternate;
+    animation: marquee-bounce 4s linear infinite alternate;
   }
 }
 
@@ -159,6 +159,30 @@ mat-dialog-content {
   }
 }
 
+.error-marquee-long-text {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+  min-height: 20px;
+  @include fontSizeWeightColor($si: $font-size-16, $we: 600, $co: $rosa);
+
+
+  span {
+    display: inline-block;
+    padding-left: 50%;
+    animation: marquee-bounce-long-text 4s linear infinite alternate;
+  }
+}
+
+@keyframes marquee-bounce-long-text {
+  0% {
+    transform: translateX(-17%);
+  }
+
+  100% {
+    transform: translateX(-62%);
+  }
+}
 
 //width: 4px;
 ::-webkit-scrollbar {
