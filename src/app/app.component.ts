@@ -206,16 +206,10 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
-    // keep existing behavior: ensure window at top on first render
     setTimeout(() => window.scrollTo(0, 0), 0.25);
-
-    // After each navigation, check whether an <app-auth-card> was rendered
-    // and if so scroll the app container (or window) to top so the auth UI
-    // is visible at the top of the viewport.
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        // small timeout to allow child components to render into the DOM
         setTimeout(() => this.scrollAuthCardToTopIfPresent(), 50);
       });
   }
@@ -237,7 +231,6 @@ export class AppComponent {
         }
       }
     } catch (err) {
-      // non-fatal, best-effort scrolling
       console.warn('scrollAuthCardToTopIfPresent error', err);
     }
   }
