@@ -78,74 +78,14 @@
     }
 }
 
-
 .search-input-box {
     position: relative;
-    // min-width: 300px;
     max-width: 500px;
     width: 40%;
-
 
     @media screen and (max-width: $breakpoint-800) {
         display: none;
     }
-
-    input[type="text"]:focus,
-    input[type="text"]:-webkit-autofill,
-    input[type="text"]:-webkit-autofill:hover,
-    input[type="text"]:-webkit-autofill:focus,
-    input[type="text"]:-webkit-autofill:active {
-        background: $white ;
-        -webkit-box-shadow: 0 0 0 30px $white inset;
-    }
-}
-
-.autocomplete-dropdown {
-    position: absolute;
-    left: 35px;
-    background: $white;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    margin-top: 2px;
-    width: clamp(320px, 420px, 500px);
-    max-height: 240px;
-    overflow-y: auto;
-    padding: 0;
-    z-index: 10;
-
-    &::-webkit-scrollbar {
-        width: 2px;
-    }
-}
-
-.autocomplete-title {
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-}
-
-.user-search-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.autocomplete-option {
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    padding: 8px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:hover {
-        color: $purple-3;
-        //background: rgba($purple-3, 0.08);
-    }
-}
-
-.autocomplete-title {
-    @include fontSizeWeightColor($si: $font-size-18, $we: 400, $co: $black);
-    padding: 8px 16px;
-    border-bottom: 1px solid $black;
 }
 
 .header-right {
