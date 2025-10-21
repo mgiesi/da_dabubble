@@ -1,0 +1,20 @@
+<div class="search-input-box">
+    <label *ngIf="showSearchLabel$ | async" class="label-input-field-white-img-right" for="searchInput">
+    <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" autocomplete="off"
+        (input)="onSearchInput($event)" />
+    <img src="icons/search.svg" alt="Suchen Icon" />
+    </label>
+    <div *ngIf="(filteredResults$ | async) as users" class="autocomplete-dropdown">
+    <ng-container *ngIf="users.length > 0">
+        <ul class="user-search-list">
+        <li *ngFor="let item of users" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
+            (mouseleave)="onSearchResultHoverEnd()">
+            <app-profile-badge *ngIf="item.displayName" class="" [user]="item" (click)="onDirectMessageClick(item)"
+            [openProfileDetailsOnClick]="false" />
+            <app-channel-badge *ngIf="!item.displayName && item.name" [channel]="item"
+            (click)="onChannelClick(item)" />
+        </li>
+        </ul>
+    </ng-container>
+    </div>
+</div>
