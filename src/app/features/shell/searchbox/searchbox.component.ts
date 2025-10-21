@@ -142,6 +142,7 @@ export class SearchboxComponent {
     this.searchInput$.next('');
     if (this.searchInputRef?.nativeElement) {
       this.searchInputRef.nativeElement.value = '';
+      this.lastSearchInputValue = null;
     }
   }
 
