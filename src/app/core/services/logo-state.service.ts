@@ -11,7 +11,7 @@ export class LogoStateService {
   private workspaceNameSignal = signal<string>('Devspace');
   private backToWorkspace$ = new Subject<void>();
   private isReturningFromBackButtonSignal = signal<boolean>(false);
-  
+
   readonly backToWorkspace = this.backToWorkspace$.asObservable();
   readonly isReturningFromBackButton = computed(() => this.isReturningFromBackButtonSignal());
 
@@ -29,7 +29,7 @@ export class LogoStateService {
 
   readonly headerTitle = computed(() => {
     return this.shouldShowWorkspaceLogo()
-      ? this.currentChannelNameSignal()
+      ? this.workspaceNameSignal()
       : 'DABubble';
   });
 
@@ -49,7 +49,7 @@ export class LogoStateService {
 
   setCurrentView(view: 'workspace' | 'chat' | 'thread') {
     this.currentViewSignal.set(view);
-    
+
     if (view === 'chat') {
       this.isReturningFromBackButtonSignal.set(false);
     }
