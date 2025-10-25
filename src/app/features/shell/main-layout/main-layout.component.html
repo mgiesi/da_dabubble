@@ -21,8 +21,8 @@
 
   <main class="chat-main" *ngIf="!logo.isMobile() || logo.isChatView()" [class.active]="currentView === 'chat'"
     [class.thread-open]="currentView === 'thread'">
-    <app-chat-area *ngIf="selectedChannelId || selectedUserId" [channelId]="selectedChannelId" [userId]="selectedUserId"
-      [isDM]="chatType === 'dm'" (threadOpened)="onThreadOpened($event)">
+    <app-chat-area [channelId]="selectedChannelId" [userId]="selectedUserId" [isDM]="chatType === 'dm'"
+      (threadOpened)="onThreadOpened($event)">
     </app-chat-area>
   </main>
 

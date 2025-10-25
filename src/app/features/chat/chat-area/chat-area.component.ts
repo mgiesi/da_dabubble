@@ -39,6 +39,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalReactionService } from '../../../core/reactions/global-reaction.service';
 import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.util';
 import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings/dlg-channel-settings.component';
+import { NewMessageComponent } from '../new-message/new-message.component';
 
 @Component({
   selector: 'app-chat-area',
@@ -51,6 +52,7 @@ import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings
     MembersMiniaturInfoComponent,
     BtnAddMembersComponent,
     ProfileAvatarComponent,
+    NewMessageComponent
   ],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss',
@@ -89,10 +91,12 @@ export class ChatAreaComponent
   createdByName = '';
   messages: (ChannelMessage | DirectMessage)[] = [];
   isLoadingMessages = false;
+  showNewMessage = false;
 
   constructor(private globalReactions: GlobalReactionService) { }
 
   async ngOnInit() {
+    this.checkNewMessageMode();
     if (this.isDM && this.userId) {
       this.dmUserSig = this.usersFacade.getUserSig(this.userId);
       await this.initializeDM();
@@ -108,6 +112,7 @@ export class ChatAreaComponent
   }
 
   async ngOnChanges() {
+    this.checkNewMessageMode();
     const channelChanged = this.channelId !== this.previousChannelId;
     const userChanged = this.userId !== this.previousUserId;
 
@@ -353,11 +358,11 @@ export class ChatAreaComponent
 
   openChannelSettings() {
     const ref = this.dialog.open(DlgChannelSettingsComponent, {
-      data: { 
-        channelId: this.currentChannel?.id, 
-        channelName: this.currentChannel?.name, 
-        channelDescription: this.currentChannel?.description, 
-        createdByName: this.createdByName 
+      data: {
+        channelId: this.currentChannel?.id,
+        channelName: this.currentChannel?.name,
+        channelDescription: this.currentChannel?.description,
+        createdByName: this.createdByName
       }
     });
 
@@ -383,4 +388,10 @@ export class ChatAreaComponent
     const user = this.dmUserSig?.()
     return user?.displayName || 'Unbekannt'
   }
+
+  private checkNewMessageMode() {
+    this.showNewMessage = !this.channelId && !this.userId;
+  }
+
+  
 }

@@ -1,0 +1,74 @@
+@use "../../../../../public/assets/styles/fonts.scss" as *;
+@use "../../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../../public/assets/styles/variables.scss" as *;
+
+.new-message-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $white;
+}
+
+.new-message-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid $light-gray;
+
+  h2 {
+    @include fontSizeWeightColor($si: $font-size-24, $we: 700, $co: $black);
+    margin: 0;
+  }
+}
+
+.recipient-input-wrapper {
+  @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 12px);
+  padding: 16px 24px;
+  border-bottom: 1px solid $light-gray;
+}
+
+.recipient-label {
+  @include fontSizeWeightColor($si: $font-size-18, $we: 600, $co: $black);
+  white-space: nowrap;
+}
+
+input[type="text"] {
+  flex: 1;
+  border: none;
+  outline: none;
+  @include fontSizeWeightColor($si: $font-size-16, $we: 400, $co: $black);
+  padding: 8px;
+  
+  &::placeholder {
+    color: $text-gray;
+  }
+}
+
+.recipient-dropdown {
+  max-height: 300px;
+  overflow-y: auto;
+  border-bottom: 1px solid $light-gray;
+}
+
+.recipient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipient-option {
+  padding: 8px 24px;
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba($purple-3, 0.08);
+  }
+}
+
+.message-content {
+  flex: 1;
+  padding: 24px;
+}
+
+.message-input-footer {
+  border-top: 1px solid $light-gray;
+  padding: 16px 24px;
+}

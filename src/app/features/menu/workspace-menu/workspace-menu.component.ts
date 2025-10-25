@@ -205,7 +205,9 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   }
 
   onEditWorkspace() {
-    // TODO: Implement workspace edit functionality
+    this.clearSelections();
+    this.channelSelected.emit('');
+    this.directMessageSelected.emit('');
   }
 
   /**
@@ -244,5 +246,12 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.desktopDialog.open(DlgCreateChannelComponent, {
       id: 'btnCreateChannelDialog',
     });
+  }
+
+  private clearSelections() {
+    this.selectedChannelId = null;
+    this.selectedUserId = null;
+    sessionStorage.removeItem('lastSelectedChannelId');
+    sessionStorage.removeItem('lastSelectedUserId');
   }
 }
