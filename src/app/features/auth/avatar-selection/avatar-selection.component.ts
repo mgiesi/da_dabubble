@@ -14,7 +14,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/auth-card/auth-card.component';
 import { ChooseAvatarComponent } from '../auth-assets/choose-avatar/choose-avatar.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 import { User } from '../../../shared/models/user';

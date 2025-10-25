@@ -17,7 +17,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
-import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/auth-card/auth-card.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({

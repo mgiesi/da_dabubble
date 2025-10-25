@@ -8,7 +8,7 @@ import { UsersService } from '../../../core/repositories/users.service';
 import { Router, RouterLink } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SharedFunctionsService } from '../../../core/services/shared-functions.service';
-import { AuthCardComponent } from '../auth-assets/authCard/auth-card.component';
+import { AuthCardComponent } from '../auth-assets/auth-card/auth-card.component';
 import { RegisterDataService } from '../../../core/services/register-data.service';
 
 @Component({
@@ -194,7 +194,6 @@ export class LoginComponent implements AfterViewInit {
 
   private async handleGooglePopupBlocked() {
     try {
-      console.log('Fallback zu Redirect-Methode...');
       await this.auth.signInWithGoogleRedirect();
     } catch (redirectError: any) {
       console.error('Google Redirect Error:', redirectError);

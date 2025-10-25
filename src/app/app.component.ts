@@ -220,7 +220,6 @@ export class AppComponent {
         user.photoURL ?? ''
       );
     }
-    console.log('Google Redirect erfolgreich:', user.email);
   }
 
   private logRedirectError(error: any) {

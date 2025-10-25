@@ -102,7 +102,6 @@ export class MessageBubbleComponent {
   }
 
   private navigateToChannel(channelId: string): void {
-    console.log("Navigating to channel:", channelId)
     this.channelNavigationService.selectChannel(channelId)
   }
 
