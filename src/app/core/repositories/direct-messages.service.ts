@@ -16,7 +16,7 @@ import {
   updateDoc,
   setDoc,
 } from '@angular/fire/firestore';
-import { Observable, map } from 'rxjs';
+import { Observable, last, map, partition } from 'rxjs';
 import { DirectMessage, DirectMessageConversation } from '../../shared/models/direct-message';
 import { FirestoreHelpers } from '../firebase/firestore-helper';
 import { UsersFacadeService } from '../facades/users-facade.service';
@@ -33,6 +33,10 @@ export class DirectMessagesService {
   private injector = inject(Injector);
   private firestoreHelper = inject(FirestoreHelpers);
   private usersFacade = inject(UsersFacadeService);
+
+  private inCtx<T>(fn: () => T): T {
+    return runInInjectionContext(this.injector, fn);
+  }
 
   /**
    * Gets direct messages between two users
@@ -79,14 +83,15 @@ export class DirectMessagesService {
 
     // It's likely a Document ID, lookup the Auth UID
     try {
-      const userDoc = await getDoc(doc(this.fs, 'users', userIdOrDocId));
-      if (userDoc.exists()) {
-        const authUid = userDoc.data()?.['uid'];
-        if (authUid) {
-          return authUid;
-        }
+      const ref = this.inCtx(() => doc(this.fs, 'users', userIdOrDocId));
+      const snap = await this.inCtx(() => getDoc(ref));
+        
+      if (snap.exists()) {
+        const data = snap.data() as { uid?: string } | undefined;
+        if (data?.uid) return data.uid;
       }
     } catch (error) {
+      console.warn('normalizeToAuthUid failed', error);
     }
 
     // Fallback: return as-is
@@ -109,18 +114,21 @@ export class DirectMessagesService {
     userId2: string,
     messageData: Partial<DirectMessage>
   ): Promise<void> {
-    return runInInjectionContext(this.injector, async () => {
-      const normalizedUserId1 = await this.normalizeToAuthUid(userId1);
-      const normalizedUserId2 = await this.normalizeToAuthUid(userId2);
-      const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
-      const ref = collection(this.fs, 'direct-messages', dmId, 'chat-messages');
+    const normalizedUserId1 = await this.normalizeToAuthUid(userId1);
+    const normalizedUserId2 = await this.normalizeToAuthUid(userId2);
+    const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
+    const ref = this.inCtx(() => 
+      collection(this.fs, 'direct-messages', dmId, 'chat-messages')
+    );
+    const timestamp = this.inCtx(() => serverTimestamp());
 
-      await addDoc(ref, {
+    await this.inCtx(() => 
+      addDoc(ref, {
         ...messageData,
-        timestamp: serverTimestamp(),
-        dmId: dmId
-      });
-    });
+        timestamp,
+        dmId
+      })
+    );
   }
 
   /**
@@ -132,17 +140,20 @@ export class DirectMessagesService {
     emoji: string,
     userId: string
   ): Promise<void> {
-    return runInInjectionContext(this.injector, async () => {
-      const messageRef = doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId);
-      const messageSnap = await getDoc(messageRef);
+    const messageRef = this.inCtx(() => 
+      doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId)
+    );
+    const messageSnap = await this.inCtx(() => getDoc(messageRef));
 
-      if (!messageSnap.exists()) return;
+    if (!messageSnap.exists()) return;
 
-      const currentReactions = messageSnap.data()?.['reactions'] || {};
-      const updatedReactions = this.updateReactions(currentReactions, emoji, userId);
+    const data = messageSnap.data() as { reactions?: Record<string, string[]> } | undefined;
+    const currentReactions = data?.reactions ?? {};
+    const updatedReactions = this.updateReactions(currentReactions, emoji, userId);
 
-      await updateDoc(messageRef, { reactions: updatedReactions });
-    });
+    await this.inCtx(() => 
+      updateDoc(messageRef, { reactions: updatedReactions })
+    );
   }
 
   /**
@@ -182,36 +193,45 @@ export class DirectMessagesService {
    * Creates conversation document if not exists
    */
   async ensureDMConversation(userId1: string, userId2: string): Promise<string> {
-    return runInInjectionContext(this.injector, async () => {
-      const normalizedUserId1 = await this.normalizeToAuthUid(userId1);
-      const normalizedUserId2 = await this.normalizeToAuthUid(userId2);
-      const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
-      const conversationRef = doc(this.fs, 'direct-messages', dmId);
-      const conversationSnap = await getDoc(conversationRef);
+    const normalizedUser1 = await this.normalizeToAuthUid(userId1);
+    const normalizedUser2 = await this.normalizeToAuthUid(userId2);
+    const dmId = this.createDMId(normalizedUser1, normalizedUser2);
+    const ref = this.inCtx(() => doc(this.fs, 'direct-messages', dmId));
+    const snap = await this.inCtx(() => getDoc(ref));
 
-      if (!conversationSnap.exists()) {
-        await setDoc(conversationRef, {
-          participants: [normalizedUserId1, normalizedUserId2],
-          createdAt: serverTimestamp(),
-          lastMessageAt: serverTimestamp(),
-        });
-      }
+    if (!snap.exists()) {
+      const createAt = this.inCtx(() => serverTimestamp());
+      const lastMessageAt = this.inCtx(() => serverTimestamp());
+      await this.inCtx(() => 
+        setDoc(
+          ref,
+          {
+            partition: [normalizedUser1, normalizedUser2],
+            createAt,
+            lastMessageAt
+          },
+          { merge: true }
+        )
+      );
+    }
 
-      return dmId;
-    });
+    return dmId;
   }
 
   /**
- * Updates the text of a direct message
- */
+   * Updates the text of a direct message
+   */
   async updateDMMessageText(
     dmId: string,
     messageId: string,
     newText: string
   ): Promise<void> {
-    return runInInjectionContext(this.injector, async () => {
-      const messageRef = doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId);
-      await updateDoc(messageRef, { text: newText });
-    });
+    const messageRef = this.inCtx(() => 
+      doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId)
+    );
+
+    await this.inCtx(() => 
+      updateDoc(messageRef, { text: newText })
+    );
   }
 }
