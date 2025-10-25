@@ -85,7 +85,6 @@ export class AuthService {
         browserPopupRedirectResolver
       );
 
-      console.log('Google Sign-in erfolgreich:', result.user.email);
       return result;
     } catch (error: any) {
       if (error.code === 'auth/popup-blocked') {
