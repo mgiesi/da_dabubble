@@ -13,6 +13,8 @@ import {
   Renderer2,
   type AfterViewInit,
   Signal,
+  signal,
+  computed,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { NgFor, NgIf } from '@angular/common';
@@ -40,6 +42,8 @@ import { GlobalReactionService } from '../../../core/reactions/global-reaction.s
 import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.util';
 import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings/dlg-channel-settings.component';
 import { NewMessageComponent } from '../new-message/new-message.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-chat-area',
@@ -93,6 +97,19 @@ export class ChatAreaComponent
   isLoadingMessages = false;
   showNewMessage = false;
 
+  private readonly currentUser$ = this.currentUser();
+  readonly currentUserSig = toSignal<User | null>(this.currentUser$, {
+    initialValue: null,
+  });
+  private readonly userIdSig = signal<string | null>(null);
+
+  readonly isCurrentUser = computed(() =>
+    this.currentUserSig()?.id === this.userIdSig()
+  );
+
+  private currentUser(): Observable<User | null> {
+    return this.usersFacade.currentUser$;
+  }
   constructor(private globalReactions: GlobalReactionService) { }
 
   async ngOnInit() {
@@ -129,6 +146,8 @@ export class ChatAreaComponent
         await this.initializeChannel();
       }
     }
+
+    this.userIdSig.set(this.userId);
   }
 
   ngOnDestroy() {

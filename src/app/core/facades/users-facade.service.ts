@@ -70,7 +70,7 @@ export class UsersFacadeService {
   /** Converts the shared usersWithCurrentFirst$ observable into an Angular Signal. */
   readonly usersWithCurrentFirst = toSignal<User[]>(this.usersWithCurrentFirst$, { initialValue: [] as any });
 
-  private readonly currentUser$ = this.currentUser();
+  readonly currentUser$ = this.currentUser();
   readonly currentUserSig = toSignal<User | null>(this.currentUser$, {
     initialValue: null,
   });
