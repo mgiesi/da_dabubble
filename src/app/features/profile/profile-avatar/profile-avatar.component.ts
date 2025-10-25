@@ -4,7 +4,9 @@ import {
   Injector,
   Input,
   input,
-  InputSignal
+  InputSignal,
+  ChangeDetectorRef,
+  effect
 } from '@angular/core';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { CommonModule } from '@angular/common';
@@ -20,20 +22,25 @@ import { ImgSrcDirective } from "../../../core/services/img-src-directive";
 export class ProfileAvatarComponent {
   private injector = inject(Injector);
   private facade = inject(UsersFacadeService);
+  private cdr = inject(ChangeDetectorRef);
 
-  /** Input variable for the Firebase user object which should be used with this component */
   user: InputSignal<User | null> = input<User | null>(null);
-
   presenceState = this.facade.presenceState(this.user, this.injector);
 
   @Input() imgSize: number | string = 70;
-  isClamp(val: any): val is string {
-    return typeof val === 'string' && val.includes('clamp');
-  }
   @Input() showStatus = true;
   @Input() showAddAvatar = false;
 
-  fallbackUrl: InputSignal<string> = input<string>(
-    'img/avatar/unknown-image.png'
-  );
+  fallbackUrl: InputSignal<string> = input<string>('img/avatar/unknown-image.png');
+
+  constructor() {
+    effect(() => {
+      this.presenceState();
+      this.cdr.markForCheck();
+    });
+  }
+
+  isClamp(val: any): val is string {
+    return typeof val === 'string' && val.includes('clamp');
+  }
 }
