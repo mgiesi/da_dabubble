@@ -16,6 +16,7 @@
   @include dFlexAllCenter($fld: column, $ai: stretch, $jc: start, $g: 20px);
   flex-shrink: 0;
   background: $white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   @include main_mobile_only {
     border-radius: 0;
