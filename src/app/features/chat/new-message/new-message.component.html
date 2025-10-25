@@ -1,42 +1,42 @@
 <div class="new-message-container">
-  <!-- Header -->
+  <!-- Header with recipient input inside -->
   <div class="new-message-header">
     <h2>Neue Nachricht</h2>
-  </div>
+    
+    <!-- Moved recipient input into header -->
+    <div class="recipient-input-container">
+      <input
+        #recipientInput
+        id="recipientInput"
+        type="text"
+        class="recipient-input"
+        placeholder="An: #channel, oder @jemand oder E-Mail Adresse"
+        autocomplete="off"
+        (input)="onSearchInput($event)"
+      />
 
-  <!-- Recipient Input -->
-  <div class="recipient-input-wrapper">
-    <label for="recipientInput" class="recipient-label">An:</label>
-    <input
-      #recipientInput
-      id="recipientInput"
-      type="text"
-      placeholder="#channel, oder @jemand oder E-Mail Adresse"
-      autocomplete="off"
-      (input)="onSearchInput($event)"
-    />
-  </div>
-
-  <!-- Dropdown Results -->
-  <div *ngIf="(filteredResults$ | async) as results" class="recipient-dropdown">
-    <ng-container *ngIf="results.length > 0">
-      <ul class="recipient-list">
-        <li *ngFor="let item of results" class="recipient-option">
-          <app-profile-badge 
-            *ngIf="item._type === 'user'" 
-            [user]="item" 
-            (click)="onUserClick(item)"
-            [openProfileDetailsOnClick]="false"
-          />
-          
-          <app-channel-badge 
-            *ngIf="item._type === 'channel'" 
-            [channel]="item"
-            (click)="onChannelClick(item)"
-          />
-        </li>
-      </ul>
-    </ng-container>
+      <!-- Dropdown Results -->
+      <div *ngIf="(filteredResults$ | async) as results" class="recipient-dropdown">
+        <ng-container *ngIf="results.length > 0">
+          <ul class="recipient-list">
+            <li *ngFor="let item of results" class="recipient-option">
+              <app-profile-badge 
+                *ngIf="item._type === 'user'" 
+                [user]="item" 
+                (click)="onUserClick(item)"
+                [openProfileDetailsOnClick]="false"
+              />
+              
+              <app-channel-badge 
+                *ngIf="item._type === 'channel'" 
+                [channel]="item"
+                (click)="onChannelClick(item)"
+              />
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+    </div>
   </div>
 
   <!-- Empty Content Area -->
@@ -44,10 +44,10 @@
     <!-- Leer - wird später gefüllt wenn User ausgewählt -->
   </div>
 
-  <!-- Message Input Footer -->
-  <div class="message-input-footer">
+  <!-- Message input at bottom with border-top like chat-area -->
+  <div class="message-input-wrapper">
     <app-message-input 
-      placeholder="Nachricht an ..."
+      placeholder="Starte eine neue Nachricht"
       [isDM]="true"
     />
   </div>
