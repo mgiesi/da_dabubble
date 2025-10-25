@@ -47,7 +47,7 @@
 
     <div *ngIf="showMentionDropdown" class="mention-dropdown" #mentionDropdown>
         <div class="mention-list">
-            <div *ngFor="let user of availableUsers" 
+            <div *ngFor="let user of availableUsers; trackBy: trackByUid" 
                  class="mention-item" 
                  (click)="onUserSelected(user)">
                 <app-profile-avatar [user]="user" [imgSize]="40"></app-profile-avatar>

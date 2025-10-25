@@ -5,7 +5,7 @@ import {
   runInInjectionContext,
 } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { Database } from '@angular/fire/database';
+import { Database, get } from '@angular/fire/database';
 import {
   onValue,
   serverTimestamp,
@@ -15,7 +15,7 @@ import {
   update,
 } from '@angular/fire/database';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { EMPTY, Observable, of, shareReplay, switchMap } from 'rxjs';
+import { catchError, concat, defer, distinctUntilChanged, EMPTY, from, interval, map, merge, Observable, of, shareReplay, startWith, switchMap, takeUntil, timer } from 'rxjs';
 
 export type UserPresence = { isOnline: boolean; lastSeenAt: number | null };
 
@@ -151,44 +151,66 @@ export class UserPresenceService {
     const cached = this.userPresenceCache.get(uid);
     if (cached) return cached;
 
-    const obs = new Observable<UserPresence>((subscriber) => {
+    const INITIAL: UserPresence = { isOnline: false, lastSeenAt: null };
+
+    const statusRefFactory = () => ref(this.rtdb, `status/${uid}`);
+
+    const mapSnap = (snap: any): UserPresence => {
+      const v = snap?.val?.() ?? snap?.val;
+      return {
+        isOnline: v?.state === 'online',
+        lastSeenAt: typeof v?.last_seen_at === 'number' ? v.last_seen_at : null,
+      };
+    };
+
+    const push$ = new Observable<UserPresence>((subscriber) => {
       let unsubscribe: (() => void) | null = null;
 
       runInInjectionContext(this.env, () => {
-        const statusRef = ref(this.rtdb, `status/${uid}`);
+        const statusRef = statusRefFactory();
         unsubscribe = onValue(
           statusRef,
-          (snap) => {
-            const v = snap.val();
-            subscriber.next({
-              isOnline: v?.state === 'online',
-              lastSeenAt:
-                typeof v?.last_seen_at === 'number' ? v.last_seen_at : null,
-            });
-          },
+          (snap) => subscriber.next(mapSnap(snap)),
           (err: any) => {
             if (err?.code === 'PERMISSION_DENIED') {
-              subscriber.next({ isOnline: false, lastSeenAt: null });
+              subscriber.next(INITIAL);
               subscriber.complete();
               return;
             }
-            subscriber.error(err)
+            subscriber.error(err);
           }
         );
       });
 
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    }).pipe(
-      switchMap(value => 
-        new Observable<User | null>(sub => {
-          const off = onAuthStateChanged(this.auth, u => sub.next(u));
-          return () => off();
-        }).pipe(
-          switchMap(u => u ? of(value) : EMPTY)
+      return () => { if (unsubscribe) unsubscribe(); };
+    });
+
+    const readOnce$ = () =>
+      defer(() =>
+        from(
+          this.inCtx(async () => {
+            const statusRef = statusRefFactory();
+            const snap = await get(statusRef); 
+            return snap;
+          })
+        ).pipe(
+          map(mapSnap),
+          catchError(() => of(INITIAL))
         )
+      );
+    const warmup$ = timer(0, 100).pipe(
+      takeUntil(timer(5000)),
+      switchMap(() => readOnce$())
+    );
+    const steady$ = timer(0, 5000).pipe(switchMap(() => readOnce$()));
+    const poll$ = concat(warmup$, steady$);
+
+    const obs = merge(push$, poll$).pipe(
+      distinctUntilChanged((a, b) =>
+        a.isOnline === b.isOnline &&
+        Math.trunc((a.lastSeenAt ?? 0) / 1000) === Math.trunc((b.lastSeenAt ?? 0) / 1000)
       ),
+      startWith(INITIAL),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
@@ -202,6 +224,7 @@ export class UserPresenceService {
   async signOutWithPresence(): Promise<void> {
     await runInInjectionContext(this.env, async () => {
       this.stopHeartbeat();
+      this.userPresenceCache.clear();
       const user = this.auth.currentUser;
       if (user) {
         const statusRef = ref(this.rtdb, `status/${user.uid}`);

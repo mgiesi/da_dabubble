@@ -19,6 +19,7 @@ import { MessageEmojiPickerComponent } from "../message-item/message-emoji-picke
 import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
+import { User } from "../../../shared/models/user"
 
 @Component({
   selector: "app-message-input",
@@ -56,6 +57,10 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
   private dmFacade = inject(DirectMessagesFacadeService)
   private usersFacade = inject(UsersFacadeService)
   private channelsFacade = inject(ChannelsFacadeService)
+
+  trackByUid(index: number, u: User) {
+    return u.uid;
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["editingMessage"] && this.editingMessage) {
