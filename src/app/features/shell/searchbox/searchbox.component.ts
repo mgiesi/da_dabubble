@@ -6,10 +6,12 @@ import { ChannelsFacadeService } from '../../../core/facades/channels-facade.ser
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { ChannelsService } from '../../../core/repositories/channels.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { Observable, filter, map, startWith, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, filter, map, startWith, BehaviorSubject, combineLatest, of, switchMap } from 'rxjs';
 import { UsersService } from '../../../core/repositories/users.service';
 import { ChannelNavigationService } from '../../../core/services/channel-navigation.service';
 import { DmNavigationService } from '../../../core/services/dm-navigation.service';
+import { MessagesService } from '../../../core/repositories/messages.service';
+import { DirectMessagesService } from '../../../core/repositories/direct-messages.service';
 
 @Component({
   selector: 'app-searchbox',
@@ -29,14 +31,14 @@ export class SearchboxComponent {
   private router = inject(Router);
   private dmNavigationService = inject(DmNavigationService);
   private channelNavigationService = inject(ChannelNavigationService);
+  private messagesService = inject(MessagesService);
+  private directMessagesService = inject(DirectMessagesService);
 
   @ViewChild('searchInput', { static: false })
   searchInputRef?: ElementRef<HTMLInputElement>;
   private lastSearchInputValue: string | null = null;
 
-
   ngOnInit(): void {
-    // Dropdown nach Reload ausblenden, wenn Input leer
     if (!this.searchInput$.value) {
       this.searchInput$.next('');
     }
@@ -44,19 +46,13 @@ export class SearchboxComponent {
 
   showSearchLabel$: Observable<boolean> = this.router.events.pipe(
     filter((event) => event instanceof NavigationEnd),
-    map(
-      () =>
-        !window.location.pathname.includes('imprint') &&
-        !window.location.pathname.includes('privacy-policy')
-    ),
-    startWith(
-      !window.location.pathname.includes('imprint') &&
-        !window.location.pathname.includes('privacy-policy')
-    )
+    map(() => this.checkShowLabel()),
+    startWith(this.checkShowLabel())
   );
 
   searchInput$ = new BehaviorSubject<string>('');
   users$: Observable<any[]> = this.usersService.users$();
+
   get channels() {
     const user = this.usersFacade.currentUserSig();
     if (!user?.email || user.readonly) {
@@ -64,50 +60,138 @@ export class SearchboxComponent {
     }
     return this.channelsFacade.visibleChannelsSig();
   }
+
   filteredResults$: Observable<any[]> = combineLatest([
     this.searchInput$,
     this.users$,
     this.channelsService.channels$(),
   ]).pipe(
-    map(([search, users, allChannels]) => {
+    switchMap(([search, users, allChannels]) => {
       const user = this.usersFacade.currentUserSig();
-      const channels =
-        !user?.email || user.readonly
-          ? allChannels
-          : this.channelsFacade.visibleChannelsSig();
-      return this.filterResults(search, users, channels);
+      const channels = !user?.email || user.readonly
+        ? allChannels
+        : this.channelsFacade.visibleChannelsSig();
+      return this.filterResultsWithMessages(search, users, channels);
     })
   );
 
-  private filterResults(search: string, users: any[], channels: any[]): any[] {
-    if (search.startsWith('@')) return this.filterUsersByAt(search, users);
-    if (search.startsWith('#'))
-      return this.filterChannelsByHash(search, channels);
+  private checkShowLabel(): boolean {
+    return !window.location.pathname.includes('imprint') &&
+      !window.location.pathname.includes('privacy-policy');
+  }
+
+  private filterResultsWithMessages(
+    search: string,
+    users: any[],
+    channels: any[]
+  ): Observable<any[]> {
+    if (search.startsWith('@')) {
+      return of(this.filterUsersByAt(search, users));
+    }
+    if (search.startsWith('#')) {
+      return of(this.filterChannelsByHash(search, channels));
+    }
     return this.filterGeneral(search, users, channels);
   }
 
   private filterUsersByAt(search: string, users: any[]): any[] {
     const term = search.slice(1).toLowerCase();
-    if (!term) return users;
-    return users.filter((u) => u.displayName?.toLowerCase().startsWith(term));
+    if (!term) {
+      return users.map((u) => ({ ...u, _type: 'user' }));
+    }
+    return users
+      .filter((u) => u.displayName?.toLowerCase().startsWith(term))
+      .map((u) => ({ ...u, _type: 'user' }));
   }
 
   private filterChannelsByHash(search: string, channels: any[]): any[] {
     const term = search.slice(1).toLowerCase();
-    if (!term) return channels;
-    return channels.filter((c) => c.name?.toLowerCase().startsWith(term));
+    if (!term) {
+      return channels.map((c) => ({ ...c, _type: 'channel' }));
+    }
+    return channels
+      .filter((c) => c.name?.toLowerCase().startsWith(term))
+      .map((c) => ({ ...c, _type: 'channel' }));
   }
 
-  private filterGeneral(search: string, users: any[], channels: any[]): any[] {
+  private filterGeneral(
+    search: string,
+    users: any[],
+    channels: any[]
+  ): Observable<any[]> {
     const term = search.toLowerCase();
-    if (term.length < 3) return [];
-    const userResults = users
+    if (term.length < 3) return of([]);
+
+    return this.searchMessages(term, channels).pipe(
+      map((messageResults) => {
+        const userResults = this.getFilteredUsers(term, users);
+        const channelResults = this.getFilteredChannels(term, channels);
+        return [...userResults, ...channelResults, ...messageResults];
+      })
+    );
+  }
+
+  private getFilteredUsers(term: string, users: any[]): any[] {
+    return users
       .filter((u) => u.displayName?.toLowerCase().includes(term))
       .map((u) => ({ ...u, _type: 'user' }));
-    const channelResults = channels
+  }
+
+  private getFilteredChannels(term: string, channels: any[]): any[] {
+    return channels
       .filter((c) => c.name?.toLowerCase().includes(term))
       .map((c) => ({ ...c, _type: 'channel' }));
-    return [...userResults, ...channelResults];
+  }
+
+  private searchMessages(term: string, channels: any[]): Observable<any[]> {
+    if (!channels || channels.length === 0) return of([]);
+
+    const messageObservables = channels.map(channel =>
+      this.getChannelMessages(channel, term)
+    );
+
+    return combineLatest(messageObservables).pipe(
+      map((results) => results.flat())
+    );
+  }
+
+  private getChannelMessages(channel: any, term: string): Observable<any[]> {
+    return this.messagesService.getTopicsForChannel$(channel.id).pipe(
+      switchMap((topics) => this.searchTopicMessages(channel, topics, term))
+    );
+  }
+
+  private searchTopicMessages(
+    channel: any,
+    topics: any[],
+    term: string
+  ): Observable<any[]> {
+    if (!topics || topics.length === 0) return of([]);
+
+    const topicObservables = topics.map(topic =>
+      this.messagesService.getMessagesForTopic$(channel.id, topic.id).pipe(
+        map((messages) => this.filterTopicMessages(messages, term, channel))
+      )
+    );
+
+    return combineLatest(topicObservables).pipe(
+      map((results) => results.flat())
+    );
+  }
+
+  private filterTopicMessages(
+    messages: any[],
+    term: string,
+    channel: any
+  ): any[] {
+    return messages
+      .filter((m) => m.text?.toLowerCase().includes(term))
+      .map((m) => ({
+        ...m,
+        _type: 'message',
+        channelName: channel.name,
+        channelId: channel.id
+      }));
   }
 
   onSearchInput(event: Event) {
@@ -116,23 +200,21 @@ export class SearchboxComponent {
   }
 
   onSearchResultHover(item: any) {
-    if (this.searchInputRef?.nativeElement) {
-      if (this.lastSearchInputValue === null) {
-        this.lastSearchInputValue = this.searchInputRef.nativeElement.value;
-      }
-      if (item?.displayName) {
-        this.searchInputRef.nativeElement.value = '@' + item.displayName;
-      } else if (item?.name) {
-        this.searchInputRef.nativeElement.value = '#' + item.name;
-      }
+    if (!this.searchInputRef?.nativeElement) return;
+
+    if (this.lastSearchInputValue === null) {
+      this.lastSearchInputValue = this.searchInputRef.nativeElement.value;
+    }
+
+    if (item?.displayName) {
+      this.searchInputRef.nativeElement.value = '@' + item.displayName;
+    } else if (item?.name) {
+      this.searchInputRef.nativeElement.value = '#' + item.name;
     }
   }
 
   onSearchResultHoverEnd() {
-    if (
-      this.lastSearchInputValue !== null &&
-      this.searchInputRef?.nativeElement
-    ) {
+    if (this.lastSearchInputValue !== null && this.searchInputRef?.nativeElement) {
       this.searchInputRef.nativeElement.value = this.lastSearchInputValue;
       this.lastSearchInputValue = null;
     }
@@ -151,7 +233,7 @@ export class SearchboxComponent {
     this.dmNavigationService.selectUser(userId);
     this.clearSearchInput();
   }
-  
+
   onSearchBlur() {
     const value = this.searchInputRef?.nativeElement?.value || '';
     if (value.startsWith('@') || value.startsWith('#')) {
@@ -164,20 +246,27 @@ export class SearchboxComponent {
     const input = this.searchInputRef?.nativeElement;
     const dropdown = document.querySelector('.autocomplete-dropdown');
     const target = event.target as Node;
-    if (
-      !input ||
-      (!input.value.startsWith('@') && !input.value.startsWith('#'))
-    )
+
+    if (!input || (!input.value.startsWith('@') && !input.value.startsWith('#'))) {
       return;
+    }
     if (input.contains(target) || (dropdown && dropdown.contains(target))) {
       return;
     }
+
     this.clearSearchInput();
   }
-  
+
   onChannelClick(channel: any) {
     const channelId = channel?.id || channel;
     this.channelNavigationService.selectChannel(channelId);
     this.clearSearchInput();
+  }
+
+  onMessageClick(message: any) {
+    if (message?.channelId) {
+      this.channelNavigationService.selectChannel(message.channelId);
+      this.clearSearchInput();
+    }
   }
 }
