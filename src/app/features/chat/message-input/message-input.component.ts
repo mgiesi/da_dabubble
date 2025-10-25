@@ -9,6 +9,7 @@ import {
   type OnChanges,
   type SimpleChanges,
   HostListener,
+  AfterViewInit,
 } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { NgIf, NgFor } from "@angular/common"
@@ -26,7 +27,7 @@ import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-ava
   templateUrl: "./message-input.component.html",
   styleUrl: "./message-input.component.scss",
 })
-export class MessageInputComponent implements OnChanges {
+export class MessageInputComponent implements OnChanges, AfterViewInit {
   @Input() channelId: string | null = null
   @Input() topicId: string | null = null
   @Input() parentMessageId: string | null = null
@@ -60,6 +61,17 @@ export class MessageInputComponent implements OnChanges {
     if (changes["editingMessage"] && this.editingMessage) {
       this.messageText = this.editingMessage.text || ""
     }
+  }
+
+  public focusAndClear(): void {
+    if (this.messageTextarea) {
+      this.messageTextarea.nativeElement.value = '';
+      queueMicrotask(() => this.messageTextarea?.nativeElement.focus());
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (this.messageTextarea) this.messageTextarea.nativeElement.focus();
   }
 
   @HostListener("document:click", ["$event"])

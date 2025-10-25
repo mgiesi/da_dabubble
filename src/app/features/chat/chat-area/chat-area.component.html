@@ -57,7 +57,7 @@
     </div>
 
     <div class="message-input-container">
-      <app-message-input [channelId]="channelId" [userId]="userId" [isDM]="isDM" [editingMessage]="editingMessage"
+      <app-message-input #messageInput [channelId]="channelId" [userId]="userId" [isDM]="isDM" [editingMessage]="editingMessage"
         (editComplete)="onEditComplete()">
       </app-message-input>
     </div>

@@ -68,6 +68,7 @@ export class ChatAreaComponent
   @Output() threadOpened = new EventEmitter<any>();
   @ViewChild('messagesContainer', { static: false })
   messagesContainer!: ElementRef;
+  @ViewChild('messageInput') private messageInput!: MessageInputComponent;
 
   private router = inject(Router);
   private logoState = inject(LogoStateService);
@@ -148,6 +149,7 @@ export class ChatAreaComponent
     }
 
     this.userIdSig.set(this.userId);
+    if (this.messageInput) this.messageInput.focusAndClear();
   }
 
   ngOnDestroy() {
