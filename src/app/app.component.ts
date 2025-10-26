@@ -23,7 +23,7 @@ import { OverlayLandscapeComponent } from './shared/overlay-landscape/overlay-la
 import { fadeInOut } from './core/animations/fade-in-out.animation';
 import { DmNavigationService } from './core/services/dm-navigation.service';
 import { ChannelNavigationService } from './core/services/channel-navigation.service';
-import { SearchboxComponent } from "./features/shell/searchbox/searchbox.component";
+import { SearchboxComponent } from './features/shell/searchbox/searchbox.component';
 
 @Component({
   selector: 'app-root',
@@ -32,8 +32,8 @@ import { SearchboxComponent } from "./features/shell/searchbox/searchbox.compone
     CommonModule,
     ProfileMenuComponent,
     OverlayLandscapeComponent,
-    SearchboxComponent
-],
+    SearchboxComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [fadeInOut],
@@ -41,12 +41,13 @@ import { SearchboxComponent } from "./features/shell/searchbox/searchbox.compone
 export class AppComponent {
   @ViewChild('appContainer', { static: false }) appContainerRef?: ElementRef;
   showScrollTopBtn = false;
-  
+
   private router = inject(Router);
   private auth = inject(AuthService);
   private sharedFunctions = inject(SharedFunctionsService);
   private logoState = inject(LogoStateService);
-  private userPresenceService: UserPresenceService = inject(UserPresenceService);
+  private userPresenceService: UserPresenceService =
+    inject(UserPresenceService);
   private usersService = inject(UsersService);
   readonly logoSrc = this.logoState.logoSrc;
   readonly headerTitle = this.logoState.headerTitle;
@@ -72,7 +73,6 @@ export class AppComponent {
     startWith(true)
   );
 
-  
   onAppContainerScroll(): void {
     const appContainer = this.appContainerRef?.nativeElement;
     if (appContainer) {
@@ -91,12 +91,12 @@ export class AppComponent {
     filter((event) => event instanceof NavigationEnd),
     map(
       () =>
-        window.location.pathname.includes('imprint') &&
-        window.location.pathname.includes('privacy-policy')
+        this.router.url.includes('imprint') ||
+        this.router.url.includes('privacy-policy')
     ),
     startWith(
-      window.location.pathname.includes('imprint') &&
-        window.location.pathname.includes('privacy-policy')
+      this.router.url.includes('imprint') ||
+        this.router.url.includes('privacy-policy')
     )
   );
 
@@ -105,6 +105,8 @@ export class AppComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
+        // Reset any visible scroll-to-top flag after navigation
+        this.showScrollTopBtn = false;
         setTimeout(() => this.scrollAuthCardToTopIfPresent(), 50);
       });
   }
