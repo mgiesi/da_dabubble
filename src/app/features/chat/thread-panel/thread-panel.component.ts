@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, type OnInit, type OnDestroy, ChangeDetectorRef } from "@angular/core"
+import { Component, Input, Output, EventEmitter, type OnInit, type OnDestroy, type OnChanges, type SimpleChanges, ChangeDetectorRef } from "@angular/core"
 import { inject } from "@angular/core"
 import { NgFor } from "@angular/common"
 import { MessageItemComponent } from "../message-item/message-item.component"
@@ -13,7 +13,7 @@ import type { ChannelMessage } from "../../../shared/models/channel-message"
   templateUrl: "./thread-panel.component.html",
   styleUrl: "./thread-panel.component.scss",
 })
-export class ThreadPanelComponent implements OnInit, OnDestroy {
+export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() message: any = null
   @Input() currentChannelName = ""
   @Input() selectedChannelId: string | null = null
@@ -24,22 +24,36 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef)
 
   threadMessages: ChannelMessage[] = []
+  editingMessage: any = null
   private threadSubscription: (() => void) | null = null
   private parentMessageSubscription: (() => void) | null = null
 
   ngOnInit() {
     this.logoState.setCurrentView("thread")
-    this.setupThreadSubscription()
-    this.setupParentMessageSubscription()
+    this.initializeThread()
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['message'] || changes['selectedChannelId']) {
+      this.reloadThread()
+    }
   }
 
   ngOnDestroy() {
     this.cleanupSubscription()
   }
 
-  /**
-   * Sets up real-time subscription for thread messages.
-   */
+  private initializeThread() {
+    this.setupThreadSubscription()
+    this.setupParentMessageSubscription()
+  }
+
+  private reloadThread() {
+    this.cleanupSubscription()
+    this.threadMessages = []
+    this.initializeThread()
+  }
+
   private setupThreadSubscription() {
     if (!this.selectedChannelId || !this.message?.id) return
 
@@ -53,9 +67,6 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
     )
   }
 
-  /**
-   * Sets up real-time subscription for the parent message to sync reactions.
-   */
   private setupParentMessageSubscription() {
     if (!this.selectedChannelId || !this.message?.id || !this.message?.topicId) return
 
@@ -72,9 +83,6 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
     )
   }
 
-  /**
-   * Cleans up thread message subscription.
-   */
   private cleanupSubscription() {
     if (this.threadSubscription) {
       this.threadSubscription()
@@ -86,20 +94,15 @@ export class ThreadPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Handles back navigation to chat (for mobile/tablet view).
-   */
   onBackToChat() {
     this.backToChat.emit()
   }
 
-  editingMessage: any = null;
-
   onEditMessage(message: any) {
-    this.editingMessage = message;
+    this.editingMessage = message
   }
 
   onEditComplete() {
-    this.editingMessage = null;
+    this.editingMessage = null
   }
 }
