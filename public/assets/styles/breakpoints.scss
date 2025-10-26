@@ -18,6 +18,12 @@ $breakpoint_xxl: 1400px;
   }
 }
 
+@mixin main_desktop_only {
+  @media (min-width: ($main_layout_mobile)) {
+    @content;
+  }
+}
+
 @mixin main_tablet_up {
   @media (min-width: $main_layout_mobile) {
     @content;

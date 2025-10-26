@@ -36,9 +36,23 @@ export class DlgChannelSettingsComponent {
   // Temporary values for editing
   tempChannelName = '';
   tempChannelDescription = '';
+  channelExists: boolean = false;
+  channelNameEmpty: boolean = true;
+  hasUserTypedName: boolean = false;
   
   public closeDialog() {
     this.dialogRef.close(false);
+  }
+
+  onChannelChange() {
+    this.hasUserTypedName = true;
+    this.checkIfChannelExists();
+  }
+
+  checkIfChannelExists() {
+    const channel = this.channelsFacade.getChannelByName(this.tempChannelName);
+    this.channelExists = channel != undefined && channel != null && this.tempChannelName !== this.dialogData.channelName;
+    this.channelNameEmpty = this.tempChannelName != null && this.tempChannelName.length <= 0;
   }
 
   editChannelName() {

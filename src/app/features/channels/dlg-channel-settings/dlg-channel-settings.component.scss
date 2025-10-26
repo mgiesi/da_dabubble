@@ -10,7 +10,7 @@
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
-    width: clamp(360px, 460px + 12.5vw, 514px);
+    width: clamp(320px, 460px + 12.5vw, 514px);
     overflow: hidden;
 
     @include main_mobile_only {
@@ -119,7 +119,7 @@ section {
       display: flex;
       gap: 12px;
       justify-content: flex-end;
-      margin-top: 12px;
+      margin-top: 28px;
 
       .btn-cancel {
         @include buttonStyle($btn-bg-color: transparent,
@@ -181,4 +181,20 @@ section {
       @include buttonStyle();
     }
   }
+}
+
+.btn-desktop {
+  @include main_mobile_only {
+    display: none !important;
+  }
+}
+
+.btn-mobile {
+  @include main_desktop_only {
+      display: none !important;
+  }
+}
+
+.btn-mobile-content {
+    @include dFlexAllCenter($ai: center, $jc: space-between);
 }
