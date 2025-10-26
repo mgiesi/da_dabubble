@@ -30,7 +30,7 @@
 
                 @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
                 fullNameField.value !== '') {
-                <div class="error-message" @fadeInOut [ngClass]="{'error-marquee': isMobile()}">
+                <div class="error-message-long-text" @fadeInOut>
                     <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
                         enthalten</span>
                 </div>
@@ -106,8 +106,8 @@
                 }
                 @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
                 pwdField.dirty)) {
-                <div class="error-message" [ngClass]="{'error-marquee': isMobile()}">
-                    <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
+                <div class="error-message-long-text" [ngClass]="{'error-marquee-long-text': isMobile()}">
+                    <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichendfhxfghdf
                         enthalten</span>
                 </div>
                 }
