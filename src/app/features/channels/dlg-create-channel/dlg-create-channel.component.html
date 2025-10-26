@@ -32,7 +32,17 @@
                             fill="#686868" />
                     </svg>
                     <input id="channelName" type="text" [(ngModel)]="name" name="name" placeholder="z.B. Entwicklerteam"
-                        maxlength="50">
+                        maxlength="50" (ngModelChange)="onChannelChange()" (blur)="checkIfChannelExists()" required="">
+                    <ng-container *ngIf="hasUserTypedName && channelExists">
+                        <p class="error-message" @fadeInOut>
+                            <span>*Ein Channel mit diesem Namen existiert bereits.</span>
+                        </p>
+                    </ng-container>
+                    <ng-container *ngIf="hasUserTypedName && channelNameEmpty">
+                        <p class="error-message" @fadeInOut>
+                            <span>*Ein Name für den Channel muss angegeben werden.</span>
+                        </p>
+                    </ng-container>
                 </label>
             </div>
 
@@ -45,7 +55,7 @@
             </div>
 
             <div class="input-submit">
-                <button (click)="openAssignMemberDialog()" class="btn-blue btn-save" [disabled]="!name.trim()">
+                <button (click)="openAssignMemberDialog()" class="btn-blue btn-save" [disabled]="channelNameEmpty || channelExists">
                     Erstellen
                 </button>
             </div>

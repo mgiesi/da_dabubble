@@ -4,10 +4,12 @@ import { MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dia
 import { FormsModule } from '@angular/forms';
 import { DlgAssignMembersComponent } from '../dlg-assign-members/dlg-assign-members.component';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { CommonModule } from '@angular/common';
+import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 
 @Component({
   selector: 'app-dlg-create-channel',
-  imports: [MatDialogContent, FormsModule],
+  imports: [MatDialogContent, FormsModule, CommonModule],
   templateUrl: './dlg-create-channel.component.html',
   styleUrl: './dlg-create-channel.component.scss'
 })
@@ -15,6 +17,7 @@ export class DlgCreateChannelComponent {
   @Output() close = new EventEmitter<void>()
   @Output() channelCreated = new EventEmitter<string>()
 
+  private channelsFacade = inject(ChannelsFacadeService);
   private dialog = inject(MatDialog);
   parentDesktopDialogRef = inject(MatDialogRef<DlgCreateChannelComponent>, {
     optional: true,
@@ -27,6 +30,9 @@ export class DlgCreateChannelComponent {
   // Form-Felder für Channel-Erstellung
   name = ''
   description = ''
+  channelExists: boolean = false;
+  channelNameEmpty: boolean = true;
+  hasUserTypedName: boolean = false;
 
   /**
    * Bricht Channel-Erstellung ab und schließt Dialog
@@ -49,6 +55,17 @@ export class DlgCreateChannelComponent {
     this.close.emit();    
     this.parentDesktopDialogRef?.close(false);
     this.parentMobileDialogRef?.dismiss(false);
+  }
+
+  onChannelChange() {
+    this.hasUserTypedName = true;
+    this.checkIfChannelExists();
+  }
+
+  checkIfChannelExists() {
+    const channel = this.channelsFacade.getChannelByName(this.name);
+    this.channelExists = channel != undefined && channel != null;
+    this.channelNameEmpty = this.name != null && this.name.length <= 0;
   }
 
   /**
