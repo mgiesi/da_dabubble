@@ -23,8 +23,13 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    // Workspace Menu offen: 3 Spalten Layout
-    &.workspace-open {
+    // Workspace Menu offen + Thread geschlossen: Chat expandiert
+    &.workspace-open:not(.thread-open) {
+      grid-template-columns: 1fr 3fr;
+    }
+
+    // Workspace Menu offen + Thread offen: 3 Spalten Layout
+    &.workspace-open.thread-open {
       grid-template-columns: 1fr 3fr 1fr;
     }
   }
