@@ -45,7 +45,7 @@
     <!-- Message Area -->
     <div class="messages-container" #messagesContainer *ngIf="!isLoadingMessages">
       <app-message-item *ngFor="let message of messages; trackBy: trackByMessageId" [message]="message" [isDM]="isDM"
-        (replyClicked)="onReplyToMessage($event)" (editClicked)="onEditMessage($event)">
+        (replyClicked)="onReplyToMessage($event)" (editClicked)="onEditMessage($event)" (deleteClicked)="onDeleteMessage($event)">
       </app-message-item>
 
       <!-- No messages state -->

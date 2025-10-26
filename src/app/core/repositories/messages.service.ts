@@ -14,6 +14,7 @@ import {
   doc,
   getDoc,
   updateDoc,
+  deleteDoc,
   getDocs,
 } from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
@@ -105,6 +106,23 @@ export class MessagesService {
       text: newText,
       editedAt: serverTimestamp()
     })
+  }
+
+  /**
+   * Deletes a message from Firestore
+   */
+  async deleteMessage(
+    channelId: string,
+    topicId: string,
+    messageId: string
+  ): Promise<void> {
+    return runInInjectionContext(this.injector, async () => {
+      const messageRef = doc(
+        this.fs,
+        `channels/${channelId}/topics/${topicId}/messages/${messageId}`
+      );
+      await deleteDoc(messageRef);
+    });
   }
 
   /**

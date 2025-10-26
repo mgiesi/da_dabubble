@@ -40,6 +40,18 @@ export class MessagesFacadeService {
   }
 
   /**
+   * Deletes an existing message
+   */
+  async deleteMessage(channelId: string, topicId: string, messageId: string): Promise<void> {
+    try {
+      await this.messagesRepo.deleteMessage(channelId, topicId, messageId)
+    } catch (error) {
+      console.error("Error deleting message:", error)
+      throw error
+    }
+  }
+
+  /**
    * Creates default topic for channel
    */
   async createDefaultTopic(channelId: string): Promise<string> {

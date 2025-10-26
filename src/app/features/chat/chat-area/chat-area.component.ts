@@ -165,6 +165,20 @@ export class ChatAreaComponent
     this.editingMessage = null
   }
 
+  async onDeleteMessage(message: any) {
+    if (!confirm('Möchtest du diese Nachricht wirklich löschen?')) return;
+
+    try {
+      if (this.isDM && message.dmId && message.id) {
+        await this.dmFacade.deleteDMMessage(message.dmId, message.id);
+      } else if (this.channelId && message.id) {
+        await this.messagesFacade.deleteMessage(this.channelId, message.topicId, message.id);
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  }
+
   /**
    * Initializes DM with user data and message subscription
    */

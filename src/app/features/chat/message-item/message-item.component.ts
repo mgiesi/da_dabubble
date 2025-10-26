@@ -4,6 +4,8 @@ import {
   computed,
   inject,
   ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
   type OnInit,
   type OnDestroy,
 } from "@angular/core"
@@ -37,8 +39,10 @@ import { Auth } from "@angular/fire/auth"
   styleUrl: "./message-item.component.scss",
 })
 export class MessageItemComponent implements OnInit, OnDestroy {
+  @ViewChild("editButton", { read: ElementRef }) editButton?: ElementRef
+  @ViewChild("menuButton", { read: ElementRef }) menuButton?: ElementRef
 
-  @Input() isOriginalMessage = false;
+  @Input() isOriginalMessage = false
 
   @Input() isThreadView = false
   @Input() isDM = false
@@ -46,6 +50,7 @@ export class MessageItemComponent implements OnInit, OnDestroy {
   @Output() editComplete = new EventEmitter<void>()
   @Output() replyClicked = new EventEmitter<any>()
   @Output() editClicked = new EventEmitter<any>()
+  @Output() deleteClicked = new EventEmitter<any>()
 
   private usersFacade = inject(UsersFacadeService)
   private cdr = inject(ChangeDetectorRef)
@@ -56,6 +61,9 @@ export class MessageItemComponent implements OnInit, OnDestroy {
 
   viewEmojiPicker = false
   selectedEmoji: string | null = null
+  showEditMenu = false
+  dropdownTop = 0
+  dropdownLeft = 0
   private sub?: Subscription
   private quickReactions: string[] = []
 
@@ -171,8 +179,34 @@ export class MessageItemComponent implements OnInit, OnDestroy {
     this.replyClicked.emit(this.message)
   }
 
+  onEditMenuOpen() {
+    this.showEditMenu = true
+    this.calculateDropdownPosition()
+  }
+
+  private calculateDropdownPosition() {
+    if (!this.menuButton) return
+
+    const buttonEl = this.menuButton.nativeElement
+    const rect = buttonEl.getBoundingClientRect()
+
+    // Position dropdown below the button with 8px gap
+    this.dropdownTop = rect.bottom + 8
+    this.dropdownLeft = rect.right - 200 // Align right edge of dropdown with button
+  }
+
+  onEditMenuClose() {
+    this.showEditMenu = false
+  }
+
   onEditClick() {
+    this.showEditMenu = false
     this.editClicked.emit(this.message)
+  }
+
+  onDeleteClick() {
+    this.showEditMenu = false
+    this.deleteClicked.emit(this.message)
   }
 
   onEmojiPickerToggle(event: MouseEvent) {

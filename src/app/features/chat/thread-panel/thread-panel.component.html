@@ -30,7 +30,8 @@
         *ngFor="let threadMsg of threadMessages" 
         [message]="threadMsg"
         [isThreadView]="true"
-        (editClicked)="onEditMessage($event)">
+        (editClicked)="onEditMessage($event)"
+        (deleteClicked)="onDeleteMessage($event)">
       </app-message-item>
     </div>
   </div>

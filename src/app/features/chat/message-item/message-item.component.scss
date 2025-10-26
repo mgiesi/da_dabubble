@@ -134,6 +134,78 @@
   }
 }
 
+.edit-menu-dropdown {
+  position: fixed;
+  background-color: $white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  min-width: 200px;
+  padding: 4px 0;
+  animation: fadeInDown 0.15s ease;
+
+  .menu-item {
+    width: 100%;
+    @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 12px);
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: $transition-0-3-ease-in-out;
+    @include fontSizeWeightColor($si: 14px, $we: 400, $co: $black);
+    text-align: left;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      color: $text-gray;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: $bg-color;
+
+      svg {
+        color: $purple-3;
+      }
+    }
+
+    &.menu-item-delete {
+      color: #d32f2f;
+
+      svg {
+        color: #d32f2f;
+      }
+
+      &:hover {
+        background-color: rgba(211, 47, 47, 0.08);
+      }
+    }
+  }
+}
+
+.edit-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: transparent;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .message-header {
   @include dFlexAllCenter($ai: center, $jc: flex-start, $g: 8px);
   margin-bottom: 4px;

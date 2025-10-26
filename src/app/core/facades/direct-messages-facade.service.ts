@@ -132,4 +132,16 @@ export class DirectMessagesFacadeService {
       throw error;
     }
   }
+
+  /**
+   * Deletes a direct message
+   */
+  async deleteDMMessage(dmId: string, messageId: string): Promise<void> {
+    try {
+      await this.directMessagesRepo.deleteDMMessage(dmId, messageId);
+    } catch (error) {
+      console.error('Error deleting DM message:', error);
+      throw error;
+    }
+  }
 }

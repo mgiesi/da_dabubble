@@ -105,4 +105,16 @@ export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
   onEditComplete() {
     this.editingMessage = null
   }
+
+  async onDeleteMessage(message: any) {
+    if (!confirm('Möchtest du diese Nachricht wirklich löschen?')) return;
+
+    try {
+      if (this.selectedChannelId && message.id) {
+        await this.messagesFacade.deleteMessage(this.selectedChannelId, message.topicId, message.id);
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  }
 }

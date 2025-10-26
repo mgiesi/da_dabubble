@@ -15,6 +15,7 @@ import {
   getDoc,
   updateDoc,
   setDoc,
+  deleteDoc,
 } from '@angular/fire/firestore';
 import { Observable, last, map, partition } from 'rxjs';
 import { DirectMessage, DirectMessageConversation } from '../../shared/models/direct-message';
@@ -233,5 +234,16 @@ export class DirectMessagesService {
     await this.inCtx(() => 
       updateDoc(messageRef, { text: newText })
     );
+  }
+
+  /**
+   * Deletes a direct message
+   */
+  async deleteDMMessage(dmId: string, messageId: string): Promise<void> {
+    const messageRef = this.inCtx(() => 
+      doc(this.fs, 'direct-messages', dmId, 'chat-messages', messageId)
+    );
+
+    await this.inCtx(() => deleteDoc(messageRef));
   }
 }
