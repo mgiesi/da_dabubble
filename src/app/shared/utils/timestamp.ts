@@ -1,36 +1,42 @@
-/**
- * Formats timestamp to readable time string
- */
 export function formatMessageTime(timestamp: Date | null | undefined): string {
-  if (!timestamp || !(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
-    return 'now'
+  if (!timestamp) return '';
+  
+  const now = new Date();
+  const messageDate = new Date(timestamp);
+  
+  const isToday = isSameDay(now, messageDate);
+  const isYesterday = isSameDay(addDays(now, -1), messageDate);
+  
+  const time = formatTime(messageDate);
+  
+  if (isToday) {
+    return time; // Nur Uhrzeit: "14:25"
   }
+  
+  if (isYesterday) {
+    return `Gestern ${time}`; // "Gestern 14:25"
+  }
+  
+  // Älter als gestern: Datum + Uhrzeit
+  const day = messageDate.getDate();
+  const month = messageDate.toLocaleDateString('de-DE', { month: 'short' });
+  return `${day}. ${month} ${time}`; // "12. Jan 14:25"
+}
 
-  const now = new Date()
-  const diff = now.getTime() - timestamp.getTime()
-  
-  // Less than 1 minute
-  if (diff < 60000) {
-    return 'now'
-  }
-  
-  // Less than 1 hour - show minutes
-  if (diff < 3600000) {
-    const minutes = Math.floor(diff / 60000)
-    return `${minutes}m`
-  }
-  
-  // Same day - show time
-  if (timestamp.toDateString() === now.toDateString()) {
-    return timestamp.toLocaleTimeString('de-DE', {
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
-  
-  // Different day - show date
-  return timestamp.toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: '2-digit'
-  })
+function formatTime(date: Date): string {
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+function isSameDay(date1: Date, date2: Date): boolean {
+  return date1.getDate() === date2.getDate() &&
+         date1.getMonth() === date2.getMonth() &&
+         date1.getFullYear() === date2.getFullYear();
+}
+
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }

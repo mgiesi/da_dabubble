@@ -2,4 +2,7 @@
   <span class="thread-replies-text" (click)="onThreadClick()">
     {{ getThreadRepliesText() }}
   </span>
+  <span class="thread-timestamp" *ngIf="lastReplyTimestamp">
+    {{ formatLastReplyTime() }}
+  </span>
 </div>
