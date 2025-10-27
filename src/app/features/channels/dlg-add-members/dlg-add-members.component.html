@@ -31,7 +31,7 @@
             <span class="channel-name">{{ channel.name }}</span>
         </div>
         <form>
-            <div class="add-members-input" >
+            <div class="add-members-input" matAutocompleteOrigin #origin="matAutocompleteOrigin">
                 <mat-chip-grid #chipGrid aria-label="Auswahl der hinzuzufügenden Mitglieder">
                     @for (user of pendingAdds(); track user.id) {
                     <mat-chip-row (removed)="remove(user)">
@@ -57,7 +57,8 @@
                     }
                     <input name="currentUser" placeholder="Name eingeben" #userInput [ngModel]="query()" (ngModelChange)="query.set($event)"
                         [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
+                        [matAutocompleteConnectedTo]="origin" />
                     <mat-autocomplete #auto="matAutocomplete" 
                         (optionSelected)="selected($event); userInput.value = ''">
                         @for (user of filteredUsers(); track user.id) {

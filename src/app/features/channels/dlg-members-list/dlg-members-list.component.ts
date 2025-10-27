@@ -8,7 +8,8 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { of } from 'rxjs';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
-import { DlgAddMembersComponent } from '../dlg-add-members/dlg-add-members.component';
+import { AddMembersData, DlgAddMembersComponent } from '../dlg-add-members/dlg-add-members.component';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 interface MembersDialogData {
   channel: Signal<Channel | null>;
@@ -24,7 +25,12 @@ interface MembersDialogData {
 export class DlgMembersListComponent {
   private channelFacade = inject(ChannelsFacadeService);
   dialog = inject(MatDialog);
-  private dialogRef = inject(MatDialogRef<DlgMembersListComponent>);
+  parentDesktopDialogRef = inject(MatDialogRef<DlgMembersListComponent>, {
+    optional: true,
+  });
+  parentMobileDialogRef = inject(MatBottomSheetRef<DlgMembersListComponent>, {
+    optional: true,
+  });
   
   readonly dialogData = inject<MembersDialogData>(MAT_DIALOG_DATA);
   readonly channel = this.dialogData.channel;
@@ -46,7 +52,8 @@ export class DlgMembersListComponent {
   trackById = (_: number, u: User) => u.id;
   
   closeDialog() {
-    this.dialogRef.close(false);
+    this.parentDesktopDialogRef?.close(false);
+    this.parentMobileDialogRef?.dismiss(false);
   }
 
   openAddMembersDialog() {
@@ -65,7 +72,7 @@ export class DlgMembersListComponent {
           right: right,
         },
         panelClass: 'no-top-right-radius-dialog',
-        data: this.channel
+        data: { channel: this.channel } as AddMembersData,
       });
     }
   }

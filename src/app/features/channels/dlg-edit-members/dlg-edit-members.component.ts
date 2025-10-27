@@ -17,7 +17,7 @@ import { ImgSrcDirective } from '../../../core/services/img-src-directive';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
 
 @Component({
-  selector: 'app-dlg-add-members',
+  selector: 'app-dlg-edit-members',
   imports: [NgIf, MatDialogContent, MatFormFieldModule, MatChipsModule, MatIconModule, MatAutocompleteModule, FormsModule, ImgSrcDirective, ProfileBadgeComponent],
   templateUrl: './dlg-edit-members.component.html',
   styleUrl: './dlg-edit-members.component.scss',

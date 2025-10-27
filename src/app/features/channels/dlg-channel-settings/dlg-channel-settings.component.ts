@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, OnInit, Output, Signal } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal, Signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
 import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
@@ -7,6 +7,14 @@ import { Channel } from '../../../shared/models/channel';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../shared/models/user';
 import { Router } from '@angular/router';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+
+export type ChannelSettingsData = {
+  channelId: string,
+  channelName: string,
+  channelDescription: string,
+  createdByName: string
+};
 
 @Component({
   selector: 'app-dlg-channel-settings',
@@ -19,13 +27,21 @@ export class DlgChannelSettingsComponent {
   private router = inject(Router);
   private channelsFacade = inject(ChannelsFacadeService);
   private usersFacade = inject(UsersFacadeService);
-  private dialogRef = inject(MatDialogRef<DlgChannelSettingsComponent>);
 
-  readonly dialogData = inject<{ 
-    channelId: string | undefined, 
-    channelName: string | undefined, 
-    channelDescription: string | undefined,
-    createdByName: string | undefined }>(MAT_DIALOG_DATA);
+  parentDesktopDialogRef = inject(MatDialogRef<DlgChannelSettingsComponent>, {
+    optional: true,
+  });
+  parentMobileDialogRef = inject(MatBottomSheetRef<DlgChannelSettingsComponent>, {
+    optional: true,
+  });
+  
+  private dlgData = inject<ChannelSettingsData | null>(MAT_DIALOG_DATA, { optional: true });
+  private sheetData  = inject<ChannelSettingsData | null>(MAT_BOTTOM_SHEET_DATA, { optional: true });
+
+  readonly dialogData: ChannelSettingsData = this.dlgData ?? this.sheetData ?? { channelId: '',
+    channelName: '',
+    channelDescription: '',
+    createdByName: '' };
 
   @Output() saved = new EventEmitter<void>();
     
@@ -41,7 +57,8 @@ export class DlgChannelSettingsComponent {
   hasUserTypedName: boolean = false;
   
   public closeDialog() {
-    this.dialogRef.close(false);
+    this.parentDesktopDialogRef?.close(false);
+    this.parentMobileDialogRef?.dismiss(false);
   }
 
   onChannelChange() {
@@ -125,7 +142,8 @@ export class DlgChannelSettingsComponent {
 
       await this.channelsFacade.removeMemberFromChannel(id, userId);
       
-      this.dialogRef.close(true);
+      this.parentDesktopDialogRef?.close(true);
+      this.parentMobileDialogRef?.dismiss(true);
     } catch (error) {
       console.error('Fehler beim Verlassen des Channels:', error);
     } finally {

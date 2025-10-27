@@ -36,15 +36,17 @@ import { MembersMiniaturInfoComponent } from '../../channels/members-miniatur-in
 import { BtnAddMembersComponent } from '../../channels/btn-add-members/btn-add-members.component';
 import { ProfileAvatarComponent } from '../../profile/profile-avatar/profile-avatar.component';
 import { DlgProfileDetailsComponent } from '../../profile/dlg-profile-details/dlg-profile-details.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { GlobalReactionService } from '../../../core/reactions/global-reaction.service';
 import { aggregateReactions } from '../../../core/reactions/aggregate-reactions.util';
-import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings/dlg-channel-settings.component';
+import { ChannelSettingsData, DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings/dlg-channel-settings.component';
 import { NewMessageComponent } from '../new-message/new-message.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 import { formatDateSeparator, getDateKey } from '../../../shared/utils/timestamp';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-chat-area',
@@ -78,7 +80,6 @@ export class ChatAreaComponent
   private usersFacade = inject(UsersFacadeService);
   private messagesFacade = inject(MessagesFacadeService);
   private dmFacade = inject(DirectMessagesFacadeService);
-  private chatState = inject(ChatStateService);
   private cdr = inject(ChangeDetectorRef);
   private messagesService = inject(MessagesService);
   private renderer = inject(Renderer2);
@@ -88,6 +89,10 @@ export class ChatAreaComponent
   private previousUserId: string | null = null;
 
   dialog = inject(MatDialog);
+  desktopDialog = inject(MatDialog);
+  mobileDialog = inject(MatBottomSheet);
+  mobileDialogRef: MatBottomSheetRef | undefined = undefined;
+  breakpointObserver = inject(BreakpointObserver);
 
   @Input() userId: string | null = null;
   @Input() isDM = false;
@@ -419,26 +424,70 @@ export class ChatAreaComponent
   }
 
   openChannelSettings() {
-    const ref = this.dialog.open(DlgChannelSettingsComponent, {
+    const desktopDialogRef = this.desktopDialog.getDialogById(
+      'btnChannelSettingsDialog'
+    );
+    if (desktopDialogRef) {
+      desktopDialogRef.close();
+    } else if (this.mobileDialogRef) {
+      this.mobileDialogRef.dismiss();
+    } else {
+      const isMobile = this.breakpointObserver.isMatched([
+        '(max-width: 768px)',
+      ]);
+      if (isMobile) {
+        this.openMobileChannelSettingsDialog();
+      } else {
+        this.openDesktopChannelSettingsDialog();
+      }
+    }
+  }
+
+  openDesktopChannelSettingsDialog() {
+    const desktopDialogRef = this.desktopDialog.open(DlgChannelSettingsComponent, {
+      id: 'btnChannelSettingsDialog',
       data: {
         channelId: this.currentChannel?.id,
         channelName: this.currentChannel?.name,
         channelDescription: this.currentChannel?.description,
         createdByName: this.createdByName
-      }
+      } as ChannelSettingsData
     });
 
-    const sub = ref.componentInstance.saved.subscribe(() => {
+    const sub = desktopDialogRef.componentInstance.saved.subscribe(() => {
       this.onSettingsSaved();
     });
 
-    ref.afterClosed().subscribe((result) => {
+    desktopDialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.router.navigate(['/workspace']).then(() => {
           window.location.reload();
         });
       }
+
       sub.unsubscribe();
+    });
+  }
+
+  openMobileChannelSettingsDialog() {
+    this.mobileDialogRef = this.mobileDialog.open(DlgChannelSettingsComponent, {
+      panelClass: 'full-screen-bottom-sheet',
+      data: {
+        channelId: this.currentChannel?.id,
+        channelName: this.currentChannel?.name,
+        channelDescription: this.currentChannel?.description,
+        createdByName: this.createdByName
+      } as ChannelSettingsData
+    });
+    this.mobileDialogRef.afterDismissed().subscribe(() => {
+      this.mobileDialogRef = undefined;
+    });
+
+    this.mobileDialogRef.afterDismissed().subscribe((result?: boolean) => {
+      if (result) {
+        this.onSettingsSaved();
+        this.router.navigate(['/workspace']).then(() => window.location.reload());
+      }
     });
   }
 

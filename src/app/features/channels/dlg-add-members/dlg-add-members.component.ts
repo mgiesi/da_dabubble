@@ -15,6 +15,12 @@ import { distinctUntilChanged, forkJoin, map, of, switchMap, take } from 'rxjs';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
 import { ImgSrcDirective } from '../../../core/services/img-src-directive';
 import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge.component";
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+
+export type AddMembersData = {
+  channel: Signal<Channel | null>;
+  refElement?: HTMLElement;
+};
 
 @Component({
   selector: 'app-dlg-add-members',
@@ -26,9 +32,18 @@ import { ProfileBadgeComponent } from "../../profile/profile-badge/profile-badge
 export class DlgAddMembersComponent {
   private channelFacade = inject(ChannelsFacadeService);
   private userFacade = inject(UsersFacadeService);
-  private dialogRef = inject(MatDialogRef<DlgAddMembersComponent>);
+  parentDesktopDialogRef = inject(MatDialogRef<DlgAddMembersComponent>, {
+    optional: true,
+  });
+  parentMobileDialogRef = inject(MatBottomSheetRef<DlgAddMembersComponent>, {
+    optional: true,
+  });
   
-  readonly channel = inject<Signal<Channel | null>>(MAT_DIALOG_DATA);
+  private dialogData = inject<AddMembersData | null>(MAT_DIALOG_DATA, { optional: true });
+  private sheetData  = inject<AddMembersData | null>(MAT_BOTTOM_SHEET_DATA, { optional: true });
+
+  readonly data: AddMembersData = this.dialogData ?? this.sheetData ?? { channel: signal<Channel | null>(null) };
+  readonly channel = this.data.channel;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   readonly query = model('');
@@ -139,6 +154,7 @@ export class DlgAddMembersComponent {
   }
 
   closeDialog() {
-    this.dialogRef.close(false);
+    this.parentDesktopDialogRef?.close(false);
+    this.parentMobileDialogRef?.dismiss(false);
   }
 }

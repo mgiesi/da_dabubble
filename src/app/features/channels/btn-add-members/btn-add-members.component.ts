@@ -1,10 +1,9 @@
 import { Component, inject, input, InputSignal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ChannelsFacadeService } from '../../../core/facades/channels-facade.service';
 import { Channel } from '../../../shared/models/channel';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { DlgAddMembersComponent } from '../dlg-add-members/dlg-add-members.component';
-import { DlgMembersListComponent } from '../dlg-members-list/dlg-members-list.component';
+import { AddMembersData, DlgAddMembersComponent } from '../dlg-add-members/dlg-add-members.component';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-btn-add-members',
@@ -13,8 +12,9 @@ import { DlgMembersListComponent } from '../dlg-members-list/dlg-members-list.co
   styleUrl: './btn-add-members.component.scss'
 })
 export class BtnAddMembersComponent {
-  private channelFacade = inject(ChannelsFacadeService);
-  dialog = inject(MatDialog);
+  desktopDialog = inject(MatDialog);
+  mobileDialog = inject(MatBottomSheet);
+  mobileDialogRef: MatBottomSheetRef | undefined = undefined;
   breakpointObserver = inject(BreakpointObserver);
   
   // Input variable to link this component with a channel
@@ -24,9 +24,13 @@ export class BtnAddMembersComponent {
    * Opens the profile details overlay.
    */
   openAddMemberDialog(triggerEl: HTMLElement) {
-    const dialogRef = this.dialog.getDialogById('btnAddMemberDialog');
-    if (dialogRef) {
-      dialogRef.close();
+    const desktopDialogRef = this.desktopDialog.getDialogById(
+      'btnAddMemberDialog'
+    );
+    if (desktopDialogRef) {
+      desktopDialogRef.close();
+    } else if (this.mobileDialogRef) {
+      this.mobileDialogRef.dismiss();
     } else {
       const isMobile = this.breakpointObserver.isMatched([
         '(max-width: 768px)',
@@ -43,21 +47,24 @@ export class BtnAddMembersComponent {
     const rect = triggerEl.getBoundingClientRect();
     const top = `${rect.bottom + 8}px`;
     const right = `${window.innerWidth - rect.right}px`
-    this.dialog.open(DlgAddMembersComponent, {
+    this.desktopDialog.open(DlgAddMembersComponent, {
       id: 'btnAddMemberDialog',
       position: {
         top: top,
         right: right,
       },
       panelClass: 'no-top-right-radius-dialog',
-      data: this.channel,
+      data: { channel: this.channel } as AddMembersData,
     });
   }
 
   openMobileDialog(triggerEl: HTMLElement) {
-    this.dialog.open(DlgMembersListComponent, {
-      id: 'btnAddMemberDialog',
-      data: { channel: this.channel, refElement: triggerEl }
+    this.mobileDialogRef = this.mobileDialog.open(DlgAddMembersComponent, {
+      panelClass: 'full-screen-bottom-sheet',
+      data: { channel: this.channel, refElement: triggerEl } as AddMembersData
+    });
+    this.mobileDialogRef.afterDismissed().subscribe(() => {
+      this.mobileDialogRef = undefined;
     });
   }
 }
