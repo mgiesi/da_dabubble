@@ -193,7 +193,8 @@ export class SearchboxComponent {
         ...m,
         _type: 'message',
         channelName: channel.name,
-        channelId: channel.id
+        channelId: channel.id,
+        isThreadReply: !!m.parentMessageId
       }));
   }
 
@@ -267,22 +268,33 @@ export class SearchboxComponent {
   }
 
   async onMessageClick(message: any) {
-  if (!message?.channelId) return;
+    if (!message?.channelId) return;
 
-  this.channelNavigationService.selectChannel(message.channelId);
+    this.channelNavigationService.selectChannel(message.channelId);
 
-  const parentMessage = await this.getParentMessage(message);
+    if (message.isThreadReply) {
+      const parentMessage = await this.getParentMessage(message);
+      setTimeout(() => {
+        this.threadNavigationService.openThread(
+          message.channelId,
+          parentMessage,
+          message.id
+        );
+      }, 300);
+    } else {
+      setTimeout(() => {
+        this.highlightChatMessage(message.channelId, message.id);
+      }, 300);
+    }
 
-  setTimeout(() => {
-    this.threadNavigationService.openThread(
-      message.channelId, 
-      parentMessage, 
-      message.id 
-    );
-  }, 300);
+    this.clearSearchInput();
+  }
 
-  this.clearSearchInput();
-}
+  private highlightChatMessage(channelId: string, messageId: string) {
+    window.dispatchEvent(new CustomEvent('highlight-chat-message', {
+      detail: { channelId, messageId }
+    }));
+  }
 
   private async getParentMessage(message: any): Promise<any> {
     if (!message.parentMessageId) return message;

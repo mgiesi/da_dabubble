@@ -5,6 +5,7 @@
 @use "../../../../../public/assets/styles/animation-login-overlay.scss" as *;
 
 .search-input-box {
+
     input[type="text"]:focus,
     input[type="text"]:-webkit-autofill,
     input[type="text"]:-webkit-autofill:hover,
@@ -91,4 +92,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.thread-badge {
+    color: #797EF3;
+    font-weight: 500;
+    font-size: 12px;
+    margin-left: 4px;
 }

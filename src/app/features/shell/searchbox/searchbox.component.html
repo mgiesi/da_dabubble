@@ -1,38 +1,36 @@
 <div class="search-input-box">
     <label *ngIf="showSearchLabel$ | async" class="label-input-field-white-img-right" for="searchInput">
-    <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" autocomplete="off"
-        (input)="onSearchInput($event)" />
-    <img src="icons/search.svg" alt="Suchen Icon" />
+        <input #searchInput id="searchInput" type="text" placeholder="Devspace durchsuchen" autocomplete="off"
+            (input)="onSearchInput($event)" />
+        <img src="icons/search.svg" alt="Suchen Icon" />
     </label>
     <div *ngIf="(filteredResults$ | async) as results" class="autocomplete-dropdown">
-    <ng-container *ngIf="results.length > 0">
-        <ul class="user-search-list">
-        <li *ngFor="let item of results" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
-            (mouseleave)="onSearchResultHoverEnd()">
-            
-            <!-- User Result -->
-            <app-profile-badge 
-                *ngIf="item._type === 'user'" 
-                [user]="item" 
-                (click)="onDirectMessageClick(item)"
-                [openProfileDetailsOnClick]="false" />
-            
-            <!-- Channel Result -->
-            <app-channel-badge 
-                *ngIf="item._type === 'channel'" 
-                [channel]="item"
-                (click)="onChannelClick(item)" />
-            
-            <!-- Message Result -->
-            <div *ngIf="item._type === 'message'" class="message-result" (click)="onMessageClick(item)">
-                <div class="message-result-header">
-                    <span class="channel-name">#{{ item.channelName }}</span>
-                    <span class="message-date">{{ item.timestamp | date:'short' }}</span>
-                </div>
-                <div class="message-result-text">{{ item.text }}</div>
-            </div>
-        </li>
-        </ul>
-    </ng-container>
+        <ng-container *ngIf="results.length > 0">
+            <ul class="user-search-list">
+                <li *ngFor="let item of results" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
+                    (mouseleave)="onSearchResultHoverEnd()">
+
+                    <!-- User Result -->
+                    <app-profile-badge *ngIf="item._type === 'user'" [user]="item" (click)="onDirectMessageClick(item)"
+                        [openProfileDetailsOnClick]="false" />
+
+                    <!-- Channel Result -->
+                    <app-channel-badge *ngIf="item._type === 'channel'" [channel]="item"
+                        (click)="onChannelClick(item)" />
+
+                    <!-- Message Result -->
+                    <div *ngIf="item._type === 'message'" class="message-result" (click)="onMessageClick(item)">
+                        <div class="message-result-header">
+                            <span class="channel-name">
+                                #{{ item.channelName }}
+                                <span *ngIf="item.isThreadReply" class="thread-badge">• Thread</span>
+                            </span>
+                            <span class="message-date">{{ item.timestamp | date:'short' }}</span>
+                        </div>
+                        <div class="message-result-text">{{ item.text }}</div>
+                    </div>
+                </li>
+            </ul>
+        </ng-container>
     </div>
 </div>
