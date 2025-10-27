@@ -17,6 +17,7 @@ export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() message: any = null
   @Input() currentChannelName = ""
   @Input() selectedChannelId: string | null = null
+  @Input() highlightMessageId?: string | null
   @Output() backToChat = new EventEmitter<void>()
 
   private logoState = inject(LogoStateService)
@@ -28,14 +29,21 @@ export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
   private threadSubscription: (() => void) | null = null
   private parentMessageSubscription: (() => void) | null = null
 
+  highlightedMessageId: string | null = null
+
   ngOnInit() {
+    console.log('🔍 Thread Panel Init - highlightMessageId:', this.highlightMessageId)
     this.logoState.setCurrentView("thread")
     this.initializeThread()
+    this.applyHighlight()
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['message'] || changes['selectedChannelId']) {
       this.reloadThread()
+    }
+    if (changes['highlightMessageId']) {
+      this.applyHighlight()
     }
   }
 
@@ -115,6 +123,18 @@ export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
       }
     } catch (error) {
       console.error('Error deleting message:', error);
+    }
+  }
+
+  private applyHighlight() {
+    console.log('🎯 applyHighlight called with:', this.highlightMessageId)
+    if (this.highlightMessageId) {
+      this.highlightedMessageId = this.highlightMessageId
+      console.log('✅ Highlighting message:', this.highlightedMessageId)
+      setTimeout(() => {
+        console.log('⏰ Removing highlight')
+        this.highlightedMessageId = null
+      }, 2000)
     }
   }
 }

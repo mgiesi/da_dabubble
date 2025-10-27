@@ -29,7 +29,7 @@
   <aside class="thread-sidebar" *ngIf="!logo.isMobile() || logo.isThreadView()"
     [class.active]="currentView === 'thread'">
     <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName"
-      [selectedChannelId]="selectedChannelId" (backToChat)="onBackToChat()">
+      [selectedChannelId]="selectedChannelId" [highlightMessageId]="highlightMessageId" (backToChat)="onBackToChat()">
     </app-thread-panel>
   </aside>
 </div>

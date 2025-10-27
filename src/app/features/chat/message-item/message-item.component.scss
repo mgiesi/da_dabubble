@@ -201,6 +201,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -225,7 +226,7 @@
   @include dFlexAllCenter($ai: flex-start, $jc: flex-start, $fld: column);
   width: 100%;
   max-width: calc(100vw - 200px);
-  
+
   ::ng-deep .message-body {
     max-width: min(500px, calc(100vw - 200px));
   }
@@ -264,7 +265,7 @@
 
   .message-bubble-wrapper {
     max-width: calc(100vw - 120px);
-    
+
     ::ng-deep .message-body {
       max-width: min(280px, calc(100vw - 120px));
       padding: 12px;
@@ -275,10 +276,27 @@
 @include mobile_sm {
   .message-bubble-wrapper {
     max-width: calc(100vw - 80px);
-    
+
     ::ng-deep .message-body {
       max-width: min(240px, calc(100vw - 80px));
       padding: 10px;
     }
+  }
+}
+
+.message-wrapper.highlight-animation {
+  animation: highlight-pulse 2s ease-out;
+}
+
+@keyframes highlight-pulse {
+
+  0%,
+  100% {
+    background-color: transparent;
+  }
+
+  15%,
+  85% {
+    background-color: rgba(121, 126, 243, 0.15);
   }
 }

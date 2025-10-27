@@ -1,4 +1,7 @@
-<div class="message-wrapper" [ngClass]="{'own-message': message?.isOwnMessage}">
+<div class="message-wrapper" [ngClass]="{
+       'own-message': message?.isOwnMessage,
+       'highlight-animation': isHighlighted
+     }">
   <div class="message-left">
     <app-profile-avatar [user]="messageUser()" [imgSize]="40">
     </app-profile-avatar>

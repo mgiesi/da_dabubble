@@ -47,6 +47,8 @@ export class MessageItemComponent implements OnInit, OnDestroy {
   @Input() isThreadView = false
   @Input() isDM = false
   @Input() message!: any
+  @Input() isHighlighted = false
+
   @Output() editComplete = new EventEmitter<void>()
   @Output() replyClicked = new EventEmitter<any>()
   @Output() editClicked = new EventEmitter<any>()

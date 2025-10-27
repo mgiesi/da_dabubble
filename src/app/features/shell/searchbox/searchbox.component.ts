@@ -12,6 +12,8 @@ import { ChannelNavigationService } from '../../../core/services/channel-navigat
 import { DmNavigationService } from '../../../core/services/dm-navigation.service';
 import { MessagesService } from '../../../core/repositories/messages.service';
 import { DirectMessagesService } from '../../../core/repositories/direct-messages.service';
+import { ThreadNavigationService } from '../../../core/services/thread-navigation.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-searchbox',
@@ -33,6 +35,7 @@ export class SearchboxComponent {
   private channelNavigationService = inject(ChannelNavigationService);
   private messagesService = inject(MessagesService);
   private directMessagesService = inject(DirectMessagesService);
+  private threadNavigationService = inject(ThreadNavigationService);
 
   @ViewChild('searchInput', { static: false })
   searchInputRef?: ElementRef<HTMLInputElement>;
@@ -263,10 +266,31 @@ export class SearchboxComponent {
     this.clearSearchInput();
   }
 
-  onMessageClick(message: any) {
-    if (message?.channelId) {
-      this.channelNavigationService.selectChannel(message.channelId);
-      this.clearSearchInput();
-    }
+  async onMessageClick(message: any) {
+  if (!message?.channelId) return;
+
+  this.channelNavigationService.selectChannel(message.channelId);
+
+  const parentMessage = await this.getParentMessage(message);
+
+  setTimeout(() => {
+    this.threadNavigationService.openThread(
+      message.channelId, 
+      parentMessage, 
+      message.id 
+    );
+  }, 300);
+
+  this.clearSearchInput();
+}
+
+  private async getParentMessage(message: any): Promise<any> {
+    if (!message.parentMessageId) return message;
+
+    const messages = await firstValueFrom(
+      this.messagesService.getMessagesForTopic$(message.channelId, message.topicId)
+    );
+
+    return messages.find(m => m.id === message.parentMessageId) || message;
   }
 }

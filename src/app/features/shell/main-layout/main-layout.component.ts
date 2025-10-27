@@ -9,6 +9,7 @@ import { ThreadPanelComponent } from "../../chat/thread-panel/thread-panel.compo
 import { NgIf } from "@angular/common"
 import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
 import { LogoStateService } from "../../../core/services/logo-state.service"
+import { ThreadNavigationService, ThreadNavigationData } from '../../../core/services/thread-navigation.service';
 
 @Component({
   selector: "app-main-layout",
@@ -23,11 +24,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private dmSubscription?: any
   private channelSubscription?: any
 
+  private threadNavigationService = inject(ThreadNavigationService)
+  private threadSubscription?: any
+
   selectedChannelId: string | null = null
   selectedUserId: string | null = null
   chatType: "channel" | "dm" = "channel"
 
   selectedThread: any = null
+  highlightMessageId: string | null = null
   currentView: "workspace" | "chat" | "thread" = "chat"
   isWorkspaceMenuOpen = true
   userOnline = false
@@ -42,6 +47,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.initializeDefaultState()
     this.setupDmSubscription()
     this.setupChannelSubscription()
+    this.setupThreadSubscription()
     this.setupBackToWorkspaceSubscription()
   }
 
@@ -61,9 +67,25 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     })
   }
 
+  private setupThreadSubscription() {
+    this.threadSubscription = this.threadNavigationService.threadOpened$.subscribe(
+      (data) => this.handleThreadNavigation(data)
+    )
+  }
+
+  private handleThreadNavigation(data: ThreadNavigationData) {
+    console.log('🚀 Thread Navigation Data:', data)
+    this.selectedChannelId = data.channelId
+    this.chatType = 'channel'
+    this.highlightMessageId = data.highlightMessageId || null
+    console.log('💡 Set highlightMessageId to:', this.highlightMessageId)
+    setTimeout(() => this.onThreadOpened(data.message), 100)
+  }
+
   private cleanupSubscriptions() {
     if (this.dmSubscription) this.dmSubscription.unsubscribe()
     if (this.channelSubscription) this.channelSubscription.unsubscribe()
+    if (this.threadSubscription) this.threadSubscription.unsubscribe()
   }
 
   private handleDirectMessageSelection(userId: string) {
@@ -114,10 +136,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private updateChannelNameInService() {
     if (!this.selectedChannelId) return
-    
+
     const channels = this.channelsFacade.channels()
     const channel = channels.find((c) => c.id === this.selectedChannelId)
-    
+
     if (channel?.name) {
       this.logoState.setCurrentChannelName(channel.name)
     }
@@ -130,11 +152,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private selectFirstAvailableChannel() {
     const channels = this.channelsFacade.channels()
-    
+
     if (channels && channels.length > 0) {
       const firstChannel = channels[0]
       this.selectedChannelId = firstChannel.id || null
-      
+
       if (firstChannel.name) {
         this.logoState.setCurrentChannelName(firstChannel.name)
       }
@@ -168,6 +190,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   onBackToChat() {
     this.currentView = "chat"
     this.selectedThread = null
+    this.highlightMessageId = null
     this.logoState.setCurrentView("chat")
   }
 
