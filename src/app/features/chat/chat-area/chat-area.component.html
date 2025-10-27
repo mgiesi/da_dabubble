@@ -44,10 +44,20 @@
 
     <!-- Message Area -->
     <div class="messages-container" #messagesContainer *ngIf="!isLoadingMessages">
-      <app-message-item *ngFor="let message of messages; trackBy: trackByMessageId" [message]="message" [isDM]="isDM"
-        [isHighlighted]="message.id === highlightedMessageId" (replyClicked)="onReplyToMessage($event)"
-        (editClicked)="onEditMessage($event)" (deleteClicked)="onDeleteMessage($event)">
-      </app-message-item>
+      <ng-container *ngFor="let group of groupedMessages">
+        <!-- Date Separator -->
+        <div class="date-separator">
+          <span class="date-separator-line"></span>
+          <span class="date-separator-text">{{ group.dateLabel }}</span>
+          <span class="date-separator-line"></span>
+        </div>
+
+        <!-- Messages in this date group -->
+        <app-message-item *ngFor="let message of group.messages; trackBy: trackByMessageId" [message]="message"
+          [isDM]="isDM" [isHighlighted]="message.id === highlightedMessageId" (replyClicked)="onReplyToMessage($event)"
+          (editClicked)="onEditMessage($event)" (deleteClicked)="onDeleteMessage($event)">
+        </app-message-item>
+      </ng-container>
 
       <!-- No messages state -->
       <div *ngIf="messages.length === 0" class="no-messages">

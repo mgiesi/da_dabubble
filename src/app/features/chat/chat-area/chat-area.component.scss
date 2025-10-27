@@ -161,3 +161,25 @@
 .info-text-link {
     color: $purple-3
 }
+
+.date-separator {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0 16px 0;
+    padding: 0 20px;
+}
+
+.date-separator-line {
+    flex: 1;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.date-separator-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #686868;
+    white-space: nowrap;
+    padding: 0 8px;
+}

@@ -127,13 +127,10 @@ export class ThreadPanelComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private applyHighlight() {
-    console.log('🎯 applyHighlight called with:', this.highlightMessageId)
-    if (this.highlightMessageId) {
+     if (this.highlightMessageId) {
       this.highlightedMessageId = this.highlightMessageId
-      console.log('✅ Highlighting message:', this.highlightedMessageId)
       setTimeout(() => {
-        console.log('⏰ Removing highlight')
-        this.highlightedMessageId = null
+               this.highlightedMessageId = null
       }, 2000)
     }
   }

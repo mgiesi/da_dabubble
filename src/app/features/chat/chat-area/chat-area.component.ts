@@ -44,6 +44,7 @@ import { DlgChannelSettingsComponent } from '../../channels/dlg-channel-settings
 import { NewMessageComponent } from '../new-message/new-message.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
+import { formatDateSeparator, getDateKey } from '../../../shared/utils/timestamp';
 
 @Component({
   selector: 'app-chat-area',
@@ -96,6 +97,7 @@ export class ChatAreaComponent
   currentChannel: Channel | null = null;
   createdByName = '';
   messages: (ChannelMessage | DirectMessage)[] = [];
+  groupedMessages: { date: string; dateLabel: string; messages: any[] }[] = [];
   isLoadingMessages = false;
   showNewMessage = false;
   highlightedMessageId: string | null = null;
@@ -220,6 +222,7 @@ export class ChatAreaComponent
         this.userId,
         (messages) => {
           this.messages = messages;
+          this.groupedMessages = this.groupMessagesByDate(messages);
           const counts = aggregateReactions(this.messages);
           this.globalReactions.setCounts(counts);
           this.cdr.detectChanges();
@@ -235,12 +238,31 @@ export class ChatAreaComponent
       this.channelId,
       (messages) => {
         this.messages = messages;
+        this.groupedMessages = this.groupMessagesByDate(messages);
         const counts = aggregateReactions(this.messages);
         this.globalReactions.setCounts(counts);
         this.cdr.detectChanges();
         this.scrollToBottomAfterUpdate();
       }
     );
+  }
+
+  private groupMessagesByDate(messages: any[]): { date: string; dateLabel: string; messages: any[] }[] {
+    const groups = new Map<string, any[]>();
+
+    messages.forEach(message => {
+      const dateKey = getDateKey(message.timestamp);
+      if (!groups.has(dateKey)) {
+        groups.set(dateKey, []);
+      }
+      groups.get(dateKey)!.push(message);
+    });
+
+    return Array.from(groups.entries()).map(([date, msgs]) => ({
+      date,
+      dateLabel: formatDateSeparator(msgs[0].timestamp),
+      messages: msgs
+    }));
   }
 
   /**

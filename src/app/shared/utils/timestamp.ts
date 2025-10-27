@@ -1,22 +1,22 @@
 export function formatMessageTime(timestamp: Date | null | undefined): string {
   if (!timestamp) return '';
-  
+
   const now = new Date();
   const messageDate = new Date(timestamp);
-  
+
   const isToday = isSameDay(now, messageDate);
   const isYesterday = isSameDay(addDays(now, -1), messageDate);
-  
+
   const time = formatTime(messageDate);
-  
+
   if (isToday) {
     return time; // Nur Uhrzeit: "14:25"
   }
-  
+
   if (isYesterday) {
     return `Gestern ${time}`; // "Gestern 14:25"
   }
-  
+
   // Älter als gestern: Datum + Uhrzeit
   const day = messageDate.getDate();
   const month = messageDate.toLocaleDateString('de-DE', { month: 'short' });
@@ -31,12 +31,41 @@ function formatTime(date: Date): string {
 
 function isSameDay(date1: Date, date2: Date): boolean {
   return date1.getDate() === date2.getDate() &&
-         date1.getMonth() === date2.getMonth() &&
-         date1.getFullYear() === date2.getFullYear();
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear();
 }
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
+}
+
+export function formatDateSeparator(timestamp: Date | null | undefined): string {
+  if (!timestamp) return '';
+
+  const now = new Date();
+  const messageDate = new Date(timestamp);
+
+  const isToday = isSameDay(now, messageDate);
+  const isYesterday = isSameDay(addDays(now, -1), messageDate);
+
+  if (isToday) {
+    return 'Heute';
+  }
+
+  if (isYesterday) {
+    return 'Gestern';
+  }
+
+  const day = messageDate.getDate();
+  const month = messageDate.toLocaleDateString('de-DE', { month: 'long' });
+  return `${day}. ${month}`;
+}
+
+export function getDateKey(timestamp: Date | null | undefined): string {
+  if (!timestamp) return '';
+
+  const date = new Date(timestamp);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
