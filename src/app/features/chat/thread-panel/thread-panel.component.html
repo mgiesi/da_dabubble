@@ -29,11 +29,12 @@
         (deleteClicked)="onDeleteMessage($event)">
       </app-message-item>
     </div>
-
-    <div class="thread-input">
-      <app-message-input [channelId]="selectedChannelId" [topicId]="message?.topicId" [parentMessageId]="message?.id"
-        [parentMessage]="message" [editingMessage]="editingMessage" (editComplete)="onEditComplete()"
-        placeholder="Antworten...">
-      </app-message-input>
-    </div>
   </div>
+
+  <div class="thread-input">
+    <app-message-input [channelId]="selectedChannelId" [topicId]="message?.topicId" [parentMessageId]="message?.id"
+      [parentMessage]="message" [editingMessage]="editingMessage" (editComplete)="onEditComplete()"
+      placeholder="Antworten...">
+    </app-message-input>
+  </div>
+</div>
