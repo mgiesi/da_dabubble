@@ -65,6 +65,7 @@ export class ChatAreaComponent
   implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   private destroyed = false;
   @Input() channelId: string | null = null;
+  @Input() highlightMessageId: string | null = null;
   @Output() threadOpened = new EventEmitter<any>();
   @ViewChild('messagesContainer', { static: false })
   messagesContainer!: ElementRef;
@@ -97,6 +98,7 @@ export class ChatAreaComponent
   messages: (ChannelMessage | DirectMessage)[] = [];
   isLoadingMessages = false;
   showNewMessage = false;
+  highlightedMessageId: string | null = null;
 
   private readonly currentUser$ = this.currentUser();
   readonly currentUserSig = toSignal<User | null>(this.currentUser$, {
@@ -115,6 +117,8 @@ export class ChatAreaComponent
 
   async ngOnInit() {
     this.checkNewMessageMode();
+    this.setupHighlightListener();
+
     if (this.isDM && this.userId) {
       this.dmUserSig = this.usersFacade.getUserSig(this.userId);
       await this.initializeDM();
@@ -155,6 +159,7 @@ export class ChatAreaComponent
   ngOnDestroy() {
     this.destroyed = true;
     this.cleanupSubscription();
+    this.cleanupHighlightListener();
   }
 
   onEditMessage(message: any) {
@@ -428,5 +433,26 @@ export class ChatAreaComponent
     this.showNewMessage = !this.channelId && !this.userId;
   }
 
-  
+  private setupHighlightListener() {
+    window.addEventListener('highlight-chat-message', this.handleHighlightEvent);
+  }
+
+  private cleanupHighlightListener() {
+    window.removeEventListener('highlight-chat-message', this.handleHighlightEvent);
+  }
+
+  private handleHighlightEvent = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const { channelId, messageId } = customEvent.detail;
+
+    if (channelId === this.channelId) {
+      this.highlightedMessageId = messageId;
+      setTimeout(() => {
+        this.highlightedMessageId = null;
+        this.cdr.detectChanges();
+      }, 2000);
+      this.cdr.detectChanges();
+    }
+  }
+
 }
