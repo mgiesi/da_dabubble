@@ -125,7 +125,7 @@ export class DlgChannelSettingsComponent {
 
       await this.channelsFacade.removeMemberFromChannel(id, userId);
       
-      this.router.navigate(['/workspace']);
+      this.dialogRef.close(true);
     } catch (error) {
       console.error('Fehler beim Verlassen des Channels:', error);
     } finally {

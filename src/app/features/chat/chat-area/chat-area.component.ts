@@ -432,7 +432,14 @@ export class ChatAreaComponent
       this.onSettingsSaved();
     });
 
-    ref.afterClosed().subscribe(() => sub.unsubscribe());
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.router.navigate(['/workspace']).then(() => {
+          window.location.reload();
+        });
+      }
+      sub.unsubscribe();
+    });
   }
 
   /**
