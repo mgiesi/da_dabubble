@@ -98,6 +98,8 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
         this.registerData.pwd()
       );
 
+      sessionStorage.setItem('suppressRedirectOnce', '1');
+
       await this.usersService.createUser(
         cred.user.uid,
         this.registerData.email(),
@@ -107,7 +109,7 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
 
       await this.authService.signOut();
 
-      await this.showSuccessMessageAndContinue();
+      this.showSuccessMessageAndContinue();
     } catch (error: any) {
       this.handleRegisterError(error);
     }

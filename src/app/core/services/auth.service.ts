@@ -39,7 +39,10 @@ export class AuthService {
 
   user$: Observable<any> = authState(this.auth);
   isAuthenticated$: Observable<boolean> = this.user$.pipe(
-    map((user) => !!user),
+    map((user) => {
+      const suppressed = sessionStorage.getItem('suppressRedirectOnce') === '1';
+      return !!user && !suppressed;
+    }),
     shareReplay(1)
   );
 

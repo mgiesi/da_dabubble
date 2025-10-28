@@ -18,6 +18,13 @@ export const redirectIfAuthedGuard: CanMatchFn = (route, state): Observable<bool
 
   return auth.isAuthenticatedOnce$.pipe(
     map((ok) => {
+      const suppress = sessionStorage.getItem('suppressRedirectOnce') === '1';
+      if (suppress) {
+        console.log('Suppress redirect!!!');
+        
+        sessionStorage.removeItem('suppressRedirectOnce');
+        return true;
+      }
       return ok ? router.createUrlTree(['/chat']) : true;
     })
   );
