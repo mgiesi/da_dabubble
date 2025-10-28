@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Input,
   computed,
+  signal,
 } from '@angular/core';
 import { ProfileAvatarComponent } from '../profile-avatar/profile-avatar.component';
 import { UsersFacadeService } from '../../../core/facades/users-facade.service';
@@ -15,11 +16,12 @@ import { User } from '../../../shared/models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { DlgProfileDetailsComponent } from '../dlg-profile-details/dlg-profile-details.component';
 import { UnreadIndicatorComponent } from '../../../shared/unread-indicator/unread-indicator.component';
+import { TypingIndicatorComponent } from '../../../shared/typing-indicator/typing-indicator.component';
 import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-profile-badge',
-  imports: [CommonModule, ProfileAvatarComponent, UnreadIndicatorComponent],
+  imports: [CommonModule, ProfileAvatarComponent, UnreadIndicatorComponent, TypingIndicatorComponent],
   templateUrl: './profile-badge.component.html',
   styleUrl: './profile-badge.component.scss',
 })
@@ -33,14 +35,27 @@ export class ProfileBadgeComponent {
   @Input() openProfileDetailsOnClick = true;
   @Input() active = false;
 
+  private _isTyping = signal(false);
+  @Input() 
+  set isTyping(value: boolean) {
+    this._isTyping.set(value);
+  }
+  get isTyping(): boolean {
+    return this._isTyping();
+  }
+
   user: InputSignal<User | null> = input<User | null>(null);
   readonly isSelf = this.facade.isCurrentUser(this.user);
 
-unreadCount = computed(() => {
-  const userId = this.user()?.id;
-  const count = userId ? this.notificationService.getUnreadCount(userId) : 0;
-  return count;
-});
+  unreadCount = computed(() => {
+    const userId = this.user()?.id;
+    const count = userId ? this.notificationService.getUnreadCount(userId) : 0;
+    return count;
+  });
+
+  shouldShowTyping = computed(() => {
+    return this._isTyping() && !this.isSelf();
+  });
 
   openProfileDetails() {
     this.dialog.open(DlgProfileDetailsComponent, {
@@ -52,7 +67,6 @@ unreadCount = computed(() => {
     const currentUser = this.user();
     if (!currentUser?.id) return;
 
-    // Unread löschen beim Öffnen
     this.notificationService.clearUnread(currentUser.id);
 
     if (this.userClicked.observed) {
