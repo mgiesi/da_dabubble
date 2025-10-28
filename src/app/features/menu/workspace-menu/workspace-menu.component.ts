@@ -23,6 +23,8 @@ import {
   MatBottomSheet,
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
+import { TypingService } from '../../../core/services/typing.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -37,14 +39,16 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
   private logoState = inject(LogoStateService);
   private channelsFacade = inject(ChannelsFacadeService);
   private usersFacade = inject(UsersFacadeService);
+  private typingService = inject(TypingService);
   desktopDialog = inject(MatDialog);
   mobileDialog = inject(MatBottomSheet);
   mobileDialogRef: MatBottomSheetRef | undefined = undefined;
   private breakpointObserver = inject(BreakpointObserver);
 
-  private dmSubscription?: any;
-  private channelSubscription?: any;
-  private backToWorkspaceSubscription?: any;
+  private dmSubscription?: Subscription;
+  private channelSubscription?: Subscription;
+  private backToWorkspaceSubscription?: Subscription;
+  private typingSubscription?: Subscription;
 
   @Output() channelSelected = new EventEmitter<string>();
   @Output() directMessageSelected = new EventEmitter<string>();
@@ -57,6 +61,8 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
 
   selectedChannelId: string | null = null;
   selectedUserId: string | null = null;
+
+  typingUsers = new Set<string>();
 
   get channels() {
     const user = this.usersFacade.currentUserSig();
@@ -71,10 +77,21 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.setupDmSubscription();
     this.setupChannelSubscription();
     this.setupBackToWorkspaceSubscription();
+    this.setupTypingSubscription();
 
     if (!this.logoState.isReturningFromBackButton()) {
       this.restoreLastSessionSelection();
     }
+  }
+
+  private setupTypingSubscription() {
+    this.typingSubscription = this.typingService.getTypingUsers$().subscribe(users => {
+      this.typingUsers = users;
+    });
+  }
+
+  isUserTyping(userId: string): boolean {
+    return this.typingUsers.has(userId);
   }
 
   private restoreLastSessionSelection() {
@@ -164,6 +181,7 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     if (this.channelSubscription) this.channelSubscription.unsubscribe();
     if (this.backToWorkspaceSubscription)
       this.backToWorkspaceSubscription.unsubscribe();
+    if (this.typingSubscription) this.typingSubscription.unsubscribe();
   }
 
   private handleDmSelection(userId: string) {
@@ -210,9 +228,6 @@ export class WorkspaceMenuComponent implements OnInit, OnDestroy {
     this.directMessageSelected.emit('');
   }
 
-  /**
-   * Opens the profile details overlay.
-   */
   openCreateChannelDialog() {
     const desktopDialogRef = this.desktopDialog.getDialogById(
       'btnCreateChannelDialog'

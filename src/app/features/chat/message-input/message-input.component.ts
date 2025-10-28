@@ -20,6 +20,7 @@ import { UsersFacadeService } from "../../../core/facades/users-facade.service"
 import { ChannelsFacadeService } from "../../../core/facades/channels-facade.service"
 import { ProfileAvatarComponent } from "../../profile/profile-avatar/profile-avatar.component"
 import { User } from "../../../shared/models/user"
+import { TypingService } from "../../../core/services/typing.service"
 
 @Component({
   selector: "app-message-input",
@@ -57,6 +58,9 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
   private dmFacade = inject(DirectMessagesFacadeService)
   private usersFacade = inject(UsersFacadeService)
   private channelsFacade = inject(ChannelsFacadeService)
+  private typingService = inject(TypingService)
+
+  private typingTimeout?: any
 
   trackByUid(index: number, u: User) {
     return u.uid;
@@ -110,6 +114,23 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
     } else if (lastChar === "#") {
       this.openChannelDropdown()
     }
+
+    this.handleTyping()
+  }
+
+  private async handleTyping() {
+    const currentUserId = this.usersFacade.currentUserSig()?.id
+    if (!currentUserId) return
+
+    await this.typingService.setTyping(currentUserId)
+
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout)
+    }
+
+    this.typingTimeout = setTimeout(async () => {
+      await this.typingService.removeTyping(currentUserId)
+    }, 2000)
   }
 
   openMentionDropdown() {
@@ -165,6 +186,14 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
 
   async onSendMessage() {
     if (!this.messageText.trim()) return
+
+    const currentUserId = this.usersFacade.currentUserSig()?.id
+    if (currentUserId) {
+      await this.typingService.removeTyping(currentUserId)
+      if (this.typingTimeout) {
+        clearTimeout(this.typingTimeout)
+      }
+    }
 
     try {
       if (this.editingMessage) {

@@ -92,7 +92,8 @@
       </div>
       <div class="dm-content" [class.collapsed]="dmClosed">
         <app-profile-badge *ngFor="let user of users(); trackBy: trackById" [user]="user"
-          (userClicked)="onDirectMessageClick($event)" [active]="user.id === selectedUserId">
+          (userClicked)="onDirectMessageClick($event)" [active]="user.id === selectedUserId"
+          [isTyping]="isUserTyping(user.id)">
         </app-profile-badge>
       </div>
     </section>
