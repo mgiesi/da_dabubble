@@ -2,13 +2,6 @@
 @use "../../../../../../public/assets/styles/variables.scss" as *;
 @use "../../../../../../public/assets/styles/btn-style.scss" as *;
 
-:host {
-    @media screen and (max-width: $breakpoint-915) {
-        display: none;
-    }
-}
-
-
 .links-to-legal-box {
     @include dFlexAllCenter($ai: center, $jc: center, $g: 20px);
     margin-top: 15px;
@@ -17,5 +10,11 @@
         width: 137px;
         height: 45px;
         @include dFlexAllCenter($ai: center, $jc: center);
+
+        button {
+            @media screen and (max-width: $breakpoint-915) {
+                font-size: 16px;
+            }
+        }
     }
 }
