@@ -109,30 +109,57 @@ export class NotificationService {
     })
   }
 
-  private handleDMUpdate(userId: string, messages: any[]) {
+  private async handleDMUpdate(userId: string, messages: any[]) {
     const lastMessage = messages[messages.length - 1]
     const currentUserId = this.auth.currentUser?.uid
     const previousCount = this.lastMessageCounts.get(userId) || 0
 
     const hasNewMessage = messages.length > previousCount
-    const isFromOtherUser = lastMessage && lastMessage.senderId !== currentUserId
+
+    // ✅ Normalisiere senderId zu Auth UID
+    const senderAuthUid = await this.normalizeToAuthUid(lastMessage?.senderId)
+    const isFromOtherUser = lastMessage && senderAuthUid !== currentUserId
+
     const isChatInactive = this.activeUserId !== userId
     const isTabVisible = document.visibilityState === "visible"
     const isLoginPhase = this.justLoggedIn
 
     if (hasNewMessage && isFromOtherUser && isChatInactive) {
-
       const newMessageCount = messages.length - previousCount
       this.incrementUnreadBy(userId, newMessageCount)
 
       if (isTabVisible && !isLoginPhase) {
         this.playSound("dm")
-      } else {
       }
     }
 
     this.lastMessageCounts.set(userId, messages.length)
     this.persistState()
+  }
+
+  /**
+   * ✅ Normalisiere User-ID zu Firebase Auth UID
+   * Falls es eine Firestore Document-ID ist, hole die Auth UID aus den Users
+   */
+  private async normalizeToAuthUid(userIdOrDocId: string | undefined): Promise<string | undefined> {
+    if (!userIdOrDocId) return undefined
+
+    // Prüfe ob es bereits eine Auth UID ist (28 Zeichen)
+    if (this.isAuthUid(userIdOrDocId)) {
+      return userIdOrDocId
+    }
+
+    // Sonst ist es eine Document-ID → hole die Auth UID aus den Users
+    const users = this.usersFacade.users()
+    const user = users?.find((u) => u.id === userIdOrDocId)
+    return user?.uid || userIdOrDocId
+  }
+
+  /**
+   * Prüft ob ein String eine Firebase Auth UID ist
+   */
+  private isAuthUid(id: string): boolean {
+    return id.length === 28 && /^[a-zA-Z0-9]+$/.test(id)
   }
 
   playSound(type: "dm" | "channel") {
