@@ -105,6 +105,8 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
         this.user.imgUrl
       );
 
+      await this.authService.signOut();
+
       await this.showSuccessMessageAndContinue();
     } catch (error: any) {
       this.handleRegisterError(error);
