@@ -106,7 +106,7 @@
                 }
                 @if (pwdField.errors?.['pattern'] && !pwdField.errors?.['minlength'] && (pwdField.touched ||
                 pwdField.dirty)) {
-                <div class="error-message-long-text" [ngClass]="{'error-marquee-long-text': isMobile()}">
+                <div class="error-message error-marquee" [ngClass]="{'error-marquee-long-text': isMobile()}">
                     <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
                         enthalten</span>
                 </div>

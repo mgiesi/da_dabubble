@@ -160,6 +160,9 @@ mat-dialog-content {
 }
 
 .error-marquee-long-text {
+  position: absolute;
+  bottom: -22px;
+  left: 0px;
   overflow: hidden;
   white-space: nowrap;
   max-width: 100%;
