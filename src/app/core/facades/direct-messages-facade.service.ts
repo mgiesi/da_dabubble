@@ -14,6 +14,7 @@ export class DirectMessagesFacadeService {
   private directMessagesRepo = inject(DirectMessagesService);
   private usersFacade = inject(UsersFacadeService);
   private auth = inject(Auth);
+  
 
   /**
    * Subscribes to direct messages between current user and target user

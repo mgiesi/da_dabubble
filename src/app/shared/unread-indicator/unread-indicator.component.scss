@@ -1,0 +1,23 @@
+@use "../../../../public/assets/styles/mixins.scss" as *;
+@use "../../../../public/assets/styles/variables.scss" as *;
+
+.unread-wrapper {
+  @include dFlexAllCenter($ai: center, $jc: center, $g: 8px);
+}
+
+.badge {
+  background: $purple-2;
+  color: $white;
+  border-radius: 10px;
+  min-width: 20px;
+  height: 20px;
+  @include dFlexAllCenter($ai: center, $jc: center);
+  @include fontSizeWeightColor($si: 11px, $we: 600, $co: $white);
+  padding: 0 5px;
+  box-shadow: $box-shadow;
+}
+
+svg {
+  display: block;
+  flex-shrink: 0;
+}

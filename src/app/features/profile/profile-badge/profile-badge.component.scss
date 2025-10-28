@@ -13,6 +13,7 @@
     padding: 4px 20px;
     border-radius: 25px;
     cursor: pointer;
+    position: relative;
 
     &.active {
         background: $bg-color;
@@ -27,5 +28,13 @@
     .profile-avatar {
         width: 50px;
         height: 50px;
+    }
+
+    .username {
+        flex: 1;
+    }
+
+    .unread-indicator {
+        margin-left: auto;
     }
 }

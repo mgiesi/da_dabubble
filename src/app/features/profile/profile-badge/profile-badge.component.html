@@ -1,6 +1,7 @@
 <ng-container *ngIf="user() as user">
     <div (click)="onUserClick()" class="profile-badge-content" [class.active]="active">
         <app-profile-avatar [user]="user" [imgSize]="50"></app-profile-avatar>
-        {{ user.displayName }} <span *ngIf="isSelf()">(Du)</span>
+        <span class="username">{{ user.displayName }} <span *ngIf="isSelf()">(Du)</span></span>
+        <app-unread-indicator [count]="unreadCount()" class="unread-indicator"></app-unread-indicator>
     </div>
 </ng-container>

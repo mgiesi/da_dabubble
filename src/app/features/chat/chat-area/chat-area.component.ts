@@ -40,6 +40,8 @@ import { Observable } from 'rxjs';
 import { groupMessagesByDate } from '../../../shared/utils/timestamp';
 import { ChatDialogService } from '../../../core/services/chat-dialog.service';
 import { ChatScrollService } from '../../../core/services/chat-scroll.service';
+import { Auth } from '@angular/fire/auth';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-chat-area',
@@ -76,6 +78,9 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   private chatDialog = inject(ChatDialogService);
   private chatScroll = inject(ChatScrollService);
   private globalReactions = inject(GlobalReactionService);
+
+  private auth = inject(Auth);
+  private notificationService = inject(NotificationService);
 
   private messageSubscription: (() => void) | null = null;
   private previousChannelId: string | null = null;
@@ -125,9 +130,15 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       this.cleanupSubscription();
 
       if (this.isDM && this.userId) {
+        // ✅ Notify service welcher Chat aktiv ist
+        this.notificationService.setActiveChat(this.userId);
+        this.notificationService.clearUnread(this.userId);
+
         this.dmUserSig = this.usersFacade.getUserSig(this.userId);
         await this.initializeDM();
       } else if (this.channelId) {
+        // ✅ Kein DM-Chat aktiv
+        this.notificationService.setActiveChat(null);
         await this.initializeChannel();
       }
     }
@@ -165,10 +176,21 @@ export class ChatAreaComponent implements OnInit, OnChanges, OnDestroy, AfterVie
   }
 
   private async initializeDM() {
-    if (!this.userId || this.destroyed) return;
+    if (!this.userId) return;
+
     this.isLoadingMessages = true;
-    await this.setupMessageSubscription();
-    if (!this.destroyed) this.isLoadingMessages = false;
+
+    this.messageSubscription = this.dmFacade.subscribeToDMMessages(
+      this.userId,
+      (messages) => {
+        this.messages = messages;
+        this.groupedMessages = groupMessagesByDate(messages);
+        this.isLoadingMessages = false;
+
+        this.cdr.detectChanges();
+        this.scrollToBottomAfterUpdate();
+      }
+    );
   }
 
   private async initializeChannel() {
