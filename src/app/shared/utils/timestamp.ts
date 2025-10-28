@@ -69,3 +69,21 @@ export function getDateKey(timestamp: Date | null | undefined): string {
   const date = new Date(timestamp);
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
+
+export function groupMessagesByDate(messages: any[]): { date: string; dateLabel: string; messages: any[] }[] {
+  const groups = new Map<string, any[]>();
+
+  messages.forEach(message => {
+    const dateKey = getDateKey(message.timestamp);
+    if (!groups.has(dateKey)) {
+      groups.set(dateKey, []);
+    }
+    groups.get(dateKey)!.push(message);
+  });
+
+  return Array.from(groups.entries()).map(([date, msgs]) => ({
+    date,
+    dateLabel: formatDateSeparator(msgs[0].timestamp),
+    messages: msgs
+  }));
+}
