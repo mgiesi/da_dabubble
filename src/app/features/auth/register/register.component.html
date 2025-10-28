@@ -30,10 +30,10 @@
 
                 @if (fullNameField.errors?.['required'] && (fullNameField.touched || fullNameField.dirty) &&
                 fullNameField.value !== '') {
-                <div class="error-message-long-text" @fadeInOut>
+                <!-- <div class="error-message-long-text" @fadeInOut>
                     <span>*Das Passwort muss Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen
                         enthalten</span>
-                </div>
+                </div> -->
                 <p class="error-message" @fadeInOut>
                     *Der Name muss mindestens 4 Buchstaben enthalten.
                 </p>

@@ -134,7 +134,7 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
 
   private async finishRegistrationAndNavigate() {
     this.ngZone.run(async () => {
-      await this.router.navigate(['/chat']);
+      await this.router.navigate(['/login']);
     });
   }
 
