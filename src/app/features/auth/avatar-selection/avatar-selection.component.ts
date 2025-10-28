@@ -21,8 +21,7 @@ import { User } from '../../../shared/models/user';
 import { Timestamp } from '@angular/fire/firestore';
 import { AuthService } from '../../../core/services/auth.service';
 import { UsersService } from '../../../core/repositories/users.service';
-import { UserUtilService } from '../../../core/services/user-util.service';
-import { UserCredential } from 'firebase/auth';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-avatar-selection',
@@ -44,13 +43,14 @@ import { UserCredential } from 'firebase/auth';
 export class AvatarSelectionComponent implements OnInit, AfterViewInit {
   inProgress: boolean = true;
   accountCreatedSuccessfully: boolean = false;
+  accountCreatedFailed: boolean = false;
   messageHide: boolean = false;
+  messageErrorHide: boolean = false;
 
   private registerData = inject(RegisterDataService);
   private authService = inject(AuthService);
   private usersService = inject(UsersService);
   private router = inject(Router);
-  private userUtil = inject(UserUtilService);
   private ngZone = inject(NgZone);
   @ViewChild(ChooseAvatarComponent) chooseAvatar!: ChooseAvatarComponent;
   user: User = {
@@ -144,6 +144,26 @@ export class AvatarSelectionComponent implements OnInit, AfterViewInit {
 
   private handleRegisterError(error: any) {
     this.errMsg = error.message;
+    if (error instanceof FirebaseError) {
+      if (error.code === 'auth/email-already-in-use') {
+        this.errMsg = 'Diese E-Mail-Adresse wird bereits verwendet.';
+      } else if (error.code === 'auth/network-request-failed') {
+        const msg = String(error.customData?.['message'] ?? '');
+        if (msg.includes('auth/email-already-in-use'))
+        {
+          this.errMsg = 'Diese E-Mail-Adresse wird bereits verwendet.';
+        }
+      }
+    }
     this.inProgress = false;
+
+    this.messageErrorHide = false;
+    this.accountCreatedFailed = true;
+    setTimeout(() => {
+      this.messageErrorHide = true;
+      setTimeout(() => {
+        this.accountCreatedFailed = false;
+      }, 500);
+    }, 8000);
   }
 }

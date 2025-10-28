@@ -20,8 +20,6 @@ export const redirectIfAuthedGuard: CanMatchFn = (route, state): Observable<bool
     map((ok) => {
       const suppress = sessionStorage.getItem('suppressRedirectOnce') === '1';
       if (suppress) {
-        console.log('Suppress redirect!!!');
-        
         sessionStorage.removeItem('suppressRedirectOnce');
         return true;
       }

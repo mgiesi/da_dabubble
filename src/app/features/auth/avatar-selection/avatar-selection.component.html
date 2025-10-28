@@ -1,6 +1,9 @@
 <div *ngIf="accountCreatedSuccessfully" class="account-created-successfully" [class.hide]="messageHide">
     <p>Konto erfolgreich erstellt!</p>
 </div>
+<div *ngIf="accountCreatedFailed" class="account-created-failed" [class.hide]="messageErrorHide">
+    <p>Konto konnte aufgrund eines Fehlers nicht erstellt werden!<br>{{ errMsg }}</p>
+</div>
 
 <app-auth-card>
     <div class="auth-card-container">

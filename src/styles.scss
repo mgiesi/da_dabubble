@@ -59,7 +59,13 @@ mat-dialog-content {
   width: clamp(300px, 254px + 14.375vw, 530px);
 }
 
+.account-created-failed {
+  width: clamp(300px, 254px + 14.375vw, 530px);
+  background-color: #d32f2f !important;
+}
+
 .account-created-successfully,
+.account-created-failed,
 .reset-password-email-successfully,
 .userOnline {
   z-index: 5;
