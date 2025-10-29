@@ -147,6 +147,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private initializeDefaultState() {
     this.logoState.setCurrentView("chat")
+    
+    // Optional: Thread-State aus sessionStorage wiederherstellen
+    const savedThreadId = sessionStorage.getItem('activeThreadId')
+    const savedChannelId = sessionStorage.getItem('activeThreadChannelId')
+    
+    if (savedThreadId && savedChannelId) {
+      console.log('📂 Thread state found in sessionStorage:', savedThreadId)
+      // Thread wird später wiederhergestellt, wenn Message geladen ist
+    }
+    
     this.selectFirstAvailableChannel()
   }
 
@@ -165,12 +175,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   onToggleWorkspaceMenu() {
     this.isWorkspaceMenuOpen = !this.isWorkspaceMenuOpen
-
-    if (this.isWorkspaceMenuOpen && this.currentView === "thread") {
-      this.currentView = "chat"
-      this.selectedThread = null
-      this.logoState.setCurrentView("chat")
-    }
+    // Thread-State bleibt unverändert - Thread schließt nur bei explizitem onBackToChat()
   }
 
   onDirectMessageSelected(userId: string) {
@@ -182,16 +187,28 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   onThreadOpened(message: any) {
+    console.log('🔓 Thread opened:', message)
     this.selectedThread = message
     this.currentView = "thread"
     this.logoState.setCurrentView("thread")
+    
+    // Thread-State in sessionStorage sichern
+    if (message?.id) {
+      sessionStorage.setItem('activeThreadId', message.id)
+      sessionStorage.setItem('activeThreadChannelId', this.selectedChannelId || '')
+    }
   }
 
   onBackToChat() {
+    console.log('🔙 Closing thread explicitly')
     this.currentView = "chat"
     this.selectedThread = null
     this.highlightMessageId = null
     this.logoState.setCurrentView("chat")
+    
+    // Thread-State aus sessionStorage entfernen
+    sessionStorage.removeItem('activeThreadId')
+    sessionStorage.removeItem('activeThreadChannelId')
   }
 
   get currentChannelName(): string {

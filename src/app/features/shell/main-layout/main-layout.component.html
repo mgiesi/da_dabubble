@@ -1,4 +1,7 @@
-<app-workspace-menu-toggler *ngIf="!logo.isMobile()" [isOpen]="isWorkspaceMenuOpen" (toggle)="onToggleWorkspaceMenu()">
+<app-workspace-menu-toggler 
+  *ngIf="!logo.isMobile()" 
+  [isOpen]="isWorkspaceMenuOpen" 
+  (toggle)="onToggleWorkspaceMenu()">
 </app-workspace-menu-toggler>
 
 @if(userOnline){
@@ -8,28 +11,57 @@
 </div>
 }
 
-<div class="main-layout" [class.mobile]="logo.isMobile()" [class.workspace-open]="isWorkspaceMenuOpen"
-  [class.thread-open]="currentView === 'thread'">
+<!-- 
+  WICHTIG: main-layout hat IMMER 3 Grid-Spalten
+  Klassen steuern welche Spalten sichtbar sind
+-->
+<div class="main-layout" 
+  [class.mobile]="logo.isMobile()" 
+  [class.workspace-open]="isWorkspaceMenuOpen"
+  [class.thread-open]="selectedThread !== null">
 
+  <!-- ========================================
+       WORKSPACE SIDEBAR - Grid-Area: workspace
+       ======================================== -->
   <aside class="workspace-sidebar"
-    *ngIf="(!logo.isMobile() && isWorkspaceMenuOpen) || (logo.isMobile() && logo.isWorkspaceView())"
     [class.active]="currentView === 'workspace'">
-    <app-workspace-menu (channelSelected)="onChannelSelected($event)"
+    <!-- Mobile: nur anzeigen wenn aktiv -->
+    <app-workspace-menu 
+      *ngIf="(logo.isMobile() && logo.isWorkspaceView()) || !logo.isMobile()"
+      (channelSelected)="onChannelSelected($event)"
       (directMessageSelected)="onDirectMessageSelected($event)">
     </app-workspace-menu>
   </aside>
 
-  <main class="chat-main" *ngIf="!logo.isMobile() || logo.isChatView()" [class.active]="currentView === 'chat'"
-    [class.thread-open]="currentView === 'thread'">
-    <app-chat-area [channelId]="selectedChannelId" [userId]="selectedUserId" [isDM]="chatType === 'dm'"
+  <!-- ========================================
+       CHAT MAIN - Grid-Area: chat
+       Chat nimmt immer verfügbaren Platz (1fr)
+       ======================================== -->
+  <main class="chat-main" 
+    [class.active]="currentView === 'chat'">
+    <!-- Mobile: nur anzeigen wenn aktiv -->
+    <app-chat-area 
+      *ngIf="!logo.isMobile() || logo.isChatView()"
+      [channelId]="selectedChannelId" 
+      [userId]="selectedUserId" 
+      [isDM]="chatType === 'dm'"
       (threadOpened)="onThreadOpened($event)">
     </app-chat-area>
   </main>
 
-  <aside class="thread-sidebar" *ngIf="!logo.isMobile() || logo.isThreadView()"
+  <!-- ========================================
+       THREAD SIDEBAR - Grid-Area: thread
+       ======================================== -->
+  <aside class="thread-sidebar"
     [class.active]="currentView === 'thread'">
-    <app-thread-panel *ngIf="selectedThread" [message]="selectedThread" [currentChannelName]="currentChannelName"
-      [selectedChannelId]="selectedChannelId" [highlightMessageId]="highlightMessageId" (backToChat)="onBackToChat()">
+    <!-- Mobile: nur anzeigen wenn aktiv -->
+    <app-thread-panel 
+      *ngIf="selectedThread && (!logo.isMobile() || logo.isThreadView())"
+      [message]="selectedThread" 
+      [currentChannelName]="currentChannelName"
+      [selectedChannelId]="selectedChannelId" 
+      [highlightMessageId]="highlightMessageId" 
+      (backToChat)="onBackToChat()">
     </app-thread-panel>
   </aside>
 </div>

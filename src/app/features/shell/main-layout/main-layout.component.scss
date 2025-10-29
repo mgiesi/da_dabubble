@@ -11,34 +11,22 @@
   padding: 0 20px;
   position: relative;
 
-  // Desktop: Dynamisches Grid basierend auf Workspace-Menu Status
+  // ========================================
+  // DESKTOP: Grid mit 3 festen Spalten
+  // ========================================
   @include main_desktop_up {
-
-    // Workspace Menu geschlossen: Chat allein oder Chat + Thread
-    &:not(.workspace-open):not(.thread-open) {
-      grid-template-columns: 1fr;
-    }
-
-    &:not(.workspace-open).thread-open {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    // Workspace Menu offen + Thread geschlossen: Chat expandiert
-    &.workspace-open:not(.thread-open) {
-      grid-template-columns: 1fr 3fr;
-    }
-
-    // Workspace Menu offen + Thread offen: 3 Spalten Layout
-    &.workspace-open.thread-open {
-      grid-template-columns: 1fr 3fr 1fr;
-    }
+    // Grid hat IMMER 3 Spalten mit auto-Breiten
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "workspace chat thread";
   }
 
-  // Tablet: 2 Spalten Layout
+  // ========================================
+  // TABLET: 2 Spalten Layout
+  // ========================================
   @include main_tablet_only {
     gap: 20px;
 
-    // Workspace Menu geschlossen: Chat allein oder Chat + Thread nebeneinander
+    // Workspace geschlossen
     &:not(.workspace-open):not(.thread-open) {
       grid-template-columns: 1fr;
     }
@@ -47,7 +35,7 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    // Workspace Menu offen: Workspace + Chat oder Workspace + Thread (abwechselnd)
+    // Workspace offen
     &.workspace-open:not(.thread-open) {
       grid-template-columns: 2fr 3fr;
     }
@@ -65,7 +53,9 @@
     }
   }
 
-  // Mobile: Immer 1 Spalte
+  // ========================================
+  // MOBILE: 1 Spalte
+  // ========================================
   @include main_mobile_only {
     grid-template-columns: 1fr;
     gap: 0;
@@ -88,16 +78,78 @@
   }
 }
 
+// ========================================
+// WORKSPACE SIDEBAR
+// ========================================
 .workspace-sidebar {
+  grid-area: workspace;
   padding: 0;
   position: relative;
   z-index: 4;
+  
+  // Desktop: Feste Breite oder 0
+  @include main_desktop_up {
+    width: 300px; // Feste Breite wenn offen
+    min-width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    
+    // Geschlossen: 0 Breite
+    .main-layout:not(.workspace-open) & {
+      width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    // Offen: Volle Breite
+    .main-layout.workspace-open & {
+      width: 300px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 }
 
+// ========================================
+// CHAT MAIN
+// ========================================
 .chat-main {
+  grid-area: chat;
   padding: 0;
+  min-width: 0; // Wichtig für Flex-Verhalten
+  
+  @include main_desktop_up {
+    // Chat nimmt immer verfügbaren Platz ein (1fr)
+    width: 100%;
+  }
 }
 
+// ========================================
+// THREAD SIDEBAR
+// ========================================
 .thread-sidebar {
+  grid-area: thread;
   padding: 0;
+  
+  // Desktop: Feste Breite oder 0
+  @include main_desktop_up {
+    width: 400px; // Feste Breite wenn offen
+    min-width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    
+    // Geschlossen: 0 Breite
+    .main-layout:not(.thread-open) & {
+      width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    // Offen: Volle Breite
+    .main-layout.thread-open & {
+      width: 400px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 }

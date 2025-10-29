@@ -3,39 +3,63 @@
 @use "../../../../../../public/assets/styles/breakpoints.scss" as *;
 
 .message-reactions {
-  margin-top: 8px;
-  @include dFlexAllCenter($ai: flex-start, $jc: flex-start);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 0;
 }
 
 :host-context(.own-message) .message-reactions {
-  @include dFlexAllCenter($ai: flex-start, $jc: flex-end);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .reactions-flex {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
 }
 
 .reaction-button {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
+  gap: 6px;
+  padding: 4px 10px;
   border-radius: 20px;
   border: 1.5px solid $light-purple;
   background: transparent;
   cursor: pointer;
   transition: $transition-0-3-ease-in-out;
+  min-height: 28px;
+
+  &:hover {
+    background: rgba($light-purple, 0.1);
+    border-color: $purple-1;
+  }
+
+  &.active {
+    background: rgba($purple-1, 0.1);
+    border-color: $purple-1;
+  }
 }
 
 .emoji {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .count {
-  @include fontSizeWeightColor($si: 11px, $we: 500, $co: $text-gray);
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-gray;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 .message-reactions,

@@ -234,9 +234,10 @@
 }
 
 .message-footer {
-  @include dFlexAllCenter($ai: flex-start, $jc: space-between);
+  @include dFlexAllCenter($ai: center, $jc: space-between);
   margin-top: 8px;
   width: 100%;
+  gap: 12px;
 
   &.message-footer-own {
     justify-content: space-between;
@@ -244,6 +245,7 @@
 
   &.message-footer-other {
     justify-content: flex-start;
+    gap: 16px;
   }
 }
 
