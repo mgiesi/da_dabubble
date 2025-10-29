@@ -251,9 +251,8 @@ export class SearchboxComponent {
     const dropdown = document.querySelector('.autocomplete-dropdown');
     const target = event.target as Node;
 
-    if (!input || (!input.value.startsWith('@') && !input.value.startsWith('#'))) {
-      return;
-    }
+    if (!input) return;
+
     if (input.contains(target) || (dropdown && dropdown.contains(target))) {
       return;
     }

@@ -4,15 +4,16 @@
             (input)="onSearchInput($event)" />
         <img src="icons/search.svg" alt="Suchen Icon" />
     </label>
-    <div *ngIf="(filteredResults$ | async) as results" class="autocomplete-dropdown">
-        <ng-container *ngIf="results.length > 0">
+    
+    <ng-container *ngIf="(filteredResults$ | async) as results">
+        <div *ngIf="results.length > 0" class="autocomplete-dropdown">
             <ul class="user-search-list">
-                <li *ngFor="let item of results" class="autocomplete-option" (mouseover)="onSearchResultHover(item)"
-                    (mouseleave)="onSearchResultHoverEnd()">
+                <li *ngFor="let item of results" class="autocomplete-option"
+                    (mouseover)="onSearchResultHover(item)" (mouseleave)="onSearchResultHoverEnd()">
 
                     <!-- User Result -->
-                    <app-profile-badge *ngIf="item._type === 'user'" [user]="item" (click)="onDirectMessageClick(item)"
-                        [openProfileDetailsOnClick]="false" />
+                    <app-profile-badge *ngIf="item._type === 'user'" [user]="item"
+                        (click)="onDirectMessageClick(item)" [openProfileDetailsOnClick]="false" />
 
                     <!-- Channel Result -->
                     <app-channel-badge *ngIf="item._type === 'channel'" [channel]="item"
@@ -31,6 +32,6 @@
                     </div>
                 </li>
             </ul>
-        </ng-container>
-    </div>
+        </div>
+    </ng-container>
 </div>
