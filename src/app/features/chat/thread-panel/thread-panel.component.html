@@ -2,7 +2,8 @@
   <div class="thread-header">
     <div class="thread-title">
       <h3>Thread</h3>
-      <span class="channel-name"># {{currentChannelName}}</span>
+      <span class="channel-name" *ngIf="!isDM"># {{currentChannelName}}</span>
+      <span class="channel-name" *ngIf="isDM">{{currentChannelName}}</span>
     </div>
 
     <button class="btn-close" (click)="onBackToChat()">
@@ -15,7 +16,7 @@
 
   <div class="thread-content">
     <div class="original-message">
-      <app-message-item [message]="message" [isThreadView]="true" [isOriginalMessage]="true">
+      <app-message-item [message]="message" [isThreadView]="true" [isDM]="isDM" [isOriginalMessage]="true">
       </app-message-item>
     </div>
 
@@ -24,7 +25,7 @@
         {{threadMessages.length}}
         {{threadMessages.length === 1 ? 'Antwort' : 'Antworten'}}
       </div>
-      <app-message-item *ngFor="let threadMsg of threadMessages" [message]="threadMsg" [isThreadView]="true"
+      <app-message-item *ngFor="let threadMsg of threadMessages" [message]="threadMsg" [isThreadView]="true" [isDM]="isDM"
         [isHighlighted]="threadMsg.id === highlightedMessageId" (editClicked)="onEditMessage($event)"
         (deleteClicked)="onDeleteMessage($event)">
       </app-message-item>
@@ -32,8 +33,15 @@
   </div>
 
   <div class="thread-input">
-    <app-message-input [channelId]="selectedChannelId" [topicId]="message?.topicId" [parentMessageId]="message?.id"
-      [parentMessage]="message" [editingMessage]="editingMessage" (editComplete)="onEditComplete()"
+    <app-message-input 
+      [channelId]="selectedChannelId" 
+      [userId]="selectedUserId"
+      [topicId]="message?.topicId" 
+      [parentMessageId]="message?.id"
+      [parentMessage]="message" 
+      [editingMessage]="editingMessage" 
+      [isDM]="isDM"
+      (editComplete)="onEditComplete()"
       placeholder="Antworten...">
     </app-message-input>
   </div>

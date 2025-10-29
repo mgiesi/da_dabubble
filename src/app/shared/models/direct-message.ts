@@ -8,6 +8,8 @@ export interface DirectMessage {
   dmId: string;
   reactions?: any;
   isOwnMessage?: boolean;
+  parentMessageId?: string;
+  threadCount?: number;    
 }
 
 export interface DirectMessageConversation {

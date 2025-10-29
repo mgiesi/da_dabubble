@@ -13,19 +13,15 @@ import {
   serverTimestamp,
   doc,
   getDoc,
+  getDocs,
   updateDoc,
   setDoc,
   deleteDoc,
 } from '@angular/fire/firestore';
-import { Observable, last, map, partition } from 'rxjs';
-import { DirectMessage, DirectMessageConversation } from '../../shared/models/direct-message';
+import { Observable, map } from 'rxjs';
+import { DirectMessage } from '../../shared/models/direct-message';
 import { FirestoreHelpers } from '../firebase/firestore-helper';
-import { UsersFacadeService } from '../facades/users-facade.service';
 
-/**
- * Repository service for direct message operations.
- * Handles Firestore interactions for direct messages only.
- */
 @Injectable({
   providedIn: 'root'
 })
@@ -33,7 +29,6 @@ export class DirectMessagesService {
   private fs = inject(Firestore);
   private injector = inject(Injector);
   private firestoreHelper = inject(FirestoreHelpers);
-  private usersFacade = inject(UsersFacadeService);
 
   private inCtx<T>(fn: () => T): T {
     return runInInjectionContext(this.injector, fn);
@@ -67,6 +62,92 @@ export class DirectMessagesService {
   }
 
   /**
+   * Gets thread messages for a parent message
+   * EXACTLY like Channel threads - filters in CODE, not in Firestore
+   */
+  getThreadMessages$(userId1: string, userId2: string, parentMessageId: string): Observable<DirectMessage[]> {
+    // Load ALL messages, then filter in code (no index needed!)
+    return this.getDMMessages$(userId1, userId2).pipe(
+      map(messages => 
+        messages
+          .filter(m => m.parentMessageId === parentMessageId)  // ✅ Filter in CODE
+          .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())  // ✅ Sort in CODE
+      )
+    );
+  }
+
+  /**
+   * Gets a specific parent message for real-time updates (reactions)
+   */
+  getParentDMMessage$(userId1: string, userId2: string, messageId: string): Observable<DirectMessage | null> {
+    return this.getDMMessages$(userId1, userId2).pipe(
+      map(messages => messages.find(m => m.id === messageId) || null)
+    );
+  }
+
+  /**
+   * Sends a thread reply
+   */
+  async sendThreadReply(
+    userId1: string,
+    userId2: string,
+    parentMessageId: string,
+    messageText: string,
+    senderId: string,
+    senderName: string,
+    senderImage: string
+  ): Promise<void> {
+    const normalizedUserId1 = await this.normalizeToAuthUid(userId1);
+    const normalizedUserId2 = await this.normalizeToAuthUid(userId2);
+    const dmId = this.createDMId(normalizedUserId1, normalizedUserId2);
+
+    await this.ensureDMConversation(userId1, userId2);
+
+    const ref = this.inCtx(() => 
+      collection(this.fs, 'direct-messages', dmId, 'chat-messages')
+    );
+    const timestamp = this.inCtx(() => serverTimestamp());
+
+    await this.inCtx(() => 
+      addDoc(ref, {
+        text: messageText,
+        senderId,
+        senderName,
+        senderImage,
+        parentMessageId,  // ✅ Thread-Message marker
+        timestamp,
+        reactions: {},
+        dmId
+      })
+    );
+
+    // Update thread count on parent message
+    await this.updateThreadCount(dmId, parentMessageId);
+  }
+
+  /**
+   * Updates thread count on parent message
+   */
+  private async updateThreadCount(dmId: string, parentMessageId: string): Promise<void> {
+    const messagesRef = this.inCtx(() => 
+      collection(this.fs, 'direct-messages', dmId, 'chat-messages')
+    );
+    
+    const snapshot = await this.inCtx(() => getDocs(messagesRef));
+    const threadCount = snapshot.docs.filter(
+      doc => doc.data()['parentMessageId'] === parentMessageId
+    ).length;
+
+    const parentRef = this.inCtx(() => 
+      doc(this.fs, 'direct-messages', dmId, 'chat-messages', parentMessageId)
+    );
+
+    await this.inCtx(() => 
+      updateDoc(parentRef, { threadCount })
+    );
+  }
+
+  /**
    * Creates consistent DM ID from two user IDs
    */
   private createDMId(userId1: string, userId2: string): string {
@@ -77,12 +158,10 @@ export class DirectMessagesService {
    * Normalizes any user identifier to Firebase Auth UID
    */
   private async normalizeToAuthUid(userIdOrDocId: string): Promise<string> {
-    // Check if it's already an Auth UID (Firebase Auth UIDs are typically 28 chars)
     if (this.isAuthUid(userIdOrDocId)) {
       return userIdOrDocId;
     }
 
-    // It's likely a Document ID, lookup the Auth UID
     try {
       const ref = this.inCtx(() => doc(this.fs, 'users', userIdOrDocId));
       const snap = await this.inCtx(() => getDoc(ref));
@@ -95,7 +174,6 @@ export class DirectMessagesService {
       console.warn('normalizeToAuthUid failed', error);
     }
 
-    // Fallback: return as-is
     return userIdOrDocId;
   }
 
@@ -103,7 +181,6 @@ export class DirectMessagesService {
    * Checks if a string looks like a Firebase Auth UID
    */
   private isAuthUid(id: string): boolean {
-    // Firebase Auth UIDs are typically 28 characters and contain specific patterns
     return id.length === 28 && /^[a-zA-Z0-9]+$/.test(id);
   }
 

@@ -229,7 +229,13 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
 
   private async handleSend() {
     if (this.isDM && this.userId) {
-      await this.sendDMMessage()
+      if (this.parentMessageId) {
+        // DM Thread Reply
+        await this.sendDMThreadReply()
+      } else {
+        // Normal DM
+        await this.sendDMMessage()
+      }
     } else if (this.channelId) {
       await this.handleChannelSend()
     }
@@ -264,5 +270,9 @@ export class MessageInputComponent implements OnChanges, AfterViewInit {
   private async sendDMMessage() {
     if (!this.userId) return
     await this.dmFacade.sendDMMessage(this.userId, this.messageText)
+  }
+  private async sendDMThreadReply() {
+    if (!this.userId || !this.parentMessageId) return
+    await this.dmFacade.sendDMThreadReply(this.userId, this.parentMessageId, this.messageText)
   }
 }
